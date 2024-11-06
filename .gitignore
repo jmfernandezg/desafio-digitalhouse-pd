@@ -30,3 +30,4 @@ gradle
 build
 .vscode
 .kotlin
+.idea

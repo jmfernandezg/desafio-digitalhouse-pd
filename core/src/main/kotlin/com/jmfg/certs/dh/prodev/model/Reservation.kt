@@ -1,85 +1,44 @@
 package com.jmfg.certs.dh.prodev.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.MappedSuperclass
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
+import jakarta.persistence.*
 import java.time.LocalDateTime
-import jakarta.persistence.Column
-import jakarta.persistence.OneToMany
-
+import java.util.*
 
 @Entity
-data class Reservation(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val reservationType: ReservationType,
-    val startDate: LocalDateTime = LocalDateTime.now(),
-    val endDate: LocalDateTime = LocalDateTime.now(),
-    @ManyToOne
-    val flight: Flight? = null,
-    @ManyToOne
-    val car: Car? = null,
-    @ManyToOne
-    val hotel: Hotel? = null, 
-    @ManyToOne
-    val customer: Customer = Customer()
-): BaseEntity()
+data class Lodging(
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: String = UUID.randomUUID().toString(),
+    val name: String = "",
+    @Enumerated(EnumType.STRING)
+    val type: LodgingType = LodgingType.HOTEL,
+    val availableFrom: LocalDateTime = LocalDateTime.now(),
+    val availableTo: LocalDateTime = LocalDateTime.now(),
+    @OneToMany(mappedBy = "lodging", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    val photos: List<Photo> = mutableListOf()
+) : BaseEntity()
 
-enum class ReservationType {
-    FLIGHT, CAR, HOTEL
+enum class LodgingType {
+    HOTEL, HOSTEL, DEPARTMENT, BED_AND_BREAKFAST
 }
 
 @Entity
-data class Hotel(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val name: String,
-    val address: String,
-    val city: String,
-    val country: String,
-    val pricePerNight: Double
-): BaseEntity()
-
-@Entity
-data class Car(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val make: String,
-    val model: String,
-    val year: Int,
-    val pricePerDay: Double
-): Product()
-
-@Entity
-data class Flight(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val airline: String,
-    val flightNumber: String,
-    val departureAirport: String,
-    val arrivalAirport: String,
-    val departureTime: String,
-    val arrivalTime: String,
-    val price: Double
-): Product()
-
-@Entity
-data class Photos(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0,
-    val url: String,
-    val description: String? = null,
-    val uploadedBy: String
+data class Photo(
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: String = UUID.randomUUID().toString(),
+    val url: String = "",
+    @ManyToOne
+    @JoinColumn(name = "lodging_id")
+    val lodging: Lodging? = null
 ) : BaseEntity()
 
-abstract class Product {
-    @OneToMany(mappedBy = "product")
-    val photos: List<Photos> = mutableListOf()
-}: BaseEntity()
-
+@Entity
+data class Reservation(
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    val id: String = UUID.randomUUID().toString(),
+    val startDate: LocalDateTime = LocalDateTime.now(),
+    val endDate: LocalDateTime = LocalDateTime.now(),
+    @ManyToOne
+    val customer: Customer = Customer(),
+    @ManyToOne
+    val lodging: Lodging = Lodging()
+) : BaseEntity()
