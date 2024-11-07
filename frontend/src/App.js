@@ -1,23 +1,40 @@
-import logo from './logo.svg';
+// frontend/src/App.js
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [hotels, setHotels] = useState([]);
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/hotels');
+        setHotels(response.data);
+      } catch (error) {
+        console.error('Error fetching hotels:', error);
+      }
+    };
+
+    fetchHotels();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Hotels</h1>
       </header>
+      <main>
+        <div className="hotels-grid">
+          {hotels.map(hotel => (
+            <div key={hotel.id} className="hotel-card">
+              <h2>{hotel.name}</h2>
+              <p>{hotel.address}</p>
+              <p>Rating: {hotel.rating} / 5</p>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
