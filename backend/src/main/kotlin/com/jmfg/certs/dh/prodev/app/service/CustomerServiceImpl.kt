@@ -16,31 +16,25 @@ class CustomerServiceImpl(
     private val customerRepository: CustomerRepository,
     private val jwtEncoder: JwtEncoder
 ) : CustomerService {
-
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
     override fun login(username: String, password: String): String {
-        val customer = customerRepository.findByUsernameAndPassword(username, password)
-            ?: throw IllegalArgumentException("Invalid username or password")
-
-        if (!passwordEncoder.matches(password, customer.password)) {
-            throw IllegalArgumentException("Invalid username or password")
-        }
-
-        return generateToken(customer)
+        return customerRepository.findByUsernameAndPassword(username, password)?.let {
+            if (!passwordEncoder.matches(password, it.password)) {
+                throw IllegalArgumentException("Invalid username or password")
+            }
+            generateToken(it)
+        } ?: throw IllegalArgumentException("Invalid username or password")
     }
 
-    private fun generateToken(customer: Customer): String {
-        val now = Instant.now()
-        val expiry = now.plusSeconds(3600)
-
-        val claims = JwtClaimsSet.builder()
-            .subject(customer.username)
-            .issuedAt(now)
-            .expiresAt(expiry)
-            .build()
-
-        val encoderParameters = JwtEncoderParameters.from(claims)
-        return jwtEncoder.encode(encoderParameters).tokenValue
-    }
+    private fun generateToken(customer: Customer) =
+        jwtEncoder.encode(
+            JwtEncoderParameters.from(
+                JwtClaimsSet.builder()
+                    .subject(customer.username)
+                    .issuedAt(Instant.now())
+                    .expiresAt(Instant.now().plusSeconds(3600))
+                    .build()
+            )
+        ).tokenValue
 }

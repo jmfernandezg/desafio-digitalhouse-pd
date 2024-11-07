@@ -9,11 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : LodgingService {
 
-    override fun findAllLodgingTypes(): List<LodgingType> {
-        return lodgingRepository.findAllLodgingTypes()
-    }
+    override fun findAllLodgingTypes(): List<LodgingType> = lodgingRepository.findAllLodgingTypes()
 
-    override fun findByType(type: LodgingType): List<Lodging> {
-        return lodgingRepository.findByType(type)
-    }
+    override fun findByType(type: LodgingType): List<Lodging> = lodgingRepository.findByType(type)
 }

@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec
 @EnableJpaRepositories("com.jmfg.certs.dh.prodev.app.repository")
 class BackendConfig {
 
-    @Value("\${jwt.secret}")
+    @Value("\${backend.jwt}")
     private val jwtSecret: String? = null
 
     @Bean
@@ -27,5 +27,6 @@ class BackendConfig {
             )
         )
     )
+
 
 }
