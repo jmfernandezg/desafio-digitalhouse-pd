@@ -10,15 +10,19 @@ data class Lodging(
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     val id: String = UUID.randomUUID().toString(),
     val name: String = "",
+    val address: String = "",
+    val rating: Double = 0.0,
+    val price: Double = 0.0,
+    val description: String = "",
     @Enumerated(EnumType.STRING)
-    val type: LodgingType = LodgingType.HOTEL,
+    val category: Category = Category.HOTEL,
     val availableFrom: LocalDateTime = LocalDateTime.now(),
     val availableTo: LocalDateTime = LocalDateTime.now(),
     @OneToMany(mappedBy = "lodging", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     val photos: List<Photo> = mutableListOf()
 ) : BaseEntity()
 
-enum class LodgingType {
+enum class Category {
     HOTEL, HOSTEL, DEPARTMENT, BED_AND_BREAKFAST
 }
 

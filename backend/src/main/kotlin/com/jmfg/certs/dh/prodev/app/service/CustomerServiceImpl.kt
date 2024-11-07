@@ -3,7 +3,6 @@ package com.jmfg.certs.dh.prodev.app.service
 import com.jmfg.certs.dh.prodev.app.repository.CustomerRepository
 import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.service.CustomerService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -14,9 +13,9 @@ import java.time.Instant
 @Service
 class CustomerServiceImpl(
     private val customerRepository: CustomerRepository,
-    private val jwtEncoder: JwtEncoder
+    private val jwtEncoder: JwtEncoder,
+    private val passwordEncoder: PasswordEncoder
 ) : CustomerService {
-    private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
     override fun login(username: String, password: String): String {
         return customerRepository.findByUsernameAndPassword(username, password)?.let {
