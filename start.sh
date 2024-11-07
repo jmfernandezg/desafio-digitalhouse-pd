@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Building and starting the application..."
-docker-compose up --build -d
+docker compose up --build -d
 
 echo "Application is starting..."
 echo "Frontend will be available at http://localhost:3000"

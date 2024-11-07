@@ -6,7 +6,8 @@ import java.util.*
 
 @Entity
 data class Customer(
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = UUID.randomUUID().toString(),
     val username: String = "",
     val password: String = "",

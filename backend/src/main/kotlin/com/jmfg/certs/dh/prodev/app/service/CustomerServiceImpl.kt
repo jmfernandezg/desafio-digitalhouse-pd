@@ -2,6 +2,7 @@ package com.jmfg.certs.dh.prodev.app.service
 
 import com.jmfg.certs.dh.prodev.app.repository.CustomerRepository
 import com.jmfg.certs.dh.prodev.model.Customer
+import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
 import com.jmfg.certs.dh.prodev.service.CustomerService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -17,9 +18,9 @@ class CustomerServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ) : CustomerService {
 
-    override fun login(username: String, password: String): String {
-        return customerRepository.findByUsernameAndPassword(username, password)?.let {
-            if (!passwordEncoder.matches(password, it.password)) {
+    override fun login(request: LoginRequest): String {
+        return customerRepository.findByUsernameAndPassword(request.username, request.password)?.let {
+            if (!passwordEncoder.matches(request.password, it.password)) {
                 throw IllegalArgumentException("Invalid username or password")
             }
             generateToken(it)

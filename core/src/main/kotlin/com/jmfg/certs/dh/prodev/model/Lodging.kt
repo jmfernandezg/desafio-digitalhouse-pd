@@ -7,7 +7,8 @@ import java.util.*
 
 @Entity
 data class Lodging(
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = UUID.randomUUID().toString(),
     val name: String = "",
     val address: String = "",
@@ -28,11 +29,11 @@ enum class Category {
 
 @Entity
 data class Photo(
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.UUID)
     val id: String = UUID.randomUUID().toString(),
     val url: String = "",
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lodging_id")
     @JsonIgnore
     val lodging: Lodging? = null
 ) : BaseEntity()

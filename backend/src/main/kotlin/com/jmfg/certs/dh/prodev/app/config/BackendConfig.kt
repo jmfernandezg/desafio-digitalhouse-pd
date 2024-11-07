@@ -2,6 +2,7 @@ package com.jmfg.certs.dh.prodev.app.config
 
 import com.jmfg.certs.dh.prodev.app.repository.CustomerRepository
 import com.jmfg.certs.dh.prodev.app.repository.LodgingRepository
+import com.jmfg.certs.dh.prodev.app.repository.PhotoRepository
 import com.jmfg.certs.dh.prodev.model.Category
 import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.Lodging
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -43,13 +45,13 @@ class BackendConfig {
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun populateDatabase(lodgingRepository: LodgingRepository, customerRepository: CustomerRepository): String {
+    @Transactional
+    fun populateDatabase(lodgingRepository: LodgingRepository, customerRepository: CustomerRepository, photoRepository: PhotoRepository): String {
         val faker = Faker()
 
-        // Create 10 random Lodgings of each type
         Category.entries.forEach { category ->
             repeat(10) {
-                val lodging = Lodging(
+                Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
                     rating = faker.number().randomDouble(1, 1, 5),
@@ -58,17 +60,20 @@ class BackendConfig {
                     category = category,
                     availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
                     availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
-                )
-                val photos = (1..3).map {
-                    Photo(
-                        url = "http://localhost:8080/static/photos/" + faker.internet().image(),
-                        lodging = lodging
-                    )
-                }
-                lodgingRepository.save(lodging.copy(photos = photos))
+                ).run {  
+                    lodgingRepository.save(this)
+                 }.also {  lo ->
+                    repeat(3) {
+                        Photo(
+                            url = faker.internet().image(),
+                            lodging = lo
+                        ).run { photoRepository.save(this)
+                    }
+
+                  }
             }
         }
-
+    }
         repeat(15) {
             val password = faker.internet().password()
             val customer = Customer(

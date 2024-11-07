@@ -11,7 +11,7 @@ abstract class BaseEntity {
     @Column(nullable = false, updatable = false)
     val creationDate: LocalDateTime = LocalDateTime.now()
 
-    @Column(nullable = false)
+    @Column
     var updateDate: LocalDateTime? = null
         private set
 
