@@ -12,6 +12,9 @@ interface LodgingRepository : JpaRepository<Lodging, String> {
     @EntityGraph(attributePaths = ["photos"])
     fun findByCategory(category: Category): List<Lodging>
 
+    @EntityGraph(attributePaths = ["photos"])
+    override fun findAll(): List<Lodging>
+
     @Query("SELECT DISTINCT l.category FROM Lodging l")
     fun findAllCategories(): List<Category>
 

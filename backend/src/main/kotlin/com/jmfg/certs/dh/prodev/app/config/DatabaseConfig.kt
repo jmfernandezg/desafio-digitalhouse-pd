@@ -11,7 +11,6 @@ import net.datafaker.Faker
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -22,53 +21,54 @@ class DatabaseConfig(
     private val customerRepository: CustomerRepository,
     private val photoRepository: PhotoRepository
 ) {
-    @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
     fun populateDatabase(
+        passwordEncoder: PasswordEncoder
     ): CommandLineRunner {
         val faker = Faker()
 
         return CommandLineRunner {
-            Category.entries.forEach { category ->
-                repeat(10) {
+            Category.entries.forEach {
+                repeat(10) { index ->
                     Lodging(
+                        id = index.toString(),
                         name = faker.company().name(),
                         address = faker.address().fullAddress(),
-                        rating = faker.number().randomDouble(1, 1, 5),
+                        rating = faker.number().randomDouble(1, index, 5),
                         price = faker.number().randomDouble(2, 50, 500),
                         description = faker.siliconValley().invention(),
-                        category = category,
+                        category = it,
                         availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
                         availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
                     ).run {
                         lodgingRepository.save(this)
-                    }.also { lo ->
-                        repeat(3) {
+                    }.also {
+                        repeat(3) { index ->
                             Photo(
+                                id = index.toString(),
                                 url = faker.internet().image(),
-                                lodging = lo
+                                lodging = it
                             ).run {
                                 photoRepository.save(this)
                             }
-
                         }
                     }
                 }
             }
-            repeat(15) {
-                val customer = Customer(
+            repeat(15) { ix ->
+                Customer(
+                    id = ix.toString(),
                     username = faker.internet().emailAddress(),
-                    password = passwordEncoder().encode(it.toString()),
+                    password = passwordEncoder.encode(ix.toString()),
                     firstName = faker.name().firstName(),
                     lastName = faker.name().lastName(),
                     dob = LocalDate.now().minusYears(faker.number().numberBetween(18, 70).toLong()),
                     email = faker.internet().emailAddress()
-                )
-                customerRepository.save(customer)
+                ).run {
+                    customerRepository.save(this)
+                }
             }
-
         }
     }
 }
