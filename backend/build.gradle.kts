@@ -14,7 +14,6 @@ dependencies {
     implementation("com.nimbusds:nimbus-jose-jwt:9.37.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.h2database:h2")
     implementation("net.datafaker:datafaker:2.4.1")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
