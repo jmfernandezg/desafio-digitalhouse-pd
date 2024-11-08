@@ -3,6 +3,12 @@ POST http://localhost:8080/v1/customer/login
 Content-Type: application/json
     
     {
-    "username": "testuser",
-    "password": "testpassword"
+    "username": "rogelio.becker",
+    "password": "rogelio.becker"
     }
+
+
+
+### Customer list
+
+GET http://localhost:8080/v1/customer

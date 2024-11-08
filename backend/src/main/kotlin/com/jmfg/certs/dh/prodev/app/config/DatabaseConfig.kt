@@ -11,6 +11,7 @@ import net.datafaker.Faker
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -23,12 +24,12 @@ class DatabaseConfig(
 ) {
 
     @Bean
+    @Profile("dev")
     fun populateDatabase(
         passwordEncoder: PasswordEncoder
     ): CommandLineRunner {
-        val faker = Faker()
-
         return CommandLineRunner {
+            val faker = Faker()
             Category.entries.forEach {
                 repeat(10) { index ->
                     Lodging(
@@ -37,7 +38,7 @@ class DatabaseConfig(
                         address = faker.address().fullAddress(),
                         rating = faker.number().randomDouble(1, index, 5),
                         price = faker.number().randomDouble(2, 50, 500),
-                        description = faker.siliconValley().invention(),
+                        description = faker.company().bs(),
                         category = it,
                         availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
                         availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
@@ -57,10 +58,11 @@ class DatabaseConfig(
                 }
             }
             repeat(15) { ix ->
+                val username = faker.internet().username()
                 Customer(
                     id = ix.toString(),
-                    username = faker.internet().emailAddress(),
-                    password = passwordEncoder.encode(ix.toString()),
+                    username = username,
+                    password = passwordEncoder.encode(username),
                     firstName = faker.name().firstName(),
                     lastName = faker.name().lastName(),
                     dob = LocalDate.now().minusYears(faker.number().numberBetween(18, 70).toLong()),

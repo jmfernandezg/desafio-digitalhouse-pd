@@ -5,6 +5,7 @@ import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
 import com.jmfg.certs.dh.prodev.service.CustomerService
+import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -19,13 +20,18 @@ class CustomerServiceImpl(
     private val passwordEncoder: PasswordEncoder
 ) : CustomerService {
 
-    override fun login(request: LoginRequest): String =
-        customerRepository.findByUsernameAndPassword(request.username, request.password)?.let {
-            if (!passwordEncoder.matches(request.password, it.password)) {
-                throw IllegalArgumentException("Invalid username or password")
-            }
+    private val logger = LoggerFactory.getLogger(CustomerService::class.java.name)
+
+    override fun login(request: LoginRequest): String? =
+        customerRepository.findByUsername(
+            request.username
+        )?.takeIf {
+            logger.info("Customer found: $it")
+            passwordEncoder.matches(request.password, it.password)
+        }?.let {
+            logger.info("Generating token for $it")
             generateToken(it)
-        } ?: throw IllegalArgumentException("Invalid username or password")
+        }
 
     override fun findAll(): List<Customer> = customerRepository.findAll()
 

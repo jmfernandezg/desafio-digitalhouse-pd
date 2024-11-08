@@ -3,8 +3,11 @@ package com.jmfg.certs.dh.prodev.app.controller
 import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
+import com.jmfg.certs.dh.prodev.model.dto.LoginResponse
 import com.jmfg.certs.dh.prodev.service.CustomerService
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/v1/customer")
@@ -13,8 +16,10 @@ class CustomerController(
     private val customerService: CustomerService
 ) {
     @PostMapping("/login")
-    fun login(@RequestBody request: LoginRequest) =
-        customerService.login(request)
+    fun login(@RequestBody request: LoginRequest): LoginResponse =
+        customerService.login(request)?.let {
+            LoginResponse(it)
+        } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found")
 
     @PostMapping
     fun create(@RequestBody request: CustomerCreationRequest) =

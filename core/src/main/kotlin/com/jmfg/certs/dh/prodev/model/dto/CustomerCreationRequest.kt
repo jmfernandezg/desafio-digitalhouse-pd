@@ -13,3 +13,8 @@ data class LoginRequest(
     val password: String
 )
 
+data class LoginResponse(
+    val authToken: String,
+    val type: String = "Bearer",
+    val expiresIn: Long = 3600
+)
