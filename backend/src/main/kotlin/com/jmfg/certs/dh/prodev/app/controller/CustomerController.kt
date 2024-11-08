@@ -23,7 +23,10 @@ class CustomerController(
 
     @PostMapping
     fun create(@RequestBody request: CustomerCreationRequest) =
-        customerService.create(request)
+        customerService.create(request) ?: throw ResponseStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Customer already exists"
+        )
 
     @DeleteMapping
     fun delete(@RequestParam id: String) =
