@@ -3,7 +3,6 @@ plugins {
     id("org.springframework.boot") version "3.3.5" apply false
     id("io.spring.dependency-management") version "1.1.6" apply false
     kotlin("plugin.spring") version "2.1.0-RC" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     id("com.github.node-gradle.node") version "7.1.0"
 }
 
@@ -60,11 +59,11 @@ project(":frontend") {
     apply(plugin = "com.github.node-gradle.node")
 
     node {
-        version.set("18.17.1")
+        version.set("22.11.0")
         download.set(true)
-        workDir.set(file("${project.buildDir}/nodejs"))
-        npmWorkDir.set(file("${project.buildDir}/npm"))
-        nodeProjectDir.set(file("${project.buildDir}/"))
+        workDir.set(file("${project.layout.buildDirectory}/nodejs"))
+        npmWorkDir.set(file("${project.layout.buildDirectory}/npm"))
+        nodeProjectDir.set(file("${project.layout.buildDirectory}/"))
     }
 
     tasks.named("build") {

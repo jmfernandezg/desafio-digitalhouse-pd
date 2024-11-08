@@ -46,7 +46,11 @@ class BackendConfig {
 
     @Bean
     @Transactional
-    fun populateDatabase(lodgingRepository: LodgingRepository, customerRepository: CustomerRepository, photoRepository: PhotoRepository): String {
+    fun populateDatabase(
+        lodgingRepository: LodgingRepository,
+        customerRepository: CustomerRepository,
+        photoRepository: PhotoRepository
+    ): String {
         val faker = Faker()
 
         Category.entries.forEach { category ->
@@ -60,20 +64,21 @@ class BackendConfig {
                     category = category,
                     availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
                     availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
-                ).run {  
+                ).run {
                     lodgingRepository.save(this)
-                 }.also {  lo ->
+                }.also { lo ->
                     repeat(3) {
                         Photo(
                             url = faker.internet().image(),
                             lodging = lo
-                        ).run { photoRepository.save(this)
-                    }
+                        ).run {
+                            photoRepository.save(this)
+                        }
 
-                  }
+                    }
+                }
             }
         }
-    }
         repeat(15) {
             val password = faker.internet().password()
             val customer = Customer(
