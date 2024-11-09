@@ -1,20 +1,17 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Lodgings from './Lodgings';
-import Customers from './Customers';
-import Navbar from './Navbar';
+import Header from './Header';
+import SearchBar from './SearchBar';
+import Categories from './Categories';
+import Recommendation from './Recommendation';
 
 function App() {
     return (
-        <Router>
-            <div>
-                <Navbar/>
-                <Routes>
-                    <Route path="/lodgings" element={<Lodgings/>}/>
-                    <Route path="/customers" element={<Customers/>}/>
-                </Routes>
-            </div>
-        </Router>
+        <div>
+            <Header />
+            <SearchBar />
+            <Categories />
+            <Recommendation />
+        </div>
     );
 }
 

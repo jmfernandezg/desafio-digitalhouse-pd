@@ -27,12 +27,10 @@ class DatabaseConfig(
 
     @Bean
     @Profile("dev")
-    fun populateDatabase(passwordEncoder: PasswordEncoder): CommandLineRunner {
-        return CommandLineRunner {
-            val faker = Faker()
-            populateLodgings(faker)
-            populateCustomers(faker, passwordEncoder)
-        }
+    fun populateDatabase(passwordEncoder: PasswordEncoder): CommandLineRunner = CommandLineRunner {
+        val faker = Faker()
+        populateLodgings(faker)
+        populateCustomers(faker, passwordEncoder)
     }
 
     private fun populateLodgings(faker: Faker) {
@@ -51,7 +49,6 @@ class DatabaseConfig(
                 ).run {
                     lodgingRepository.save(this)
                 }.also { lodging ->
-                    logger.info("Populating photos for lodging ${lodging.name}")
                     repeat(3) {
                         Photo(
                             url = faker.internet().image(),
@@ -77,7 +74,6 @@ class DatabaseConfig(
                 email = faker.internet().emailAddress()
             ).run {
                 customerRepository.save(this)
-                logger.info("Populated customer $username")
             }
         }
     }

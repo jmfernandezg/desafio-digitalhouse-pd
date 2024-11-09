@@ -1,35 +1,99 @@
-/* common styles */
-
-/* Border box declaration */
-html {
-    font-size: 62.5%;
-    box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-    box-sizing: inherit;
-}
-
+/* General styles */
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    font-family: Arial, Geneva, sans-serif;
+    background-color: #f4f4f4;
 }
 
-.App {
-    height: 100vh;
-    display: grid;
-    place-items: center;
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.paper {
-    width: 250px;
-    height: 250px;
-    background-color: blue;
-    border-radius: 5px;
-    box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.25);
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
 }
 
-/* end of common styles */
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+/* Header styles */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+    .accommodation-option {
+        width: 32%;
+    }
+}
+
+@media (max-width: 992px) {
+    .accommodation-option {
+        width: 48%;
+    }
+}
+
+@media (max-width: 768px) {
+    .accommodation-option {
+        width: 100%;
+    }
+
+    .recommendation {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .recommendation-img {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .recommendation-info {
+        width: 100%;
+    }
+}

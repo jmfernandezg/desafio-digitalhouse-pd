@@ -5,7 +5,7 @@ function Lodgings() {
     const [lodgings, setLodgings] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/v1/lodgings')
+        axios.get('http://localhost:8080/v1/lodging')
             .then(response => setLodgings(response.data))
             .catch(error => console.error('Error fetching lodgings:', error));
     }, []);
