@@ -33,3 +33,9 @@
     font-size: 0.9em;
     color: #666;
 }
+
+.categories-grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}

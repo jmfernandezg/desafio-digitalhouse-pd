@@ -1,25 +1,35 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
+import './Recommendation.css';
+
 
 function Recommendation() {
-    const recommendations = [
-        { name: 'Hotel A', image: 'hotelA.jpg', rating: 4.5, distance: '500m' },
-        { name: 'Hotel B', image: 'hotelB.jpg', rating: 4.0, distance: '1km' },
-        { name: 'Hotel C', image: 'hotelC.jpg', rating: 3.5, distance: '2km' },
-    ];
+    const [lodgings, setLodgings] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/v1/lodging')
+            .then(response => {
+                const sortedLodgings = response.data.sort((a, b) => b.rating - a.rating);
+                setLodgings(sortedLodgings.slice(0, 6));
+            })
+            .catch(error => console.error('Error fetching lodgings:', error));
+    }, []);
 
     return (
-        <div className="recommendations">
-            {recommendations.map((hotel, index) => (
-                <div key={index} className="recommendation">
-                    <img src={hotel.image} alt={hotel.name} />
-                    <div>{hotel.name}</div>
-                    <div>Rating: {hotel.rating}</div>
-                    <div>Distance: {hotel.distance}</div>
-                    <button>Mostrar en el mapa</button>
-                </div>
-            ))}
+        <div className="recommendation">
+            <h2>Recomendaciones</h2>
+            <div className="grid-container">
+                {lodgings.map(lodging => (
+                    <div key={lodging.id} className="recommendation-card">
+                        <img src={lodging.photos[0]} alt={lodging.name} className="lodging-photo"/>
+                        <h3>{lodging.name}</h3>
+                        <p>Rating: {lodging.rating}</p>
+                    </div>
+                ))}
+            </div>
         </div>
-    );
+    )
 }
+
 
 export default Recommendation;
