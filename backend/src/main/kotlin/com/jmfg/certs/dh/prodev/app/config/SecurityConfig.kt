@@ -23,8 +23,8 @@ import java.security.interfaces.RSAPublicKey
 import java.time.Instant
 
 @Configuration
-class SecurityConfiguration {
-    val logger: Logger = LoggerFactory.getLogger(SecurityConfiguration::class.java)
+class SecurityConfig {
+    val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()

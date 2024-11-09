@@ -7,7 +7,7 @@ import Recommendation from './Recommendation';
 
 function App() {
     return (
-        <div>
+        <div className="app">
             <Header />
             <SearchBar />
             <Categories />

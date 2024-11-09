@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 @Configuration
 class DatabaseConfig(
@@ -36,7 +37,7 @@ class DatabaseConfig(
     private fun populateLodgings(faker: Faker) {
         Category.entries.forEach { category ->
             logger.info("Populating lodgings for category ${category.name}")
-            repeat(10) {
+            repeat(Random.nextInt(5, 15)) {
                 Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
@@ -49,7 +50,7 @@ class DatabaseConfig(
                 ).run {
                     lodgingRepository.save(this)
                 }.also { lodging ->
-                    repeat(3) {
+                    repeat(Random.nextInt(2, 4)) {
                         Photo(
                             url = faker.internet().image(),
                             lodging = lodging
@@ -63,7 +64,7 @@ class DatabaseConfig(
     }
 
     private fun populateCustomers(faker: Faker, passwordEncoder: PasswordEncoder) {
-        repeat(15) {
+        repeat(Random.nextInt(1, 15)) {
             val username = faker.internet().username()
             Customer(
                 username = username,

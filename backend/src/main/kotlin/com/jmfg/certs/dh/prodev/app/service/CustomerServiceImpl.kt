@@ -26,7 +26,6 @@ class CustomerServiceImpl(
         customerRepository.findByUsername(
             request.username
         )?.takeIf {
-            logger.info("Customer found: $it")
             passwordEncoder.matches(request.password, it.password)
         }?.let {
             logger.info("Generating token for $it")

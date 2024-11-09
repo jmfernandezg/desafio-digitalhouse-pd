@@ -21,7 +21,7 @@ function Recommendation() {
             <div className="grid-container">
                 {lodgings.map(lodging => (
                     <div key={lodging.id} className="recommendation-card">
-                        <img src={lodging.photos[0]} alt={lodging.name} className="lodging-photo"/>
+                        <img src={lodging.photos[0].url} alt={lodging.name} className="lodging-photo"/>
                         <h3>{lodging.name}</h3>
                         <p>Rating: {lodging.rating}</p>
                     </div>

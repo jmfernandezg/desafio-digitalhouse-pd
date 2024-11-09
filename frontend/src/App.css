@@ -1,11 +1,14 @@
 /* General styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
 }
+.app {
+    font-family: 'Montserrat', sans-serif;
 
+}
 .container {
     width: 90%;
     max-width: 1200px;
@@ -53,47 +56,4 @@ ul {
 
 li {
     margin-bottom: 10px;
-}
-
-/* Header styles */
-header {
-    background-color: #333;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-}
-
-
-
-/* Responsive styles */
-@media (max-width: 1200px) {
-    .accommodation-option {
-        width: 32%;
-    }
-}
-
-@media (max-width: 992px) {
-    .accommodation-option {
-        width: 48%;
-    }
-}
-
-@media (max-width: 768px) {
-    .accommodation-option {
-        width: 100%;
-    }
-
-    .recommendation {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .recommendation-img {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .recommendation-info {
-        width: 100%;
-    }
 }
