@@ -3,11 +3,11 @@ import Header from './Header';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
 import Recommendation from './Recommendation';
-
+import './App.css';
 
 function App() {
     return (
-        <div className="app">
+        <div>
             <Header />
             <SearchBar />
             <Categories />

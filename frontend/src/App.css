@@ -1,13 +1,12 @@
-/* General styles */
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:regular,bold,italic&subset=latin,latin-ext');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
-}
-.app {
-    font-family: 'Montserrat', sans-serif;
-
 }
 .container {
     width: 90%;
@@ -17,6 +16,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', cursive;
     font-weight: bold;
 }
 

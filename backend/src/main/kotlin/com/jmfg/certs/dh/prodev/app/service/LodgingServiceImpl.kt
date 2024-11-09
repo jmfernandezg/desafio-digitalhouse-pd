@@ -1,5 +1,6 @@
 package com.jmfg.certs.dh.prodev.app.service
 
+import com.jmfg.certs.dh.prodev.Util
 import com.jmfg.certs.dh.prodev.app.repository.LodgingRepository
 import com.jmfg.certs.dh.prodev.model.Category
 import com.jmfg.certs.dh.prodev.model.Lodging
@@ -29,10 +30,11 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
     override fun findAll(): List<Lodging> = lodgingRepository.findAll()
 
     override fun findAllCategories(): CategoryResponse = lodgingRepository.findAllCategories().map { category ->
+        val lodgings = lodgingRepository.findByCategory(category)
         CategoryResponse.Category(
-            category.name,
-            "/images/${category.name.lowercase()}.jpg",
-            lodgingRepository.findByCategory(category).size
+            Util.toCapitalizedString(category.name),
+            lodgings.flatMap { it.photos }.map { it.url }.first(),
+            lodgings.size
         )
     }.let { CategoryResponse(it) }
 
