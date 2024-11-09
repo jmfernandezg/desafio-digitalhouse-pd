@@ -1,22 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './Categories.css';
 
 function Categories() {
-    const roomTypes = [
-        { name: 'Hoteles', image: 'hotel.jpg', count: 10 },
-        { name: 'Hostels', image: 'hostel.jpg', count: 5 },
-        { name: 'Departamentos', image: 'apartment.jpg', count: 8 },
-        { name: 'Bed and breakfast', image: 'bnb.jpg', count: 3 },
-    ];
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/v1/lodging/categories')
+            .then(response => {
+                setCategories(response.data.categories);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the categories!', error);
+            });
+    }, []);
 
     return (
-        <div className="room-types">
-            {roomTypes.map((room, index) => (
-                <div key={index} className="room-type">
-                    <img src={room.image} alt={room.name} />
-                    <div>{room.name}</div>
-                    <div>{room.count} available</div>
-                </div>
-            ))}
+        <div className="categories">
+            <h2>Buscar por tipo de alojamiento</h2>
+            <div className="category-cards">
+                {categories.map((category, index) => (
+                    <div key={index} className="category-card">
+                        <img src={category.imageUrl} alt={category.name} />
+                        <h3>{category.name}</h3>
+                        <p>{category.numberOfLodgings} lodgings available</p>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

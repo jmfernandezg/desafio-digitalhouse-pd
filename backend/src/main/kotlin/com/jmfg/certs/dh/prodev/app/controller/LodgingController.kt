@@ -2,6 +2,7 @@ package com.jmfg.certs.dh.prodev.app.controller
 
 import com.jmfg.certs.dh.prodev.model.Category
 import com.jmfg.certs.dh.prodev.model.Lodging
+import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.service.LodgingService
 import org.springframework.web.bind.annotation.*
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 class LodgingController(private val lodgingService: LodgingService) {
 
     @GetMapping("/categories")
-    fun getAllCategories(): List<Category> = lodgingService.findAllCategories()
+    fun getAllCategories(): CategoryResponse = lodgingService.findAllCategories()
 
     @GetMapping("/{category}")
     fun getLodgingsByCategory(@PathVariable category: String): List<Lodging> =

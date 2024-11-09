@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import Categories from './Categories';
 import Recommendation from './Recommendation';
 
+
 function App() {
     return (
         <div>
