@@ -2,11 +2,13 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import './Categories.css';
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://backend:8080';
+
 function Categories() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/v1/lodging/categories')
+        axios.get(`${BACKEND_URL}/v1/lodging/categories`)
             .then(response => {
                 setCategories(response.data.categories);
             })
