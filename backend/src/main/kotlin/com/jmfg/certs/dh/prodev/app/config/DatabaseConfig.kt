@@ -10,15 +10,19 @@ import com.jmfg.certs.dh.prodev.model.Photo
 import net.datafaker.Faker
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Configuration
+@EntityScan("com.jmfg.certs.dh.prodev.model")
+@EnableJpaRepositories("com.jmfg.certs.dh.prodev.app.repository")
 class DatabaseConfig(
     private val lodgingRepository: LodgingRepository,
     private val customerRepository: CustomerRepository,
