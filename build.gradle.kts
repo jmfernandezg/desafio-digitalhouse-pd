@@ -57,16 +57,4 @@ project(":core") {
 
 project(":frontend") {
     apply(plugin = "com.github.node-gradle.node")
-
-    node {
-        version.set("22.11.0")
-        download.set(true)
-        workDir.set(file("${project.layout.buildDirectory}/nodejs"))
-        npmWorkDir.set(file("${project.layout.buildDirectory}/npm"))
-        nodeProjectDir.set(file("${project.layout.buildDirectory}/"))
-    }
-
-    tasks.named("build") {
-        dependsOn("npmInstall")
-    }
 }
