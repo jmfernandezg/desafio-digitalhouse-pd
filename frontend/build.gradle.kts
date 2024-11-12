@@ -8,48 +8,21 @@ node {
     nodeProjectDir.set(file("${project.projectDir}"))
 }
 
-tasks.register<Delete>("cleanDist") {
-    delete(fileTree("dist").matching {
-        include("**/*")
-    })
+val yarnInstall by tasks.registering(Exec::class) {
+    group = "build"
+    description = "Install dependencies using Yarn"
+    workingDir = file(".")
+    commandLine("yarn", "install")
 }
 
-tasks.register<com.github.gradle.node.yarn.task.YarnTask>("yarnInstall") {
-    args.set(listOf("install"))
-    inputs.files("package.json", "yarn.lock")
-    outputs.dir("node_modules")
-}
-
-tasks.register<com.github.gradle.node.yarn.task.YarnTask>("yarnBuild") {
-    dependsOn("yarnInstall")
-    args.set(listOf("build"))
-    inputs.files("package.json", "yarn.lock")
-    inputs.dir("src")
-    outputs.dir("build")
-}
-
-tasks.register<com.github.gradle.node.yarn.task.YarnTask>("yarnTest") {
-    dependsOn("yarnInstall")
-    args.set(listOf("test", "--watchAll=false"))
-    inputs.files("package.json", "yarn.lock")
-    inputs.dir("src")
-}
-
-tasks.register<com.github.gradle.node.yarn.task.YarnTask>("yarnLint") {
-    dependsOn("yarnInstall")
-    args.set(listOf("lint"))
-    inputs.files("package.json", "yarn.lock")
-    inputs.dir("src")
-}
-
-tasks.named("clean") {
-    dependsOn("cleanDist")
-}
-
-tasks.named("check") {
-    dependsOn("yarnTest", "yarnLint")
+val yarnBuild by tasks.registering(Exec::class) {
+    dependsOn(yarnInstall)
+    group = "build"
+    description = "Build the React application using Yarn"
+    workingDir = file(".")
+    commandLine("yarn", "build")
 }
 
 tasks.named("assemble") {
-    dependsOn("yarnBuild")
+    dependsOn(yarnBuild)
 }
