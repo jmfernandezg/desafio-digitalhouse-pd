@@ -8,6 +8,10 @@ header {
     align-items: center;
     padding: 10px 20px;
     box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .logo {
@@ -21,13 +25,13 @@ header {
 .tagline {
     font-size: 1.5em;
     font-style: italic;
-    flex-grow: 1;
-    text-align: center;
+    margin-left: 20px;
 }
 
 .auth-buttons {
     display: flex;
     gap: 10px;
+    margin-left: auto;
 }
 
 .auth-buttons button {
@@ -41,4 +45,14 @@ header {
 
 .auth-buttons button:hover {
     background-color: #0069d9;
+}
+
+@media (max-width: 768px) {
+    .tagline {
+        display: none;
+    }
+
+    .auth-buttons button {
+        padding: 6px 10px;
+    }
 }

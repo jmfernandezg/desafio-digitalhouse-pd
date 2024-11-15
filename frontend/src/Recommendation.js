@@ -1,16 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { LodgingService } from './api/lodgingService';
 import './Recommendation.css';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://backend:8080';
 
 function Recommendation() {
     const [lodgings, setLodgings] = useState([]);
 
     useEffect(() => {
-        axios.get(`${BACKEND_URL}/v1/lodging`)
-            .then(response => {
-                const sortedLodgings = response.data.sort((a, b) => b.rating - a.rating);
+        LodgingService.getAllLodgings()
+            .then(data => {
+                const sortedLodgings = data.sort((a, b) => b.rating - a.rating);
                 setLodgings(sortedLodgings.slice(0, 6));
             })
             .catch(error => console.error('Error fetching lodgings:', error));

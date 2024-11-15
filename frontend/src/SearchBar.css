@@ -1,20 +1,36 @@
-/* SearchBar.css */
-.search-bar {
+.search-bar-container {
+    margin-top: 70px; /* Adjust this value based on the height of your header */
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
     padding: 10px;
     background-color: #f1f1f1;
     border-radius: 5px;
 }
 
+.search-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.input-container {
+    position: relative;
+}
+
 .search-bar input[type="text"],
 .search-bar input[type="date"] {
-    padding: 8px;
+    padding: 8px 8px 8px 30px; /* Add padding to make space for the icon */
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 1em;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
 }
 
 .search-bar button {

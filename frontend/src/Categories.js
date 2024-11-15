@@ -1,21 +1,36 @@
-import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { LodgingService } from './api/lodgingService';
 import './Categories.css';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://backend:8080';
 
 function Categories() {
     const [categories, setCategories] = useState([]);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`${BACKEND_URL}/v1/lodging/categories`)
-            .then(response => {
-                setCategories(response.data.categories);
-            })
-            .catch(error => {
-                console.error('There was an error fetching the categories!', error);
-            });
+        const fetchCategories = async () => {
+            try {
+                setIsLoading(true);
+                const data = await LodgingService.getCategories();
+                setCategories(data.categories);
+            } catch (err) {
+                setError('Failed to fetch categories. Please try again later.');
+                console.error('Error fetching categories:', err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCategories();
     }, []);
+
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
+
+    if (isLoading) {
+        return <div className="loading">Loading categories...</div>;
+    }
 
     return (
         <div className="categories">
@@ -23,7 +38,7 @@ function Categories() {
             <div className="categories-grid-container">
                 {categories.map((category, index) => (
                     <div key={index} className="category-card">
-                        <img src={category.imageUrl} alt={category.name}/>
+                        <img src={category.imageUrl} alt={category.name} />
                         <h3>{category.name}</h3>
                         <p>{category.numberOfLodgings} lodgings available</p>
                     </div>
