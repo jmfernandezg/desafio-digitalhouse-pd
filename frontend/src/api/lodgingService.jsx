@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { apiClient } from './client.jsx';
 import { API_CONFIG } from '../config/constants';
 
 export const LodgingService = {

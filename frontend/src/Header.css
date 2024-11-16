@@ -1,7 +1,7 @@
 /* Header.css */
 header {
     width: 100%;
-    background-color: #f4f4f4; /* Light gray color to contrast with purple */
+    background-color: lightblue;
     color: #333;
     display: flex;
     justify-content: space-between;

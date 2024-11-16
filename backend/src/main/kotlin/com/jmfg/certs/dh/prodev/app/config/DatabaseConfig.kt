@@ -41,7 +41,7 @@ class DatabaseConfig(
     private fun populateLodgings(faker: Faker) {
         Category.entries.forEach { category ->
             logger.info("Populating lodgings for category ${category.name}")
-            repeat(Random.nextInt(5, 15)) {
+            repeat(Random.nextInt(10, 20)) {
                 Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
@@ -54,7 +54,7 @@ class DatabaseConfig(
                 ).run {
                     lodgingRepository.save(this)
                 }.also { lodging ->
-                    repeat(Random.nextInt(2, 4)) {
+                    repeat(Random.nextInt(4, 8)) {
                         Photo(
                             url = faker.internet().image(),
                             lodging = lodging
@@ -68,7 +68,7 @@ class DatabaseConfig(
     }
 
     private fun populateCustomers(faker: Faker, passwordEncoder: PasswordEncoder) {
-        repeat(Random.nextInt(1, 15)) {
+        repeat(Random.nextInt(5, 15)) {
             val username = faker.internet().username()
             Customer(
                 username = username,
