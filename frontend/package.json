@@ -12,7 +12,8 @@
     "react-scripts": "^5.0.1",
     "react-spring": "^9.7.4",
     "axios": "^1.7.7",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^4.2.4",
+    "lucide-react": "^0.268.0"
   },
   "scripts": {
     "start": "react-scripts start",

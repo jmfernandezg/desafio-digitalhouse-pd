@@ -1,24 +1,36 @@
 .search-bar-container {
     margin-top: 70px; /* Adjust this value based on the height of your header */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 10px;
-    background-color: #f1f1f1;
+    padding: 20px;
+    background-color: var(--primary-dark);
     border-radius: 5px;
+    color: white;
+}
+
+.search-bar-container h2 {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .search-bar {
     display: flex;
+    width: 100%;
     gap: 10px;
 }
 
 .input-container {
     position: relative;
+    flex: 1 1 30%;
 }
 
 .search-bar input[type="text"],
 .search-bar input[type="date"] {
+    width: 80%;
     padding: 8px 8px 8px 30px; /* Add padding to make space for the icon */
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -33,9 +45,14 @@
     color: #aaa;
 }
 
+.search-bar input[type="date"] {
+    flex: 1 1 40%;
+}
+
 .search-bar button {
+    flex: 1 1 30%;
     padding: 8px 15px;
-    background-color: #007bff;
+    background-color: var(--accent);
     color: white;
     border: none;
     border-radius: 3px;
@@ -43,5 +60,5 @@
 }
 
 .search-bar button:hover {
-    background-color: #0069d9;
+    background-color: #e66a00;
 }

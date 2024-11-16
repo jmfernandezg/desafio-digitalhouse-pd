@@ -1,8 +1,8 @@
 /* Header.css */
 header {
     width: 100%;
-    background-color: #c0c0c0;
-    color: white;
+    background-color: #f4f4f4; /* Light gray color to contrast with purple */
+    color: #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -35,7 +35,7 @@ header {
 }
 
 .auth-buttons button {
-    background-color: #007bff;
+    background-color: var(--accent);
     color: white;
     border: none;
     border-radius: 3px;
@@ -44,7 +44,7 @@ header {
 }
 
 .auth-buttons button:hover {
-    background-color: #0069d9;
+    background-color: #e66a00; /* Same hover color as the search bar button */
 }
 
 @media (max-width: 768px) {

@@ -8,10 +8,14 @@ import './App.css';
 function App() {
     return (
         <div>
-            <Header />
-            <SearchBar />
-            <Categories />
-            <Recommendation />
+            <div className="mainHeader">
+                <Header/>
+                <SearchBar/>
+            </div>
+            <div className="main">
+                <Categories/>
+                <Recommendation/>
+            </div>
         </div>
     );
 }
