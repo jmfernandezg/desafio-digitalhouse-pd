@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LodgingService } from './api/lodgingService';
+import { LodgingService } from './api/LodgingService';
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import Lodgings from './Lodgings';
 import './Categories.css';
@@ -9,7 +9,6 @@ function Categories() {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [lodgings, setLodgings] = useState([]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -28,15 +27,8 @@ function Categories() {
         fetchCategories();
     }, []);
 
-    const handleCategoryClick = async (category) => {
-        try {
-            const data = await LodgingService.getLodgingsByCategory(category.name);
-            setLodgings(data.lodgings);
-            setSelectedCategory(category.name);
-        } catch (err) {
-            setError('Error cargando alojamientos. Por favor, intentá nuevamente.');
-            console.error('Error cargando alojamientos:', err);
-        }
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category.name);
     };
 
     if (error) {
@@ -72,7 +64,7 @@ function Categories() {
                     </Card>
                 ))}
             </div>
-            {selectedCategory && <Lodgings lodgings={lodgings} />}
+            {selectedCategory && <Lodgings category={selectedCategory} />}
         </div>
     );
 }

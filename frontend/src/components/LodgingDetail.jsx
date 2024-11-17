@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { LodgingService } from '../api/lodgingService';
-import { Star } from 'lucide-react';
+import { LodgingService } from '../api/LodgingService';
+import { Star, Heart } from 'lucide-react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 import './LodgingDetail.css';
@@ -48,9 +48,14 @@ function LodgingDetail() {
 
     if (!lodging) return null;
 
+    const formatDate = (date) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(date).toLocaleDateString('en-GB', options);
+    };
+
     return (
         <div className="container">
-            <button className="back-button" onClick={() => navigate(-1)}>Back</button>
+            <button className="back-button" onClick={() => navigate(-1)}>Regresar</button>
             <div className="header">
                 <h1>{lodging.name}</h1>
                 <div className="details">
@@ -61,38 +66,53 @@ function LodgingDetail() {
                     </div>
                     <span>•</span>
                     <span>{lodging.address}</span>
+                    <span>{lodging.city}</span>
+                </div>
+                <div className="rating-badge">
+                    <span>{lodging.averageCustomerRating}</span>
+                    <span>{lodging.grade}</span>
+                </div>
+                <div className="favorite-icon">
+                    {lodging.isFavorite ? <Heart className="heart-icon filled" /> : <Heart className="heart-icon" />}
                 </div>
             </div>
 
-            <div className="splide">
-
-
-            </div>
-
-            <div className="details-grid">
-                <div className="left-column">
-                    <h2>About this place</h2>
-                    <p>{lodging.description}</p>
-                </div>
-
-                <div className="right-column">
-                    <div className="price">
-                        ${lodging.price.toFixed(2)}<span>/night</span>
+            <div className="content">
+                <div className="details-grid">
+                    <div className="left-column">
+                        <h2>Acerca de este lugar</h2>
+                        <p>{lodging.description}</p>
                     </div>
-                    <div className="additional-details">
-                        <div className="detail">
-                            <span>Location:</span>
-                            <span>{lodging.address}</span>
+
+                    <div className="right-column">
+                        <div className="price">
+                            ${lodging.price.toFixed(2)}<span>/noche</span>
                         </div>
-                        <div className="detail">
-                            <span>Rating:</span>
-                            <div className="stars">
-                                {Array.from({ length: lodging.stars }).map((_, index) => (
-                                    <Star key={index} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                ))}
+                        <div className="additional-details">
+                            <div className="detail">
+                                <span>Location:</span>
+                                <span>{lodging.address}</span>
+                            </div>
+                            <div className="detail">
+                                <span>Disponible desde:</span>
+                                <span>{formatDate(lodging.availableFrom)}</span>
+                            </div>
+                            <div className="detail">
+                                <span>Disponible hasta :</span>
+                                <span>{formatDate(lodging.availableTo)}</span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="splide">
+                    <Splide>
+                        {lodging.photos.map((photo, index) => (
+                            <SplideSlide key={index}>
+                                <img src={photo} alt={`Slide ${index}`} />
+                            </SplideSlide>
+                        ))}
+                    </Splide>
                 </div>
             </div>
         </div>

@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { LodgingService } from './api/lodgingService';
+import { LodgingService } from './api/LodgingService';
 import ReactPaginate from 'react-paginate';
 import LodgingGrid from './components/LodgingGrid';
-import SortDropdown  from "./components/SortDropdown";
+import SortDropdown from "./components/SortDropdown";
 import './Lodgings.css';
 
-function Lodgings() {
+function Lodgings({ category }) {
     const [lodgings, setLodgings] = useState([]);
     const [sortOption, setSortOption] = useState('price');
     const [currentPage, setCurrentPage] = useState(0);
     const lodgingsPerPage = 10;
 
     useEffect(() => {
-        LodgingService.getAllLodgings()
-            .then(data => {
+        const fetchLodgings = async () => {
+            try {
+                const data = category
+                    ? await LodgingService.getLodgingsByCategory(category)
+                    : await LodgingService.getAllLodgings();
                 const sortedLodgings = sortLodgings(data.lodgings, sortOption);
                 setLodgings(sortedLodgings);
-            })
-            .catch(error => console.error('Error fetching lodgings:', error));
-    }, [sortOption]);
+            } catch (error) {
+                console.error('Error fetching lodgings:', error);
+            }
+        };
+
+        fetchLodgings();
+    }, [category, sortOption]);
 
     const sortLodgings = (lodgings, option) => {
         return lodgings.sort((a, b) => b[option] - a[option]);
@@ -33,7 +40,7 @@ function Lodgings() {
 
     return (
         <div className="recommendation">
-            <h2>Recomendaciones</h2>
+            <h2>{category ? `Category: ${category}` : 'Recomendaciones'}</h2>
 
             <SortDropdown sortOption={sortOption} setSortOption={setSortOption} />
 
