@@ -7,6 +7,13 @@
     padding: 20px;
 }
 
+.categories h2 {
+    width: 100%;
+    font-size: 1.5em;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
 .category-card {
     background-color: white;
     border-radius: 5px;

@@ -14,8 +14,8 @@ function Categories() {
                 const data = await LodgingService.getCategories();
                 setCategories(data.categories);
             } catch (err) {
-                setError('Failed to fetch categories. Please try again later.');
-                console.error('Error fetching categories:', err);
+                setError('Error cargando categorías. Por favor, intentá nuevamente.');
+                console.error('Error cargando categorías:', err);
             } finally {
                 setIsLoading(false);
             }
@@ -29,7 +29,7 @@ function Categories() {
     }
 
     if (isLoading) {
-        return <div className="loading">Loading categories...</div>;
+        return <div className="loading">Cargando categorías...</div>;
     }
 
     return (

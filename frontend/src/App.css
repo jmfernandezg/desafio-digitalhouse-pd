@@ -87,22 +87,6 @@ li {
     h3 {
         font-size: 1.2em;
     }
-
-    .search-bar {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .search-bar input[type="text"],
-    .search-bar input[type="date"],
-    .search-bar button {
-        width: 90%;
-        flex: none;
-    }
-
-    .categories-grid-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 @media (max-width: 480px) {
@@ -116,9 +100,5 @@ li {
 
     h3 {
         font-size: 1em;
-    }
-
-    .categories-grid-container {
-        grid-template-columns: 1fr;
     }
 }
