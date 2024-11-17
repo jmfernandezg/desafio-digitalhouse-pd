@@ -3,6 +3,7 @@ import Header from './Header';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
 import Recommendation from './Recommendation';
+import Footer from './Footer';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
                 <Categories/>
                 <Recommendation/>
             </div>
+            <Footer/>
         </div>
     );
 }

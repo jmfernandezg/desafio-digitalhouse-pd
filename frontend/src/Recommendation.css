@@ -9,6 +9,8 @@
 }
 
 .recommendation-card {
+    position: relative;
+    display: flex;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -16,16 +18,91 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.recommendation-card h2 {
-    margin-top: 0;
-}
-
-.recommendation-card p {
-    margin: 0;
+.photo-container {
+    position: relative;
+    width: 50%;
 }
 
 .lodging-photo {
     width: 100%;
     height: auto;
-    border-radius: 8px 8px 0 0;
+    border-radius: 8px 0 0 8px;
+    object-fit: cover;
+}
+
+.heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: gray;
+}
+
+.heart-icon.favorite {
+    color: red;
+}
+
+.lodging-details {
+    width: 50%;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lodging-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.stars {
+    display: flex;
+}
+
+.star {
+    color: white;
+    font-size: 1.2em;
+}
+
+.star.filled {
+    color: var(--primary-dark);
+}
+
+h3 {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+p {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+p a {
+    margin-left: 5px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
+
+.rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.lodging-grade {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
 }

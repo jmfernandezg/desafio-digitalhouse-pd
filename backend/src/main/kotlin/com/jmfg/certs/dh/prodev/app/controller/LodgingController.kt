@@ -16,11 +16,11 @@ class LodgingController(private val lodgingService: LodgingService) {
     fun getAllCategories(): CategoryResponse = lodgingService.findAllCategories()
 
     @GetMapping("/{category}")
-    fun getLodgingsByCategory(@PathVariable category: String): List<Lodging> =
+    fun getLodgingsByCategory(@PathVariable category: String) =
         lodgingService.findByCategory(Category.valueOf(category.uppercase()))
 
     @GetMapping
-    fun getAllLodgings(): List<Lodging> = lodgingService.findAll()
+    fun getAllLodgings() = lodgingService.findAll()
 
     @PostMapping
     fun createLodging(@RequestBody request: LodgingCreationRequest): Lodging = lodgingService.create(request)

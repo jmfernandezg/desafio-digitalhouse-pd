@@ -1,12 +1,12 @@
 import React from 'react';
 import './Header.css';
-import {LogIn, User} from 'lucide-react';
+import { LogIn, User } from 'lucide-react';
 
 function Header() {
     return (
         <header>
-            <div className="logo"></div>
-            <div className="tagline">Sentite como en tu hogar</div>
+            <a href="/" className="logo"></a>
+            <a href="/" className="tagline">Sentite como en tu hogar</a>
             <div className="auth-buttons">
                 <button>
                     <User size={16}/> Crear cuenta

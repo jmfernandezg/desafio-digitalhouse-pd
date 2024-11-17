@@ -6,10 +6,30 @@ import java.time.LocalDateTime
 data class LodgingCreationRequest(
     val name: String,
     val address: String,
-    val rating: Double,
+    val stars: Int,
+    val averageCustomerRating : Int,
     val price: Double,
     val description: String,
     val category: Category,
     val availableFrom: LocalDateTime,
     val availableTo: LocalDateTime
 )
+
+data class LodgingResponse(val lodgings: List<LodgingDto>) {
+    data class LodgingDto(
+        val id: String,
+        val name: String,
+        val address: String,
+        val price: Double,
+        val stars: Int,
+        val averageCustomerRating: Int,
+        val grade: String,
+        val description: String,
+        val category: String,
+        val availableFrom: LocalDateTime,
+        val availableTo: LocalDateTime,
+        val isFavorite: Boolean,
+        val photos: List<String>,
+        val displayPhoto: String
+    )
+}

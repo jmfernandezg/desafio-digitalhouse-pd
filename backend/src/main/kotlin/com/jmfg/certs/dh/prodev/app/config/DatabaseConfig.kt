@@ -45,10 +45,12 @@ class DatabaseConfig(
                 Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
-                    rating = faker.number().randomDouble(1, 5, 5),
+                    averageCustomerRating = faker.number().numberBetween(4, 9),
+                    stars = faker.number().numberBetween(1, 5),
                     price = faker.number().randomDouble(2, 50, 500),
                     description = faker.company().bs(),
                     category = category,
+                    isFavorite = faker.bool().bool(),
                     availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
                     availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
                 ).run {
