@@ -3,7 +3,9 @@ package com.jmfg.certs.dh.prodev.app.service
 import com.jmfg.certs.dh.prodev.app.repository.CustomerRepository
 import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
+import com.jmfg.certs.dh.prodev.model.dto.CustomerResponse
 import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
+import com.jmfg.certs.dh.prodev.model.toCustomerItem
 import com.jmfg.certs.dh.prodev.service.CustomerService
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -22,31 +24,32 @@ class CustomerServiceImpl(
 
     private val logger = LoggerFactory.getLogger(CustomerService::class.java.name)
 
-    override fun login(request: LoginRequest): String? =
+    override fun login(request: LoginRequest): CustomerResponse.CustomerItem? =
         customerRepository.findByUsername(
             request.username
         )?.takeIf {
             passwordEncoder.matches(request.password, it.password)
         }?.let {
-            logger.info("Generating token for $it")
-            generateToken(it)
+            it.toCustomerItem().copy(token = generateToken(it))
         }
 
-    override fun findAll(): List<Customer> = customerRepository.findAll()
+    override fun findAll(): CustomerResponse =
+        CustomerResponse(customerRepository.findAll().map { it.toCustomerItem() })
 
-    override fun create(request: CustomerCreationRequest): Customer = Customer(
+    override fun create(request: CustomerCreationRequest): CustomerResponse.CustomerItem = Customer(
         username = request.username,
         password = passwordEncoder.encode(request.password),
         email = request.email,
         firstName = request.firstName,
         lastName = request.lastName
     ).run {
-        customerRepository.save(this)
+        customerRepository.save(this).toCustomerItem()
     }
 
     override fun delete(id: String) = customerRepository.deleteById(id)
 
-    override fun update(customer: Customer): Customer = customerRepository.save(customer)
+    override fun update(customer: Customer): CustomerResponse.CustomerItem =
+        customerRepository.save(customer).toCustomerItem()
 
     private fun generateToken(customer: Customer) =
         jwtEncoder.encode(

@@ -40,7 +40,7 @@ function Lodgings({ category }) {
 
     return (
         <div className="recommendation">
-            <h2>{category ? `Category: ${category}` : 'Recomendaciones'}</h2>
+            <h2>Ver {category ? category : 'Recomendaciones'}</h2>
 
             <SortDropdown sortOption={sortOption} setSortOption={setSortOption} />
 

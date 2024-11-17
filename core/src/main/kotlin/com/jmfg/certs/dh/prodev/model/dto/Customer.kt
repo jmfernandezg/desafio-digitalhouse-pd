@@ -18,3 +18,16 @@ data class LoginResponse(
     val type: String = "Bearer",
     val expiresIn: Long = 3600
 )
+
+data class CustomerResponse(
+    val customers: List<CustomerItem>
+) {
+    data class CustomerItem(
+        val id: String,
+        val username: String,
+        val email: String,
+        val firstName: String,
+        val lastName: String,
+        val token: String? = null
+    )
+}

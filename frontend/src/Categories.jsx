@@ -50,6 +50,7 @@ function Categories() {
                             height="140"
                             image={category.imageUrl}
                             alt={category.name}
+                            onClick={() => handleCategoryClick(category)}
                         />
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">

@@ -7,6 +7,7 @@ import Lodgings from './Lodgings';
 import LodgingDetail from './components/LodgingDetail';
 import Footer from './Footer';
 import './App.css';
+import Admin from "./Admin";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                         <Route path="/" element={<Categories/>} />
                         <Route path="/lodgings" element={<Lodgings/>} />
                         <Route path="/lodging/:id" element={<LodgingDetail/>} />
+                        <Route path="/admin" element={<Admin />} />
                     </Routes>
                 </div>
                 <Footer/>

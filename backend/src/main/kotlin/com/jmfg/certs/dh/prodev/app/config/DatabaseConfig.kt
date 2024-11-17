@@ -41,7 +41,7 @@ class DatabaseConfig(
     private fun populateLodgings(faker: Faker) {
         Category.entries.forEach { category ->
             logger.info("Populating lodgings for category ${category.name}")
-            repeat(Random.nextInt(10, 20)) {
+            repeat(Random.nextInt(15, 30)) {
                 Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
