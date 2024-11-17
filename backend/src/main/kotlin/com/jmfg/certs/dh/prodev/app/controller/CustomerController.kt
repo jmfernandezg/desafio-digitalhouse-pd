@@ -22,7 +22,9 @@ class CustomerController(
     @Operation(summary = "Login a customer", description = "Authenticate a customer and return a JWT token")
     fun login(@RequestBody request: LoginRequest): LoginResponse =
         customerService.login(request)?.let {
-            LoginResponse(it)
+            it.token?.let { token ->
+                LoginResponse(authToken = token)
+            } ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials")
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found")
 
     @PostMapping

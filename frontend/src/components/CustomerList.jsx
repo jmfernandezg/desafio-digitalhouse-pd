@@ -1,29 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ReactPaginate from 'react-paginate';
 
 function CustomerList({ customers, onEdit, onDelete }) {
+    const [currentPage, setCurrentPage] = useState(0);
+    const customersPerPage = 5;
+
+    const handlePageClick = (data) => {
+        setCurrentPage(data.selected);
+    };
+
+    const startIndex = currentPage * customersPerPage;
+    const currentCustomers = customers.slice(startIndex, startIndex + customersPerPage);
+
     return (
         <div className="admin-list">
             <table>
                 <thead>
                 <tr>
-                    <th>Username</th>
+                    <th>Usuario</th>
                     <th>Email</th>
-                    <th>Actions</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                {customers.map((customer) => (
+                {currentCustomers.map((customer) => (
                     <tr key={customer.id}>
                         <td>{customer.username}</td>
                         <td>{customer.email}</td>
                         <td>
-                            <button onClick={() => onEdit(customer)}>Edit</button>
-                            <button onClick={() => onDelete(customer.id)}>Delete</button>
+                            <button onClick={() => onEdit(customer)}>Editar</button>
+                            <button onClick={() => onDelete(customer.id)}>Eliminar</button>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
+            <ReactPaginate
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                pageCount={Math.ceil(customers.length / customersPerPage)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+            />
         </div>
     );
 }

@@ -3,23 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@coreui/react": "^5.4.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.7",
+    "@radix-ui/react-collapsible": "^1.1.1",
     "@radix-ui/react-hover-card": "^1.1.2",
     "@radix-ui/react-select": "^2.1.2",
+    "@shadcn/ui": "^0.0.4",
     "@splidejs/react-splide": "^0.7.12",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.0.1",
-    "@testing-library/user-event": "^14.5.2",
     "axios": "^1.7.7",
-    "lucide-react": "^0.268.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
     "react": "^18.3.1",
+    "react-collapsible": "^2.10.0",
     "react-dom": "^18.3.1",
     "react-paginate": "^8.2.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
-    "react-spring": "^9.7.4",
+    "tailwind-merge": "^2.5.4",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
@@ -28,11 +31,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "tailwindcss": "^3.4.15"
   },
   "browserslist": {
     "production": [

@@ -55,6 +55,7 @@ class CustomerServiceImpl(
         jwtEncoder.encode(
             JwtEncoderParameters.from(
                 JwtClaimsSet.builder()
+                    .id(customer.id)
                     .subject(customer.username)
                     .issuedAt(Instant.now())
                     .expiresAt(Instant.now().plusSeconds(3600))

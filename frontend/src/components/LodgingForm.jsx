@@ -58,9 +58,9 @@ function LodgingForm({ onSubmit, lodging }) {
             <input type="datetime-local" name="availableTo" value={formData.availableTo} onChange={handleChange} required />
             <label>
                 <input type="checkbox" name="isFavorite" checked={formData.isFavorite} onChange={(e) => setFormData({ ...formData, isFavorite: e.target.checked })} />
-                Favorite
+                Favorito
             </label>
-            <button type="submit">Submit</button>
+            <button type="submit">Aceptar</button>
         </form>
     );
 }

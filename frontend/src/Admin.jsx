@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { LodgingService } from './api/LodgingService';
+import {LodgingService} from './api/LodgingService';
 import CustomerService from './api/CustomerService';
 import LodgingForm from './components/LodgingForm';
 import LodgingList from './components/LodgingList';
 import CustomerForm from './components/CustomerForm';
 import CustomerList from './components/CustomerList';
-
+import * as Collapsible from "@radix-ui/react-collapsible"
 import './Admin.css';
 
 function Admin() {
@@ -13,6 +13,7 @@ function Admin() {
     const [customers, setCustomers] = useState([]);
     const [selectedLodging, setSelectedLodging] = useState(null);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         fetchLodgings();
@@ -59,21 +60,30 @@ function Admin() {
         fetchCustomers();
     };
 
-    return (
-        <div className="admin-container">
-            <h1>Admin Panel</h1>
+    return (<div className="admin-container">
+            <h1>Panel De Administración</h1>
             <div className="admin-section">
-                <h2>Lodgings</h2>
-                <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging}/>
+                <h2>Hospedajes</h2>
+                <Collapsible.Root open={open} onOpenChange={setOpen}>
+                    <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging} />
+                    <Collapsible.Trigger asChild>
+                        <button>{open ? "Hide" : "Show"}</button>
+                    </Collapsible.Trigger>
+                </Collapsible.Root>
+
                 <LodgingList lodgings={lodgings} onEdit={setSelectedLodging} onDelete={handleLodgingDelete}/>
             </div>
             <div className="admin-section">
-                <h2>Customers</h2>
-                <CustomerForm onSubmit={handleCustomerSubmit} customer={selectedCustomer}/>
+                <h2>Clientes</h2>
+                <Collapsible.Root open={open} onOpenChange={setOpen}>
+                    <CustomerForm onSubmit={handleCustomerSubmit} customer={selectedCustomer}/>
+                    <Collapsible.Trigger asChild>
+                        <button>{open ? "Hide" : "Show"}</button>
+                    </Collapsible.Trigger>
+                </Collapsible.Root>
                 <CustomerList customers={customers} onEdit={setSelectedCustomer} onDelete={handleCustomerDelete}/>
             </div>
-        </div>
-    );
+        </div>);
 }
 
 export default Admin;
