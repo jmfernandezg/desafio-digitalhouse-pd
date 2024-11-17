@@ -5,7 +5,8 @@ import LodgingForm from './components/LodgingForm';
 import LodgingList from './components/LodgingList';
 import CustomerForm from './components/CustomerForm';
 import CustomerList from './components/CustomerList';
-import * as Collapsible from "@radix-ui/react-collapsible"
+import * as Collapsible from "@radix-ui/react-collapsible";
+import {Cross2Icon, RowSpacingIcon} from "@radix-ui/react-icons";
 import './Admin.css';
 
 function Admin() {
@@ -13,7 +14,7 @@ function Admin() {
     const [customers, setCustomers] = useState([]);
     const [selectedLodging, setSelectedLodging] = useState(null);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         fetchLodgings();
@@ -61,29 +62,39 @@ function Admin() {
     };
 
     return (<div className="admin-container">
-            <h1>Panel De Administración</h1>
-            <div className="admin-section">
-                <h2>Hospedajes</h2>
-                <Collapsible.Root open={open} onOpenChange={setOpen}>
-                    <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging} />
-                    <Collapsible.Trigger asChild>
-                        <button>{open ? "Hide" : "Show"}</button>
-                    </Collapsible.Trigger>
-                </Collapsible.Root>
+        <h1>Panel De Administración</h1>
+        <div className="admin-section">
+            <h2>Hospedajes</h2>
+            <Collapsible.Root open={open} onOpenChange={setOpen} className="CollapsibleRoot">
+                <Collapsible.Content>
+                    <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging}/>
+                </Collapsible.Content>
 
-                <LodgingList lodgings={lodgings} onEdit={setSelectedLodging} onDelete={handleLodgingDelete}/>
-            </div>
-            <div className="admin-section">
-                <h2>Clientes</h2>
-                <Collapsible.Root open={open} onOpenChange={setOpen}>
+                <Collapsible.Trigger asChild>
+                    <button className="IconButton">
+                        {open ? <Cross2Icon/> : <RowSpacingIcon/>}
+                    </button>
+                </Collapsible.Trigger>
+            </Collapsible.Root>
+
+            <LodgingList lodgings={lodgings} onEdit={setSelectedLodging} onDelete={handleLodgingDelete}/>
+        </div>
+        <div className="admin-section">
+            <h2>Clientes</h2>
+
+            <Collapsible.Root open={open} onOpenChange={setOpen}>
+                <Collapsible.Content>
                     <CustomerForm onSubmit={handleCustomerSubmit} customer={selectedCustomer}/>
-                    <Collapsible.Trigger asChild>
-                        <button>{open ? "Hide" : "Show"}</button>
-                    </Collapsible.Trigger>
-                </Collapsible.Root>
-                <CustomerList customers={customers} onEdit={setSelectedCustomer} onDelete={handleCustomerDelete}/>
-            </div>
-        </div>);
+                </Collapsible.Content>
+                <Collapsible.Trigger asChild>
+                    <button className="IconButton">
+                        {open ? <Cross2Icon/> : <RowSpacingIcon/>}
+                    </button>
+                </Collapsible.Trigger>
+            </Collapsible.Root>
+            <CustomerList customers={customers} onEdit={setSelectedCustomer} onDelete={handleCustomerDelete}/>
+        </div>
+    </div>);
 }
 
 export default Admin;
