@@ -45,7 +45,7 @@ class DatabaseConfig(
                 Lodging(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
-                    averageCustomerRating = faker.number().numberBetween(4, 9),
+                    averageCustomerRating = faker.number().numberBetween(1, 10),
                     stars = faker.number().numberBetween(1, 5),
                     price = faker.number().randomDouble(2, 50, 500),
                     description = faker.company().bs(),

@@ -27,6 +27,7 @@ body {
     border-radius: 5px;
     background-color: var(--background);
     box-shadow: var(--shadow);
+    padding-bottom: 80px;
 }
 .container {
     width: 90%;

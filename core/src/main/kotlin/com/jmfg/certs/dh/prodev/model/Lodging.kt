@@ -42,12 +42,8 @@ fun Lodging.toLodgingDto(): LodgingResponse.LodgingDto = LodgingResponse.Lodging
     isFavorite = this.isFavorite,
     photos = this.photos.map { it.url },
     displayPhoto = this.photos.firstOrNull()?.url ?: "",
-    grade = when (this.averageCustomerRating) {
-        in 0..4 -> "Bad"
-        in 5..7 -> "Good"
-        in 8..10 -> "Excellent"
-        else -> "Unknown"
-    }
+    grade = Util.getGrade(this.averageCustomerRating),
+    distanceFromDownTown = Util.getDistanceFromDownTown(this.address)
 )
 
 enum class Category {
