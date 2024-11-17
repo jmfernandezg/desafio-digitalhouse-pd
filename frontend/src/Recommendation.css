@@ -90,6 +90,12 @@ p a:hover {
     text-decoration: underline;
 }
 
+.rating-lodging-grade {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
 .rating-badge {
     position: absolute;
     top: 10px;
@@ -99,10 +105,114 @@ p a:hover {
     font-weight: bold;
     padding: 5px 10px;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.lodging-grade {
+.rating-badge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rating-lodging-grade {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.lodging-category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-top: 10px;
+}
+
+.lodging-category {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+}
+
+.star {
+    font-size: 1.2em;
+}
+
+.star.filled {
+    color: gold;
+}
+
+.star.empty {
+    color: darkgreen;
+}
+
+.sort-dropdown {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-dropdown label {
     font-weight: bold;
+}
+
+.sort-dropdown select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 1em;
+}
+
+.lodging-category {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.lodging-details {
+    font-size: 0.9em;
     color: #333;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    display: inline;
+    margin: 0 5px;
+}
+
+.pagination li a {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination li a:hover {
+    background-color: #e66a00;
+    color: white;
+}
+
+.pagination li.active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
 }

@@ -9,10 +9,11 @@ object Util {
 
     fun getGrade(averageCustomerRating: Int): String {
         return when (averageCustomerRating) {
-            in 0..2 -> "Malo"
-            in 3..4 -> "Regular"
-            in 5..6 -> "Bueno"
-            in 7..8 -> "Muy bueno"
+            in 0..3 -> "Pésimo"
+            in 3..6 -> "Malo"
+            in 6..7 -> "Regular"
+            in 7..8 -> "Bueno"
+            in 8..9 -> "Muy bueno"
             in 9..10 -> "Excelente"
             else -> "Unknown"
         }
