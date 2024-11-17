@@ -28,7 +28,7 @@ data class Lodging(
 ) : BaseEntity()
 
 
-fun Lodging.toLodgingDto(): LodgingResponse.LodgingDto = LodgingResponse.LodgingDto(
+fun Lodging.toLodgingDto(): LodgingResponse.LodgingItem = LodgingResponse.LodgingItem(
     id = this.id,
     name = this.name,
     address = this.address,

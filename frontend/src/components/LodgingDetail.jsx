@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { LodgingService } from '../api/lodgingService';
-import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { Star } from 'lucide-react';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+import './LodgingDetail.css';
 
 function LodgingDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [lodging, setLodging] = useState(null);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -27,42 +31,70 @@ function LodgingDetail() {
     }, [id]);
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return (
+            <div className="flex items-center justify-center h-64 text-red-500">
+                {error}
+            </div>
+        );
     }
 
     if (isLoading) {
-        return <div className="loading">Loading lodging details...</div>;
+        return (
+            <div className="flex items-center justify-center h-64">
+                Loading lodging details...
+            </div>
+        );
     }
 
+    if (!lodging) return null;
+
     return (
-        <div className="lodging-detail">
-            {lodging && (
-                <Card sx={{ maxWidth: 345 }}>
-                    <CardMedia
-                        component="img"
-                        height="140"
-                        image={lodging.displayPhoto}
-                        alt={lodging.name}
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {lodging.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            {lodging.description}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Price: ${lodging.price.toFixed(2)}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Stars: {lodging.stars}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Address: {lodging.address}
-                        </Typography>
-                    </CardContent>
-                </Card>
-            )}
+        <div className="container">
+            <button className="back-button" onClick={() => navigate(-1)}>Back</button>
+            <div className="header">
+                <h1>{lodging.name}</h1>
+                <div className="details">
+                    <div className="stars">
+                        {Array.from({ length: lodging.stars }).map((_, index) => (
+                            <Star key={index} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                        ))}
+                    </div>
+                    <span>•</span>
+                    <span>{lodging.address}</span>
+                </div>
+            </div>
+
+            <div className="splide">
+
+
+            </div>
+
+            <div className="details-grid">
+                <div className="left-column">
+                    <h2>About this place</h2>
+                    <p>{lodging.description}</p>
+                </div>
+
+                <div className="right-column">
+                    <div className="price">
+                        ${lodging.price.toFixed(2)}<span>/night</span>
+                    </div>
+                    <div className="additional-details">
+                        <div className="detail">
+                            <span>Location:</span>
+                            <span>{lodging.address}</span>
+                        </div>
+                        <div className="detail">
+                            <span>Rating:</span>
+                            <div className="stars">
+                                {Array.from({ length: lodging.stars }).map((_, index) => (
+                                    <Star key={index} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

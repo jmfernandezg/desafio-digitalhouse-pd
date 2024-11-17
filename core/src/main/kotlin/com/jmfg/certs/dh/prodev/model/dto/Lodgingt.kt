@@ -15,8 +15,8 @@ data class LodgingCreationRequest(
     val availableTo: LocalDateTime
 )
 
-data class LodgingResponse(val lodgings: List<LodgingDto>) {
-    data class LodgingDto(
+data class LodgingResponse(val lodgings: List<LodgingItem>) {
+    data class LodgingItem(
         val id: String,
         val name: String,
         val address: String,

@@ -5,7 +5,7 @@ function SortDropdown({ sortOption, setSortOption }) {
     return (
         <FormControl fullWidth variant="outlined">
             <InputLabel id="sort-label">Ordenar por</InputLabel>
-            <Select
+            <Select variant={'outlined'}
                 labelId="sort-label"
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}

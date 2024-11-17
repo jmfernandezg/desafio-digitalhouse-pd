@@ -6,6 +6,7 @@ import com.jmfg.certs.dh.prodev.model.Lodging
 import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
+import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
 import com.jmfg.certs.dh.prodev.model.toCapitalizedString
 import com.jmfg.certs.dh.prodev.model.toLodgingDto
 import com.jmfg.certs.dh.prodev.service.LodgingService
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service
 @Service
 class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : LodgingService {
 
-    override fun create(request: LodgingCreationRequest): Lodging = Lodging(
+    override fun create(request: LodgingCreationRequest): LodgingItem = Lodging(
         name = request.name,
         description = request.description,
         category = request.category,
@@ -27,19 +28,22 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
         availableTo = request.availableTo
     ).run {
         lodgingRepository.save(this)
-    }
+    }.toLodgingDto()
 
-    override fun update(lodging: Lodging): Lodging = lodgingRepository.save(lodging)
+    override fun update(lodging: Lodging): LodgingItem = lodging.run {
+        lodgingRepository.save(this)
+    }.toLodgingDto()
 
-    override fun findById(id: String): Lodging? =
+    override fun findById(id: String): LodgingItem? =
         lodgingRepository.findByIdOrNull(id)
+            ?.toLodgingDto()
 
     override fun findAll(): LodgingResponse =
         lodgingRepository.findAll().map { it.toLodgingDto() }.let { LodgingResponse(it) }
 
     override fun findAllCategories(): CategoryResponse = lodgingRepository.findAllCategories().map { category ->
         val lodgings = lodgingRepository.findByCategory(category)
-        CategoryResponse.Category(
+        CategoryResponse.CategoryItem(
             category.toCapitalizedString(),
             lodgings.flatMap { it.photos }.map { it.url }.first(),
             lodgings.size
