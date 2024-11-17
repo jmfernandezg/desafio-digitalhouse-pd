@@ -9,6 +9,7 @@ import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 import com.jmfg.certs.dh.prodev.model.toCapitalizedString
 import com.jmfg.certs.dh.prodev.model.toLodgingDto
 import com.jmfg.certs.dh.prodev.service.LodgingService
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -29,6 +30,9 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
     }
 
     override fun update(lodging: Lodging): Lodging = lodgingRepository.save(lodging)
+
+    override fun findById(id: String): Lodging? =
+        lodgingRepository.findByIdOrNull(id)
 
     override fun findAll(): LodgingResponse =
         lodgingRepository.findAll().map { it.toLodgingDto() }.let { LodgingResponse(it) }

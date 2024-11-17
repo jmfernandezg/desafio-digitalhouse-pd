@@ -9,4 +9,12 @@ export const LodgingService = {
     getAllLodgings: () =>
         apiClient.get(API_CONFIG.ENDPOINTS.LODGING.ALL)
             .then(response => response.data),
+
+    getLodgingsByCategory: (category) =>
+        apiClient.get(API_CONFIG.ENDPOINTS.LODGING.BY_CATEGORY.replace('{category}', category))
+            .then(response => response.data),
+
+    getLodgingById: (id) =>
+        apiClient.get(API_CONFIG.ENDPOINTS.LODGING.BY_ID.replace('{id}', id))
+            .then(response => response.data)
 };

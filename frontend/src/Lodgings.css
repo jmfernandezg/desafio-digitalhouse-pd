@@ -11,24 +11,11 @@
 .recommendation-card {
     position: relative;
     display: flex;
-    background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.photo-container {
-    position: relative;
-    width: 50%;
-}
-
-.lodging-photo {
-    width: 100%;
-    height: auto;
-    border-radius: 8px 0 0 8px;
-    object-fit: cover;
-}
 
 .heart-icon {
     position: absolute;
@@ -90,6 +77,7 @@ p a:hover {
     text-decoration: underline;
 }
 
+
 .rating-lodging-grade {
     font-size: 0.9em;
     color: #666;
@@ -130,15 +118,6 @@ p a:hover {
     margin-top: 10px;
 }
 
-.lodging-category {
-    font-size: 0.9em;
-    color: #666;
-}
-
-.stars {
-    display: flex;
-    justify-content: center;
-}
 
 .star {
     font-size: 1.2em;
@@ -152,34 +131,6 @@ p a:hover {
     color: darkgreen;
 }
 
-.sort-dropdown {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.sort-dropdown label {
-    font-weight: bold;
-}
-
-.sort-dropdown select {
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 1em;
-}
-
-.lodging-category {
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.lodging-details {
-    font-size: 0.9em;
-    color: #333;
-}
 
 .pagination {
     display: flex;

@@ -1,0 +1,57 @@
+import React, { useEffect, useState } from 'react';
+import { LodgingService } from './api/lodgingService';
+import ReactPaginate from 'react-paginate';
+import LodgingGrid from './components/LodgingGrid';
+import SortDropdown  from "./components/SortDropdown";
+import './Lodgings.css';
+
+function Lodgings() {
+    const [lodgings, setLodgings] = useState([]);
+    const [sortOption, setSortOption] = useState('price');
+    const [currentPage, setCurrentPage] = useState(0);
+    const lodgingsPerPage = 10;
+
+    useEffect(() => {
+        LodgingService.getAllLodgings()
+            .then(data => {
+                const sortedLodgings = sortLodgings(data.lodgings, sortOption);
+                setLodgings(sortedLodgings);
+            })
+            .catch(error => console.error('Error fetching lodgings:', error));
+    }, [sortOption]);
+
+    const sortLodgings = (lodgings, option) => {
+        return lodgings.sort((a, b) => b[option] - a[option]);
+    };
+
+    const handlePageClick = (data) => {
+        setCurrentPage(data.selected);
+    };
+
+    const startIndex = currentPage * lodgingsPerPage;
+    const currentLodgings = lodgings.slice(startIndex, startIndex + lodgingsPerPage);
+
+    return (
+        <div className="recommendation">
+            <h2>Recomendaciones</h2>
+
+            <SortDropdown sortOption={sortOption} setSortOption={setSortOption} />
+
+            <LodgingGrid lodgings={currentLodgings} />
+
+            <ReactPaginate
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                breakLabel={'...'}
+                pageCount={Math.ceil(lodgings.length / lodgingsPerPage)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={'pagination'}
+                activeClassName={'active'}
+            />
+        </div>
+    );
+}
+
+export default Lodgings;

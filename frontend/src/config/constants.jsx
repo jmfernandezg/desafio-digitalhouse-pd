@@ -5,7 +5,9 @@ export const API_CONFIG = {
     ENDPOINTS: {
         LODGING: {
             CATEGORIES: '/lodging/categories',
-            ALL: '/lodging'
+            BY_CATEGORY: '/lodging/categories/{category}',
+            BY_ID: '/lodging/{id}',
+            ALL: '/lodging',
         }
     }
 };

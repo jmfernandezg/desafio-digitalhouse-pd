@@ -7,6 +7,7 @@ import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 
 interface LodgingService {
+    fun findById(id: String): Lodging?
     fun findAll(): LodgingResponse
     fun create(request: LodgingCreationRequest): Lodging
     fun delete(id: String)

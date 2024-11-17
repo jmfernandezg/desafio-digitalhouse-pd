@@ -1,10 +1,15 @@
 package com.jmfg.certs.dh.prodev
 
+import com.jmfg.certs.dh.prodev.model.Category
 import kotlin.random.Random.Default.nextDouble
 
 object Util {
     fun toCapitalizedString(snakeString: String): String {
         return snakeString.lowercase().split('_').joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
+    }
+
+    fun toCategory(name: String): Category {
+        return Category.valueOf(name.uppercase().replace(" ", "_"))
     }
 
     fun getGrade(averageCustomerRating: Int): String {
