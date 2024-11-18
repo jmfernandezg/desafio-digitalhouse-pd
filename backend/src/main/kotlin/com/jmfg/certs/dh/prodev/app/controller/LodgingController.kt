@@ -34,4 +34,7 @@ class LodgingController(private val lodgingService: LodgingService) {
 
     @DeleteMapping("/{id}")
     fun deleteLodging(@PathVariable id: String) = lodgingService.delete(id)
+
+    @GetMapping("/cities")
+    fun getAllCities(): Set<String> = lodgingService.findAllCities()
 }

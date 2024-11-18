@@ -66,15 +66,15 @@ function Admin() {
         <div className="admin-section">
             <h2>Hospedajes</h2>
             <Collapsible.Root open={open} onOpenChange={setOpen} className="CollapsibleRoot">
-                <Collapsible.Content>
-                    <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging}/>
-                </Collapsible.Content>
-
                 <Collapsible.Trigger asChild>
                     <button className="IconButton">
                         {open ? <Cross2Icon/> : <RowSpacingIcon/>}
                     </button>
                 </Collapsible.Trigger>
+                <Collapsible.Content>
+                    <LodgingForm onSubmit={handleLodgingSubmit} lodging={selectedLodging}/>
+                </Collapsible.Content>
+
             </Collapsible.Root>
 
             <LodgingList lodgings={lodgings} onEdit={setSelectedLodging} onDelete={handleLodgingDelete}/>
@@ -83,14 +83,14 @@ function Admin() {
             <h2>Clientes</h2>
 
             <Collapsible.Root open={open} onOpenChange={setOpen}>
-                <Collapsible.Content>
-                    <CustomerForm onSubmit={handleCustomerSubmit} customer={selectedCustomer}/>
-                </Collapsible.Content>
                 <Collapsible.Trigger asChild>
                     <button className="IconButton">
                         {open ? <Cross2Icon/> : <RowSpacingIcon/>}
                     </button>
                 </Collapsible.Trigger>
+                <Collapsible.Content>
+                    <CustomerForm onSubmit={handleCustomerSubmit} customer={selectedCustomer}/>
+                </Collapsible.Content>
             </Collapsible.Root>
             <CustomerList customers={customers} onEdit={setSelectedCustomer} onDelete={handleCustomerDelete}/>
         </div>

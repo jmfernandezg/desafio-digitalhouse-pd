@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LodgingService } from './api/LodgingService';
 import ReactPaginate from 'react-paginate';
 import LodgingGrid from './components/LodgingGrid';
-import SortDropdown from "./components/SortDropdown";
+import SortDropdown from './components/SortDropdown';
 import './Lodgings.css';
 
 function Lodgings({ category }) {
@@ -40,9 +40,10 @@ function Lodgings({ category }) {
 
     return (
         <div className="recommendation">
-            <h2>Ver {category ? category : 'Recomendaciones'}</h2>
-
-            <SortDropdown sortOption={sortOption} setSortOption={setSortOption} />
+            <div className="recommendation-title">
+                <span>{category ? category : 'Recomendaciones'}</span>
+                <SortDropdown sortOption={sortOption} setSortOption={setSortOption} />
+            </div>
 
             <LodgingGrid lodgings={currentLodgings} />
 

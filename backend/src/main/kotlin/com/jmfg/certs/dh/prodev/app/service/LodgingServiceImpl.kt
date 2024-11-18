@@ -50,6 +50,10 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
         )
     }.let { CategoryResponse(it) }
 
+    override fun findAllCities(): Set<String> {
+        return lodgingRepository.findAllCities()
+    }
+
     override fun findByCategory(category: Category): LodgingResponse =
         lodgingRepository.findByCategory(category).map {
             it.toLodgingDto()

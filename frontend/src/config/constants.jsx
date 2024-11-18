@@ -5,6 +5,7 @@ export const API_CONFIG = {
     ENDPOINTS: {
         LODGING: {
             CATEGORIES: '/lodging/categories',
+            CITIES: '/lodging/cities',
             BY_CATEGORY: '/lodging/categories/{category}',
             BY_ID: '/lodging/{id}',
             ALL: '/lodging',

@@ -1,6 +1,7 @@
 import React from 'react';
 import './Header.css';
-import { LogIn, User } from 'lucide-react';
+import {LogIn, User} from 'lucide-react';
+import {Button} from "@mui/material";
 
 function Header() {
     return (
@@ -8,12 +9,12 @@ function Header() {
             <a href="/" className="logo"></a>
             <a href="/" className="tagline">Sentite como en tu hogar</a>
             <div className="auth-buttons">
-                <button>
-                    <User size={16}/> Crear cuenta
-                </button>
-                <button>
+                <Button variant="soft" radius="full">
+                    <User size={16}></User> Crear cuenta
+                </Button>
+                <Button variant="solid">
                     <LogIn size={16}/> Iniciar sesión
-                </button>
+                </Button>
             </div>
         </header>
     );

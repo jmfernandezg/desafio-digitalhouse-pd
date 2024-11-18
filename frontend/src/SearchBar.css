@@ -71,6 +71,7 @@
     max-height: 200px;
     overflow-y: auto;
     z-index: 1000;
+    color: black;
     margin-top: 5px;
     padding: 0;
     list-style: none;

@@ -1,19 +1,43 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
-import {Calendar, MapPin, Search} from 'lucide-react';
+import { Calendar, MapPin, Search } from 'lucide-react';
+import { Button } from "@mui/material";
+import { LodgingService } from './api/LodgingService';
 
 function SearchBar() {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
+    const [cities, setCities] = useState([]);
 
-    const handleInputChange = async (event) => {
+    useEffect(() => {
+        const fetchCities = async () => {
+            try {
+                const citiesData = await LodgingService.getCities();
+                setCities(citiesData);
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        };
+
+        fetchCities();
+    }, []);
+
+    const handleInputChange = (event) => {
         const value = event.target.value;
         setQuery(value);
 
+        if (value.length > 0) {
+            const filteredSuggestions = cities.filter(city =>
+                city.toLowerCase().includes(value.toLowerCase())
+            );
+            setSuggestions(filteredSuggestions);
+        } else {
+            setSuggestions([]);
+        }
     };
 
     const handleSuggestionClick = (suggestion) => {
-        setQuery(suggestion.city);
+        setQuery(suggestion);
         setSuggestions([]);
     };
 
@@ -23,7 +47,7 @@ function SearchBar() {
             <div className="search-bar">
                 <div className="input-container">
                     <div className="input-icon">
-                        <MapPin size={20}/>
+                        <MapPin size={20} />
                     </div>
                     <input
                         type="text"
@@ -33,12 +57,12 @@ function SearchBar() {
                     />
                     {suggestions.length > 0 && (
                         <ul className="suggestions-list">
-                            {suggestions.map((suggestion) => (
+                            {suggestions.map((suggestion, index) => (
                                 <li
-                                    key={suggestion.id}
+                                    key={index}
                                     onClick={() => handleSuggestionClick(suggestion)}
                                 >
-                                    {suggestion.city}, {suggestion.country}
+                                    {suggestion}
                                 </li>
                             ))}
                         </ul>
@@ -46,13 +70,13 @@ function SearchBar() {
                 </div>
                 <div className="input-container">
                     <div className="input-icon">
-                        <Calendar size={20}/>
+                        <Calendar size={20} />
                     </div>
-                    <input type="date"/>
+                    <input type="date" />
                 </div>
                 <div className="input-container">
                     <div className="input-icon">
-                        <button><Search size={16}/> Buscar</button>
+                        <Button><Search size={16} /> Buscar</Button>
                     </div>
                 </div>
             </div>

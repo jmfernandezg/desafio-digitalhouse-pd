@@ -6,6 +6,10 @@ export const LodgingService = {
         apiClient.get(API_CONFIG.ENDPOINTS.LODGING.CATEGORIES)
             .then(response => response.data),
 
+    getCities: () =>
+        apiClient.get(API_CONFIG.ENDPOINTS.LODGING.CITIES)
+            .then(response => response.data),
+
     getAllLodgings: () =>
         apiClient.get(API_CONFIG.ENDPOINTS.LODGING.ALL)
             .then(response => response.data),

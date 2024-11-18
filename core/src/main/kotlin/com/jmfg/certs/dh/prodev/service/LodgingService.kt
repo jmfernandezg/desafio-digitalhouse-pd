@@ -15,4 +15,5 @@ interface LodgingService {
     fun update(lodging: Lodging): LodgingItem
     fun findAllCategories(): CategoryResponse
     fun findByCategory(category: Category): LodgingResponse
+    fun findAllCities(): Set<String>
 }

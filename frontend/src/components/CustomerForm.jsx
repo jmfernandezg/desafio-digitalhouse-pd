@@ -36,13 +36,13 @@ function CustomerForm({ onSubmit, customer }) {
 
     return (
         <form className="admin-form" onSubmit={handleSubmit}>
-            <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" required />
-            <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" required />
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" required />
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" required />
+            <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Usuario" required />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Contraseña" required />
+            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Nombre(s)" required />
+            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Apellido" required />
             <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
             <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-            <button type="submit">Submit</button>
+            <button type="submit">Aceptar</button>
         </form>
     );
 }
