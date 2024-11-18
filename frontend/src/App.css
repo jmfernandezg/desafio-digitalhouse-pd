@@ -29,6 +29,7 @@ body {
     box-shadow: var(--shadow);
     padding-bottom: 80px;
 }
+
 .container {
     width: 90%;
     max-width: 1200px;

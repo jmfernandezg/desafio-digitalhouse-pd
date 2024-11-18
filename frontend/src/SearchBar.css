@@ -28,6 +28,7 @@
 }
 
 .search-bar input[type="text"],
+
 .search-bar input[type="date"] {
     width: 80%;
     padding: 8px 8px 8px 30px; /* Add padding to make space for the icon */

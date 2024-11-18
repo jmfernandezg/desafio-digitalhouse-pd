@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Header from './Header';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
@@ -10,8 +10,7 @@ import './App.css';
 import Admin from "./Admin";
 
 function App() {
-    return (
-        <Router>
+    return (<Router>
             <div>
                 <div className="mainHeader">
                     <Header/>
@@ -19,16 +18,15 @@ function App() {
                 </div>
                 <div className="main">
                     <Routes>
-                        <Route path="/" element={<Categories/>} />
-                        <Route path="/lodgings" element={<Lodgings/>} />
-                        <Route path="/lodging/:id" element={<LodgingDetail/>} />
-                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/" element={<Categories/>}/>
+                        <Route path="/lodgings" element={<Lodgings/>}/>
+                        <Route path="/lodging/:id" element={<LodgingDetail/>}/>
+                        <Route path="/admin" element={<Admin/>}/>
                     </Routes>
                 </div>
                 <Footer/>
             </div>
-        </Router>
-    );
+        </Router>);
 }
 
 export default App;

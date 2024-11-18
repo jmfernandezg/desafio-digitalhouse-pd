@@ -3,7 +3,7 @@ import './SearchBar.css';
 import {Calendar, Loader, MapPin, Search} from 'lucide-react';
 import {Button, ClickAwayListener, Paper, Popper, TextField} from "@mui/material";
 import {DateRange} from 'react-date-range';
-import {addDays} from 'date-fns'; // Ensure addYears is imported correctly
+import {addDays} from 'date-fns';
 import {es} from 'date-fns/locale';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
@@ -102,101 +102,101 @@ function SearchBar() {
     };
 
     return (<div className="search-bar-container" role="search">
-            <h2 className="text-2xl font-bold mb-4">
-                Buscar ofertas en hoteles, casas y mucho más
-            </h2>
+        <h2 className="text-2xl font-bold mb-4">
+            Buscar ofertas en hoteles, casas y mucho más
+        </h2>
 
-            <div className="flex flex-col md:flex-row gap-4 p-4 bg-white rounded-lg shadow-md">
-                {/* Destination Input */}
-                <div className="flex-1 relative">
-                    <TextField
-                        fullWidth
-                        placeholder="¿A dónde vamos?"
-                        value={query}
-                        onChange={handleInputChange}
-                        InputProps={{
-                            startAdornment: <MapPin className="mr-2" size={20}/>,
-                        }}
-                        aria-label="Destino"
-                        error={Boolean(error && !query)}
-                    />
+        <div className="flex flex-col md:flex-row gap-4 p-4 bg-white rounded-lg shadow-md">
+            {/* Destination Input */}
+            <div className="flex-1 relative">
+                <TextField
+                    fullWidth
+                    placeholder="¿A dónde vamos?"
+                    value={query}
+                    onChange={handleInputChange}
+                    InputProps={{
+                        startAdornment: <MapPin className="mr-2" size={20}/>,
+                    }}
+                    aria-label="Destino"
+                    error={Boolean(error && !query)}
+                />
 
-                    <Popper
-                        open={Boolean(suggestions.length) && Boolean(anchorEl)}
-                        anchorEl={anchorEl}
-                        placement="bottom-start"
-                    >
-                        <ClickAwayListener onClickAway={handleClickAway}>
-                            <Paper className="mt-1 max-h-60 overflow-auto">
-                                {suggestions.map((suggestion, index) => (<div
-                                        key={index}
-                                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onClick={() => handleSuggestionClick(suggestion)}
-                                        role="option"
-                                    >
-                                        <MapPin className="inline mr-2" size={16}/>
-                                        {suggestion}
-                                    </div>))}
-                            </Paper>
-                        </ClickAwayListener>
-                    </Popper>
-                </div>
-
-                {/* Date Range Picker */}
-                <div className="flex-1 relative">
-                    <TextField
-                        fullWidth
-                        value={formatDateRange()}
-                        onClick={() => setShowDatePicker(!showDatePicker)}
-                        InputProps={{
-                            startAdornment: <Calendar className="mr-2" size={20}/>, readOnly: true,
-                        }}
-                        placeholder="Seleccionar fechas"
-                    />
-
-                    {showDatePicker && (<div className="absolute z-50 mt-2">
-                            <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
-                                <Paper elevation={3}>
-                                    <DateRange
-                                        onChange={handleDateChange}
-                                        moveRangeOnFirstSelection={false}
-                                        ranges={dateState}
-                                        months={2}
-                                        direction="horizontal"
-                                        locale={es}
-                                        minDate={new Date()}
-                                        rangeColors={['#2196f3']}
-                                        showMonthAndYearPickers={true}
-                                        showDateDisplay={true}
-                                    />
-                                </Paper>
-                            </ClickAwayListener>
-                        </div>)}
-                </div>
-
-                {/* Search Button */}
-                <Button
-                    variant="contained"
-                    onClick={handleSearch}
-                    disabled={loading || !query || !dateState[0].startDate || !dateState[0].endDate}
-                    className="h-14 px-8"
-                    startIcon={loading ? <Loader className="animate-spin"/> : <Search/>}
+                <Popper
+                    open={Boolean(suggestions.length) && Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    placement="bottom-start"
                 >
-                    {loading ? 'Buscando...' : 'Buscar'}
-                </Button>
+                    <ClickAwayListener onClickAway={handleClickAway}>
+                        <Paper className="mt-1 max-h-60 overflow-auto">
+                            {suggestions.map((suggestion, index) => (<div
+                                key={index}
+                                className="p-2 hover:bg-gray-100 cursor-pointer"
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                role="option"
+                            >
+                                <MapPin className="inline mr-2" size={16}/>
+                                {suggestion}
+                            </div>))}
+                        </Paper>
+                    </ClickAwayListener>
+                </Popper>
             </div>
 
-            {/* Error Message */}
-            {error && (<div className="mt-2 text-red-600 text-sm" role="alert">
-                    {error}
-                </div>)}
+            {/* Date Range Picker */}
+            <div className="flex-1 relative">
+                <TextField
+                    fullWidth
+                    value={formatDateRange()}
+                    onClick={() => setShowDatePicker(!showDatePicker)}
+                    InputProps={{
+                        startAdornment: <Calendar className="mr-2" size={20}/>, readOnly: true,
+                    }}
+                    placeholder="Seleccionar fechas"
+                />
 
-            {/* Loading Cities Indicator */}
-            {isLoadingCities && (<div className="mt-2 text-gray-600 text-sm flex items-center">
-                    <Loader className="animate-spin mr-2" size={16}/>
-                    Cargando ciudades...
+                {showDatePicker && (<div className="absolute z-50 mt-2">
+                    <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
+                        <Paper elevation={3}>
+                            <DateRange
+                                onChange={handleDateChange}
+                                moveRangeOnFirstSelection={false}
+                                ranges={dateState}
+                                months={2}
+                                direction="horizontal"
+                                locale={es}
+                                minDate={new Date()}
+                                rangeColors={['#2196f3']}
+                                showMonthAndYearPickers={true}
+                                showDateDisplay={true}
+                            />
+                        </Paper>
+                    </ClickAwayListener>
                 </div>)}
-        </div>);
+            </div>
+
+            {/* Search Button */}
+            <Button
+                variant="contained"
+                onClick={handleSearch}
+                disabled={loading || !query || !dateState[0].startDate || !dateState[0].endDate}
+                className="h-14 px-8"
+                startIcon={loading ? <Loader className="animate-spin"/> : <Search/>}
+            >
+                {loading ? 'Buscando...' : 'Buscar'}
+            </Button>
+        </div>
+
+        {/* Error Message */}
+        {error && (<div className="mt-2 text-red-600 text-sm" role="alert">
+            {error}
+        </div>)}
+
+        {/* Loading Cities Indicator */}
+        {isLoadingCities && (<div className="mt-2 text-gray-600 text-sm flex items-center">
+            <Loader className="animate-spin mr-2" size={16}/>
+            Cargando ciudades...
+        </div>)}
+    </div>);
 }
 
 export default SearchBar;
