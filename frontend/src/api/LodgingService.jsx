@@ -20,5 +20,10 @@ export const LodgingService = {
 
     getLodgingById: (id) =>
         apiClient.get(API_CONFIG.ENDPOINTS.LODGING.BY_ID.replace('{id}', id))
+            .then(response => response.data),
+
+    deleteLodging: (id) =>
+        apiClient.delete(API_CONFIG.ENDPOINTS.LODGING.BY_ID.replace('{id}', id))
             .then(response => response.data)
+
 };

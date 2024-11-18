@@ -3,6 +3,7 @@ import './SearchBar.css';
 import { Calendar, MapPin, Search } from 'lucide-react';
 import { Button } from "@mui/material";
 import { LodgingService } from './api/LodgingService';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 
 function SearchBar() {
     const [query, setQuery] = useState('');
@@ -72,7 +73,9 @@ function SearchBar() {
                     <div className="input-icon">
                         <Calendar size={20} />
                     </div>
-                    <input type="date" />
+                    <LocalizationProvider>
+                        <DatePicker label="Check in - Check out" />
+                    </LocalizationProvider>
                 </div>
                 <div className="input-container">
                     <div className="input-icon">

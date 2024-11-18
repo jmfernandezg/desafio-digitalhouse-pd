@@ -1,53 +1,73 @@
 import React, { useState } from 'react';
-import ReactPaginate from 'react-paginate';
+import { DataGrid } from '@mui/x-data-grid';
+import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import ConfirmDialog from './ConfirmDialog';
 
 function LodgingList({ lodgings, onEdit, onDelete }) {
     const [currentPage, setCurrentPage] = useState(0);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [lodgingToDelete, setLodgingToDelete] = useState(null);
     const lodgingsPerPage = 5;
 
     const handlePageClick = (data) => {
         setCurrentPage(data.selected);
     };
 
+    const handleDeleteClick = (lodging) => {
+        setLodgingToDelete(lodging);
+        setOpenConfirmDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
+        onDelete(lodgingToDelete.id);
+        setOpenConfirmDialog(false);
+        setLodgingToDelete(null);
+    };
+
     const startIndex = currentPage * lodgingsPerPage;
     const currentLodgings = lodgings.slice(startIndex, startIndex + lodgingsPerPage);
 
+    const columns = [
+        { field: 'name', headerName: 'Nombre', flex: 1 },
+        { field: 'city', headerName: 'Ciudad', flex: 1 },
+        { field: 'price', headerName: 'Precio', flex: 1 },
+        {
+            field: 'actions',
+            headerName: 'Acciones',
+            flex: 1,
+            renderCell: (params) => (
+                <>
+                    <IconButton onClick={() => onEdit(params.row)}>
+                        <Edit />
+                    </IconButton>
+
+                    <IconButton onClick={() => handleDeleteClick(params.row)}>
+                        <Delete />
+                    </IconButton>
+                </>
+            )
+        }
+    ];
+
     return (
-        <div className="admin-list">
-            <table>
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Ciudad</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {currentLodgings.map((lodging) => (
-                    <tr key={lodging.id}>
-                        <td>{lodging.name}</td>
-                        <td>{lodging.city}</td>
-                        <td>{lodging.price}</td>
-                        <td>
-                            <button onClick={() => onEdit(lodging)}>Editar</button>
-                            <button onClick={() => onDelete(lodging.id)}>Eliminar</button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <ReactPaginate
-                previousLabel={'Anterior'}
-                nextLabel={'Siguiente'}
-                breakLabel={'...'}
-                pageCount={Math.ceil(lodgings.length / lodgingsPerPage)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
+        <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+                rows={currentLodgings}
+                columns={columns}
+                pageSize={lodgingsPerPage}
                 onPageChange={handlePageClick}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
+                pagination
+                paginationMode="server"
+                rowCount={lodgings.length}
             />
+            {openConfirmDialog && (
+                <ConfirmDialog
+                    open={openConfirmDialog}
+                    onClose={() => setOpenConfirmDialog(false)}
+                    onConfirm={handleConfirmDelete}
+                />
+            )}
         </div>
     );
 }

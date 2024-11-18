@@ -1,51 +1,72 @@
 import React, { useState } from 'react';
-import ReactPaginate from 'react-paginate';
+import { DataGrid } from '@mui/x-data-grid';
+import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import ConfirmDialog from './ConfirmDialog';
 
 function CustomerList({ customers, onEdit, onDelete }) {
     const [currentPage, setCurrentPage] = useState(0);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [customerToDelete, setCustomerToDelete] = useState(null);
     const customersPerPage = 5;
 
     const handlePageClick = (data) => {
         setCurrentPage(data.selected);
     };
 
+    const handleDeleteClick = (customer) => {
+        setCustomerToDelete(customer);
+        setOpenConfirmDialog(true);
+    };
+
+    const handleConfirmDelete = () => {
+        onDelete(customerToDelete.id);
+        setOpenConfirmDialog(false);
+        setCustomerToDelete(null);
+    };
+
     const startIndex = currentPage * customersPerPage;
     const currentCustomers = customers.slice(startIndex, startIndex + customersPerPage);
 
+    const columns = [
+        { field: 'username', headerName: 'Usuario', flex: 1 },
+        { field: 'email', headerName: 'Email', flex: 1 },
+        {
+            field: 'actions',
+            headerName: 'Acciones',
+            flex: 1,
+            renderCell: (params) => (
+                <>
+                    <IconButton onClick={() => onEdit(params.row)}>
+                        <Edit />
+                    </IconButton>
+
+                    <IconButton onClick={() => handleDeleteClick(params.row)}>
+                        <Delete />
+                    </IconButton>
+                </>
+            )
+        }
+    ];
+
     return (
-        <div className="admin-list">
-            <table>
-                <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Email</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {currentCustomers.map((customer) => (
-                    <tr key={customer.id}>
-                        <td>{customer.username}</td>
-                        <td>{customer.email}</td>
-                        <td>
-                            <button onClick={() => onEdit(customer)}>Editar</button>
-                            <button onClick={() => onDelete(customer.id)}>Eliminar</button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <ReactPaginate
-                previousLabel={'Anterior'}
-                nextLabel={'Siguiente'}
-                breakLabel={'...'}
-                pageCount={Math.ceil(customers.length / customersPerPage)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={5}
+        <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+                rows={currentCustomers}
+                columns={columns}
+                pageSize={customersPerPage}
                 onPageChange={handlePageClick}
-                containerClassName={'pagination'}
-                activeClassName={'active'}
+                pagination
+                paginationMode="server"
+                rowCount={customers.length}
             />
+            {openConfirmDialog && (
+                <ConfirmDialog
+                    open={openConfirmDialog}
+                    onClose={() => setOpenConfirmDialog(false)}
+                    onConfirm={handleConfirmDelete}
+                />
+            )}
         </div>
     );
 }
