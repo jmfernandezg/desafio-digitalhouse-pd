@@ -1,155 +1,138 @@
-import React, {useState} from 'react';
-import {ChevronLeft, ChevronRight, Edit, Trash2} from 'lucide-react';
+import React, { useState } from 'react';
+import { Edit, Trash2, Search, ChevronDown, Mail, Phone } from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
 
-function CustomerList({customers, onEdit, onDelete}) {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-    const [customerToDelete, setCustomerToDelete] = useState(null);
-    const customersPerPage = 5;
+const CustomerList = ({ customers, onEdit, onDelete }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortField, setSortField] = useState('lastName');
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-    const handleDeleteClick = (customer) => {
-        setCustomerToDelete(customer);
-        setOpenConfirmDialog(true);
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('asc');
+        }
     };
 
-    const handleConfirmDelete = () => {
-        onDelete(customerToDelete.id);
-        setOpenConfirmDialog(false);
-        setCustomerToDelete(null);
-    };
+    const filteredCustomers = customers
+        .filter(customer =>
+            customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .sort((a, b) => {
+            const modifier = sortDirection === 'asc' ? 1 : -1;
+            return a[sortField] > b[sortField] ? modifier : -modifier;
+        });
 
-    // Pagination
-    const totalPages = Math.ceil(customers.length / customersPerPage);
-    const startIndex = (currentPage - 1) * customersPerPage;
-    const endIndex = startIndex + customersPerPage;
-    const currentCustomers = customers.slice(startIndex, endIndex);
+    const SortableHeader = ({ field, children }) => (
+        <th
+            className="px-6 py-3 cursor-pointer group hover:bg-gray-50"
+            onClick={() => handleSort(field)}
+        >
+            <div className="flex items-center gap-2">
+                {children}
+                <ChevronDown
+                    className={`w-4 h-4 text-gray-400 transition-transform
+            ${sortField === field && sortDirection === 'desc' ? 'rotate-180' : ''} 
+            ${sortField !== field ? 'opacity-0 group-hover:opacity-100' : ''}`}
+                />
+            </div>
+        </th>
+    );
 
     return (
-        <div className="bg-white rounded-lg shadow-sm">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+            {/* Search Bar */}
+            <div className="p-4 border-b border-gray-200">
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                    <input
+                        type="text"
+                        placeholder="Buscar clientes..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none
+                     focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                </div>
+            </div>
+
             {/* Table */}
             <div className="overflow-x-auto">
                 <table className="w-full">
-                    <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Usuario
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Email
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Acciones
-                        </th>
+                    <thead className="bg-gray-50 text-left text-sm text-gray-500">
+                    <tr>
+                        <SortableHeader field="firstName">Nombre</SortableHeader>
+                        <SortableHeader field="lastName">Apellido</SortableHeader>
+                        <SortableHeader field="email">Email</SortableHeader>
+                        <th className="px-6 py-3">Acciones</th>
                     </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                    {currentCustomers.map((customer) => (
+                    {filteredCustomers.map((customer) => (
                         <tr
                             key={customer.id}
-                            className="hover:bg-gray-50 transition-colors duration-200"
+                            className="hover:bg-gray-50 text-sm text-gray-600"
                         >
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {customer.username}
+                            <td className="px-6 py-4">{customer.firstName}</td>
+                            <td className="px-6 py-4">{customer.lastName}</td>
+                            <td className="px-6 py-4">
+                                <div className="flex items-center gap-2">
+                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    {customer.email}
+                                </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {customer.email}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                <div className="flex gap-2">
+                            <td className="px-6 py-4">
+                                <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => onEdit(customer)}
-                                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors duration-200"
-                                        title="Editar"
+                                        className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
                                     >
-                                        <Edit size={18}/>
+                                        <Edit className="h-4 w-4" />
                                     </button>
                                     <button
-                                        onClick={() => handleDeleteClick(customer)}
-                                        className="p-1 text-red-600 hover:text-red-800 transition-colors duration-200"
-                                        title="Eliminar"
+                                        onClick={() => {
+                                            setSelectedCustomer(customer);
+                                            setShowConfirmDialog(true);
+                                        }}
+                                        className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
                                     >
-                                        <Trash2 size={18}/>
+                                        <Trash2 className="h-4 w-4" />
                                     </button>
                                 </div>
                             </td>
                         </tr>
                     ))}
-                    {currentCustomers.length === 0 && (
-                        <tr>
-                            <td
-                                colSpan={3}
-                                className="px-6 py-8 text-center text-gray-500 text-sm"
-                            >
-                                No hay clientes para mostrar
-                            </td>
-                        </tr>
-                    )}
                     </tbody>
                 </table>
             </div>
 
-            {/* Pagination */}
-            {customers.length > customersPerPage && (
-                <div className="flex items-center justify-between px-6 py-3 border-t border-gray-200">
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-            <span>
-              Mostrando {startIndex + 1}-{Math.min(endIndex, customers.length)} de {customers.length}
-            </span>
-                    </div>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                            className={`p-2 rounded-lg transition-colors duration-200
-                ${currentPage === 1
-                                ? 'text-gray-400 cursor-not-allowed'
-                                : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                        >
-                            <ChevronLeft size={20}/>
-                        </button>
-                        {/* Page Numbers */}
-                        <div className="flex items-center gap-1">
-                            {[...Array(totalPages)].map((_, i) => (
-                                <button
-                                    key={i + 1}
-                                    onClick={() => setCurrentPage(i + 1)}
-                                    className={`min-w-[2rem] h-8 rounded-lg text-sm transition-colors duration-200
-                    ${currentPage === i + 1
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-gray-700 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
-                        </div>
-                        <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                            className={`p-2 rounded-lg transition-colors duration-200
-                ${currentPage === totalPages
-                                ? 'text-gray-400 cursor-not-allowed'
-                                : 'text-gray-700 hover:bg-gray-100'
-                            }`}
-                        >
-                            <ChevronRight size={20}/>
-                        </button>
-                    </div>
+            {/* Empty State */}
+            {filteredCustomers.length === 0 && (
+                <div className="text-center py-12">
+                    <p className="text-gray-500">No se encontraron clientes</p>
                 </div>
             )}
 
             {/* Confirm Dialog */}
-            {openConfirmDialog && (
-                <ConfirmDialog
-                    open={openConfirmDialog}
-                    onClose={() => setOpenConfirmDialog(false)}
-                    onConfirm={handleConfirmDelete}
-                />
-            )}
+            <ConfirmDialog
+                open={showConfirmDialog}
+                onClose={() => setShowConfirmDialog(false)}
+                onConfirm={() => {
+                    onDelete(selectedCustomer);
+                    setShowConfirmDialog(false);
+                    setSelectedCustomer(null);
+                }}
+                title="Eliminar Cliente"
+                description={`¿Está seguro de que desea eliminar a ${selectedCustomer?.firstName} ${selectedCustomer?.lastName}?`}
+            />
         </div>
     );
-}
+};
 
 export default CustomerList;

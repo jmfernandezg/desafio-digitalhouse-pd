@@ -95,8 +95,8 @@ function Admin() {
         fetchLodgings();
     };
 
-    const handleCustomerDelete = async (id) => {
-        await CustomerService.deleteCustomer(id);
+    const handleCustomerDelete = async (customer) => {
+        await CustomerService.deleteCustomer(customer.id);
         fetchCustomers();
     };
 
