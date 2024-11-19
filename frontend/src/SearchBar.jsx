@@ -1,12 +1,44 @@
-import React, {useEffect, useState} from 'react';
-import './SearchBar.css';
-import {Calendar, Loader, MapPin, Search} from 'lucide-react';
-import {Button, ClickAwayListener, Paper, Popper, TextField} from "@mui/material";
-import {DateRange} from 'react-date-range';
-import {es} from 'date-fns/locale';
+import React, { useEffect, useState } from 'react';
+import { Calendar, Loader, MapPin, Search } from 'lucide-react';
+import { DateRange } from 'react-date-range';
+import { es } from 'date-fns/locale';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import {LodgingService} from './api/LodgingService';
+import { LodgingService } from './api/LodgingService';
+
+const TextField = ({ startIcon, ...props }) => (
+    <div className="relative flex-1 min-w-[240px]">
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            {startIcon}
+        </div>
+        <input
+            className={`w-full h-14 pl-10 pr-4 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none
+        ${props.error ? 'border-red-500' : 'border-gray-300'}`}
+            {...props}
+        />
+    </div>
+);
+
+const Suggestions = ({ suggestions, onSelect, onClickAway }) => (
+    <div className="absolute z-50 w-full max-w-[400px] mt-1">
+        <div
+            className="bg-white rounded-md shadow-lg max-h-[240px] overflow-auto"
+            onClick={onClickAway}
+        >
+            {suggestions.map((suggestion, index) => (
+                <div
+                    key={index}
+                    className="flex items-center gap-2 px-3 py-2 hover:bg-blue-50 cursor-pointer"
+                    onClick={() => onSelect(suggestion)}
+                    role="option"
+                >
+                    <MapPin className="text-blue-500" size={16} />
+                    <span>{suggestion}</span>
+                </div>
+            ))}
+        </div>
+    </div>
+);
 
 function SearchBar() {
     const [query, setQuery] = useState('');
@@ -20,7 +52,6 @@ function SearchBar() {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [anchorEl, setAnchorEl] = useState(null);
     const [isLoadingCities, setIsLoadingCities] = useState(false);
 
     useEffect(() => {
@@ -44,7 +75,6 @@ function SearchBar() {
     const handleInputChange = (event) => {
         const value = event.target.value;
         setQuery(value);
-        setAnchorEl(event.currentTarget);
 
         if (value.length > 0) {
             const filteredSuggestions = cities.filter(city =>
@@ -59,12 +89,6 @@ function SearchBar() {
     const handleSuggestionClick = (suggestion) => {
         setQuery(suggestion);
         setSuggestions([]);
-        setAnchorEl(null);
-    };
-
-    const handleClickAway = () => {
-        setSuggestions([]);
-        setAnchorEl(null);
     };
 
     const formatDateRange = () => {
@@ -103,120 +127,97 @@ function SearchBar() {
     };
 
     return (
-        <div className="search-bar-wrapper">
-            <div className="search-bar-inner">
-                <h2 className="search-title">
+        <div className="w-full max-w-7xl mx-auto mt-[70px] px-2">
+            <div className="m-0 mb-4 mr-4 p-4 bg-gradient-to-br from-blue-900 to-gray-400 rounded-lg">
+                <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-8">
                     Buscar ofertas en hoteles, casas y mucho más
                 </h2>
 
-                <div className="search-container">
-                    {/* Search inputs container */}
-                    <div className="inputs-container">
+                <div className="flex flex-col md:flex-row gap-4 p-6 bg-white rounded-lg shadow-md">
+                    <div className="flex flex-col md:flex-row gap-4 flex-1">
                         {/* Destination Input */}
-                        <div className="input-field">
+                        <div className="relative flex-1">
                             <TextField
-                                fullWidth
                                 placeholder="¿A dónde vamos?"
                                 value={query}
                                 onChange={handleInputChange}
-                                InputProps={{
-                                    startAdornment: <MapPin className="icon-prefix" size={20}/>,
-                                    sx: { backgroundColor: 'white' }
-                                }}
-                                aria-label="Destino"
+                                startIcon={<MapPin size={20} />}
                                 error={Boolean(error && !query)}
+                                aria-label="Destino"
                             />
 
-                            <Popper
-                                open={Boolean(suggestions.length) && Boolean(anchorEl)}
-                                anchorEl={anchorEl}
-                                placement="bottom-start"
-                                className="suggestions-popper"
-                            >
-                                <ClickAwayListener onClickAway={handleClickAway}>
-                                    <Paper className="suggestions-paper" elevation={3}>
-                                        {suggestions.map((suggestion, index) => (
-                                            <div
-                                                key={index}
-                                                className="suggestion-item"
-                                                onClick={() => handleSuggestionClick(suggestion)}
-                                                role="option"
-                                            >
-                                                <MapPin className="suggestion-icon" size={16}/>
-                                                <span>{suggestion}</span>
-                                            </div>
-                                        ))}
-                                    </Paper>
-                                </ClickAwayListener>
-                            </Popper>
+                            {suggestions.length > 0 && (
+                                <Suggestions
+                                    suggestions={suggestions}
+                                    onSelect={handleSuggestionClick}
+                                    onClickAway={() => setSuggestions([])}
+                                />
+                            )}
                         </div>
 
                         {/* Date Range Input */}
-                        <div className="input-field">
+                        <div className="relative flex-1">
                             <TextField
-                                fullWidth
                                 value={formatDateRange()}
                                 onClick={() => setShowDatePicker(!showDatePicker)}
-                                InputProps={{
-                                    startAdornment: <Calendar className="icon-prefix" size={20}/>,
-                                    readOnly: true,
-                                    sx: { backgroundColor: 'white' }
-                                }}
+                                startIcon={<Calendar size={20} />}
                                 placeholder="Seleccionar fechas"
+                                readOnly
                             />
 
                             {showDatePicker && (
-                                <div className="date-picker-container">
-                                    <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
-                                        <Paper elevation={3} className="date-picker-paper">
-                                            <DateRange
-                                                onChange={handleDateChange}
-                                                moveRangeOnFirstSelection={false}
-                                                ranges={dateState}
-                                                months={2}
-                                                direction="horizontal"
-                                                locale={es}
-                                                minDate={new Date()}
-                                                rangeColors={['#2196f3']}
-                                                showMonthAndYearPickers={true}
-                                                showDateDisplay={true}
-                                            />
-                                        </Paper>
-                                    </ClickAwayListener>
+                                <div className="absolute z-50 mt-2">
+                                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                                        <DateRange
+                                            onChange={handleDateChange}
+                                            moveRangeOnFirstSelection={false}
+                                            ranges={dateState}
+                                            months={2}
+                                            direction="horizontal"
+                                            locale={es}
+                                            minDate={new Date()}
+                                            rangeColors={['#2196f3']}
+                                            showMonthAndYearPickers={true}
+                                            showDateDisplay={true}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Search Button */}
-                    <Button
-                        variant="contained"
+                    <button
                         onClick={handleSearch}
                         disabled={loading || !query || !dateState[0].startDate || !dateState[0].endDate}
-                        className="search-button"
-                        startIcon={loading ? <Loader className="animate-spin"/> : <Search/>}
-                        sx={{
-                            backgroundColor: '#2196f3',
-                            '&:hover': {
-                                backgroundColor: '#1976d2'
-                            }
-                        }}
+                        className="h-14 px-8 whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white rounded-md
+              disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        {loading ? 'Buscando...' : 'Buscar'}
-                    </Button>
+                        {loading ? (
+                            <>
+                                <Loader className="animate-spin" size={20} />
+                                Buscando...
+                            </>
+                        ) : (
+                            <>
+                                <Search size={20} />
+                                Buscar
+                            </>
+                        )}
+                    </button>
                 </div>
 
                 {/* Error Message */}
                 {error && (
-                    <div className="error-message" role="alert">
+                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg" role="alert">
                         {error}
                     </div>
                 )}
 
                 {/* Loading Cities Indicator */}
                 {isLoadingCities && (
-                    <div className="loading-indicator">
-                        <Loader className="animate-spin" size={16}/>
+                    <div className="mt-4 p-3 bg-blue-100 text-blue-700 rounded-lg flex items-center gap-2">
+                        <Loader className="animate-spin" size={16} />
                         <span>Cargando ciudades...</span>
                     </div>
                 )}

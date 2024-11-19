@@ -1,8 +1,30 @@
-import React, {useEffect, useState} from 'react';
-import {LodgingService} from './api/LodgingService';
-import {Card, CardContent, CardMedia, Typography} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { LodgingService } from './api/LodgingService';
 import LodgingCard from './components/LodgingCard';
-import './Categories.css';
+
+const CategoryCard = ({ category, onClick }) => (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <div className="relative h-0 pb-[50%]"> {/* This creates a 2:1 aspect ratio */}
+            <img
+                src={category.imageUrl}
+                alt={category.name}
+                className="absolute top-0 left-0 w-full h-full object-cover cursor-pointer"
+                onClick={() => onClick(category)}
+            />
+        </div>
+        <div className="p-4">
+            <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                {category.name}
+            </h3>
+            <p
+                className="text-gray-600 cursor-pointer hover:text-blue-600 transition-colors duration-200"
+                onClick={() => onClick(category)}
+            >
+                {category.numberOfLodgings} disponibles
+            </p>
+        </div>
+    </div>
+);
 
 function Categories() {
     const [categories, setCategories] = useState([]);
@@ -32,41 +54,45 @@ function Categories() {
     };
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="bg-red-100 text-red-700 p-4 rounded-lg" role="alert">
+                    {error}
+                </div>
+            </div>
+        );
     }
 
     if (isLoading) {
-        return <div className="loading">Cargando categorías...</div>;
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-6">
+                <div className="bg-blue-100 text-blue-700 p-4 rounded-lg flex items-center justify-center">
+                    Cargando categorías...
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="categories">
-            <h2>Buscar por tipo de alojamiento</h2>
-            <div className="categories-grid-container">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+            {/* Title */}
+            <h2 className="text-xl md:text-2xl font-semibold text-blue-900 mb-6">
+                Buscar por tipo de alojamiento
+            </h2>
+
+            {/* Categories Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {categories.map((category, index) => (
-                    <Card key={index} sx={{maxWidth: 345}}>
-                        <CardMedia
-                            component="img"
-                            height="140"
-                            image={category.imageUrl}
-                            alt={category.name}
-                            style={{cursor: 'pointer'}}
-                            onClick={() => handleCategoryClick(category)}
-                        />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {category.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                <span onClick={() => handleCategoryClick(category)} style={{cursor: 'pointer'}}>
-                                    {category.numberOfLodgings} disponibles
-                                </span>
-                            </Typography>
-                        </CardContent>
-                    </Card>
+                    <CategoryCard
+                        key={index}
+                        category={category}
+                        onClick={handleCategoryClick}
+                    />
                 ))}
             </div>
-            <LodgingCard category={selectedCategory}/>
+
+            {/* Lodging Card Component */}
+            { <LodgingCard category={selectedCategory} />}
         </div>
     );
 }

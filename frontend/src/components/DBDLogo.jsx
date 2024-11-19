@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 const DBDLogo = ({
-                     width = '500',
-                     height = '500',
+                     width = '64',
+                     height = '64',
                      className = '',
                      animated = true
                  }) => {

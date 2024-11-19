@@ -1,9 +1,8 @@
 import React from 'react';
-import {LogIn, User} from 'lucide-react';
-import {Link} from 'react-router-dom';
-import './Header.css';
+import { LogIn, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const Button = ({children, variant = 'soft', onClick}) => {
+const Button = ({ children, variant = 'soft', onClick }) => {
     const baseStyles = "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200";
 
     const variants = {
@@ -14,7 +13,8 @@ const Button = ({children, variant = 'soft', onClick}) => {
     return (
         <button
             onClick={onClick}
-            className={`${baseStyles} ${variants[variant]}`}>
+            className={`${baseStyles} ${variants[variant]}`}
+        >
             {children}
         </button>
     );
@@ -22,14 +22,20 @@ const Button = ({children, variant = 'soft', onClick}) => {
 
 function Header() {
     return (
-        <header className="header border-b border-gray-100">
+        <header className="bg-sky-200 border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <Link
                         to="/"
-                        className="text-2xl font-bold text-blue-600 logo"
-                        aria-label="Home"
+                        className="flex items-center"
+                        aria-label="Digital Booking Home"
                     >
+                        <img
+                            src="/logo.png"
+                            alt="Digital Booking"
+                            className="h-14"
+                        />
+
                     </Link>
                     <Link
                         to="/"
@@ -41,11 +47,11 @@ function Header() {
 
                 <div className="flex items-center gap-4">
                     <Button variant="soft">
-                        <User size={16}/>
+                        <User size={16} />
                         Crear cuenta
                     </Button>
                     <Button variant="solid">
-                        <LogIn size={16}/>
+                        <LogIn size={16} />
                         Iniciar sesión
                     </Button>
                 </div>
