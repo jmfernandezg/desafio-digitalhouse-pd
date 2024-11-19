@@ -21,6 +21,7 @@ data class LodgingResponse(val lodgings: List<LodgingItem>) {
         val name: String,
         val address: String,
         val city: String,
+        val country: String,
         val price: Double,
         val distanceFromDownTown: Double,
         val stars: Int,

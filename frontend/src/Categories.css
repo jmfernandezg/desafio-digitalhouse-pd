@@ -8,10 +8,16 @@
 }
 
 .categories h2 {
-    width: 100%;
-    font-size: 1.5em;
     text-align: left;
-    margin-bottom: 20px;
+    font-size: 1.25rem; /* Reduced from likely 1.5rem or higher */
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
 }
 
 .category-card {

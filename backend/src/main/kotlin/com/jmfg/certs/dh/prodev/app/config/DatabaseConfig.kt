@@ -46,6 +46,7 @@ class DatabaseConfig(
                     name = faker.company().name(),
                     address = faker.address().fullAddress(),
                     city = faker.address().city(),
+                    country = faker.address().country(),
                     averageCustomerRating = faker.number().numberBetween(1, 10),
                     stars = faker.number().numberBetween(1, 5),
                     price = faker.number().randomDouble(2, 50, 500),

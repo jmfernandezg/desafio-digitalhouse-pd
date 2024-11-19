@@ -18,8 +18,7 @@ interface LodgingRepository : JpaRepository<Lodging, String> {
     @Query("SELECT DISTINCT l.category FROM Lodging l")
     fun findAllCategories(): List<Category>
 
-    @Query("SELECT DISTINCT l.city FROM Lodging l")
+    @Query("SELECT DISTINCT CONCAT(l.city, ', ', l.country) FROM Lodging l")
     fun findAllCities(): Set<String>
-
 
 }

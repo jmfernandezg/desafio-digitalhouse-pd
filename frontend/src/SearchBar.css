@@ -1,168 +1,207 @@
-.search-bar-container {
-    margin-top: 70px; /* Adjust this value based on the height of your header */
+.search-bar-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 70px auto 0;
+    padding: 0 0.5rem;
+}
+
+.search-bar-inner {
+    margin: 0 1em 1em 0;
+    padding: 1rem 1rem;
+    background: linear-gradient(to bottom right, #1e3a8a, #c0c0c0);
+    border-radius: 8px;
+}
+
+.search-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.search-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    background-color: var(--primary);
-    border-radius: 5px;
-    color: white;
-}
-
-.search-bar-container h2 {
-    width: 100%;
-    font-size: 1.5em;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.search-bar {
-    display: flex;
-    width: 100%;
-    gap: 10px;
-}
-
-.input-container {
-    position: relative;
-    flex: 1 1 30%;
-}
-
-.search-bar input[type="text"],
-
-.search-bar input[type="date"] {
-    width: 80%;
-    padding: 8px 8px 8px 30px; /* Add padding to make space for the icon */
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    font-size: 1em;
-}
-
-.input-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-}
-
-.search-bar input[type="date"] {
-    flex: 1 1 40%;
-}
-
-.search-bar button {
-    flex: 1 1 30%;
-    padding: 8px 15px;
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.search-bar button:hover {
-    background-color: #e66a00;
-}
-
-.suggestions-list {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    width: 80%;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    color: black;
-    margin-top: 5px;
-    padding: 0;
-    list-style: none;
-}
-
-.suggestions-list li {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.suggestions-list li:hover {
-    background-color: #f0f0f0;
-}
-
-.rdrDateRangeWrapper {
+    gap: 1rem;
+    padding: 1.5rem;
     background: white;
-    border-radius: 8px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
+
+.input-field {
+    flex: 1;
+    min-width: 240px;
+    position: relative;
+}
+
+.icon-prefix {
+    color: #9ca3af;
+    margin-right: 0.5rem;
+}
+
+.suggestions-popper {
+    z-index: 1050;
+    width: 100%;
+    max-width: 400px;
+}
+
+.suggestions-paper {
+    margin-top: 0.25rem;
+    max-height: 15rem;
+    overflow: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #eff6ff;
+}
+
+.suggestion-icon {
+    color: #2196f3;
+}
+
+.date-picker-container {
+    position: absolute;
+    z-index: 1050;
+    margin-top: 0.5rem;
+}
+
+.date-picker-paper {
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.search-button {
+    height: 3.5rem;
+    padding: 0 2rem;
+    white-space: nowrap;
+}
+
+.error-message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-radius: 0.5rem;
+}
+
+.loading-indicator {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .search-title {
+        font-size: 1.875rem;
+    }
+
+    .search-container {
+        flex-direction: row;
+    }
+
+    .inputs-container {
+        flex-direction: row;
+    }
+}
+
+.popper {
+    z-index: 50;
+    width: 100%;
+    max-width: 400px;
+}
+
+.suggestions {
+    margin-top: 1px;
+    max-height: 240px;
+    overflow-auto: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.rdrDateDisplayWrapper {
-    background-color: #f5f5f5;
+.suggestion {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
 
-.rdrDefinedRangesWrapper {
-    border-right: 1px solid #eeeeee;
+.suggestion:hover {
+    background: #e0f2fe;
 }
 
-.rdrStaticRange {
-    border-bottom: 1px solid #eeeeee;
+.icon {
+    color: #6b7280;
 }
 
-.rdrStaticRange:hover .rdrStaticRangeLabel {
-    background: #f5f5f5;
+.date-picker {
+    position: absolute;
+    z-index: 50;
+    margin-top: 10px;
 }
 
-.rdrCalendarWrapper {
+.date-picker-content {
     background: white;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.rdrDateDisplayItem input {
-    color: #333333;
+.search-button {
+    height: 56px;
+    padding: 0 24px;
+    white-space: nowrap;
 }
 
-/* Responsive styles */
+.error-message {
+    margin-top: 20px;
+    padding: 10px;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.loading-cities {
+    margin-top: 20px;
+    padding: 10px;
+    background: #e0f2fe;
+    color: #2563eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 @media (max-width: 768px) {
-    .search-bar-container {
-        padding: 1rem;
+    .search-bar {
+        padding: 10px;
     }
 
-    .rdrCalendarWrapper {
-        font-size: 14px;
-    }
-
-    .rdrDateRangeWrapper {
-        display: flex;
+    .search-inputs {
         flex-direction: column;
-    }
-
-    .rdrMonths {
-        flex-direction: column;
-    }
-}
-
-/* Animation for suggestions */
-.MuiPopper-root {
-    animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Loading animation */
-.animate-spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
     }
 }
