@@ -29,17 +29,14 @@ class ReservationServiceImpl(
     override fun create(request: ReservationCreationRequest): Reservation {
         val customer = customerRepository.findByIdOrNull(request.customerId)
             ?: throw IllegalArgumentException("Customer not found")
-        val lodging = lodgingRepository.findByIdOrNull(request.lodgingId)
-            ?: throw IllegalArgumentException("Lodging not found")
+        val lodging =
+            lodgingRepository.findByIdOrNull(request.lodgingId) ?: throw IllegalArgumentException("Lodging not found")
         val formatter = DateTimeFormatter.ISO_DATE_TIME
         val startDate = LocalDateTime.parse(request.startDate, formatter)
         val endDate = LocalDateTime.parse(request.endDate, formatter)
 
         val reservation = Reservation(
-            customer = customer,
-            lodging = lodging,
-            startDate = startDate,
-            endDate = endDate
+            customer = customer, lodging = lodging, startDate = startDate, endDate = endDate
         )
         return reservationRepository.save(reservation)
     }

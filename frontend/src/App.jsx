@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 import Header from './Header';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
@@ -9,7 +9,7 @@ import Footer from './Footer';
 import Admin from "./Admin";
 
 // Layout wrapper component for consistent page structure
-const Layout = ({ children, showSearch = true }) => {
+const Layout = ({children, showSearch = true}) => {
     const location = useLocation();
     const isAdminRoute = location.pathname === '/admin';
     const isLodgingDetail = location.pathname.includes('/lodging/');
@@ -17,11 +17,11 @@ const Layout = ({ children, showSearch = true }) => {
     return (
         <div className="min-h-screen flex flex-col bg-slate-50 font-['Fira_Sans']">
             <header className="w-full bg-white shadow-sm">
-                <Header />
+                <Header/>
                 {showSearch && !isLodgingDetail && !isAdminRoute && (
                     <div className="w-full bg-sky-50">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                            <SearchBar />
+                            <SearchBar/>
                         </div>
                     </div>
                 )}
@@ -33,7 +33,7 @@ const Layout = ({ children, showSearch = true }) => {
                 </div>
             </main>
 
-            <Footer />
+            <Footer/>
         </div>
     );
 };
@@ -46,7 +46,7 @@ const AppRoutes = () => {
                 path="/"
                 element={
                     <Layout>
-                        <Categories />
+                        <Categories/>
                     </Layout>
                 }
             />
@@ -54,7 +54,7 @@ const AppRoutes = () => {
                 path="/lodgings"
                 element={
                     <Layout>
-                        <LodgingCard />
+                        <LodgingCard/>
                     </Layout>
                 }
             />
@@ -62,7 +62,7 @@ const AppRoutes = () => {
                 path="/lodging/:id"
                 element={
                     <Layout>
-                        <LodgingDetail />
+                        <LodgingDetail/>
                     </Layout>
                 }
             />
@@ -70,7 +70,7 @@ const AppRoutes = () => {
                 path="/admin"
                 element={
                     <Layout showSearch={false}>
-                        <Admin />
+                        <Admin/>
                     </Layout>
                 }
             />
@@ -81,7 +81,7 @@ const AppRoutes = () => {
 const App = () => {
     return (
         <Router>
-            <AppRoutes />
+            <AppRoutes/>
         </Router>
     );
 };

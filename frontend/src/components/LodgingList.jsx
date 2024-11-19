@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, {useState} from 'react';
+import {ChevronLeft, ChevronRight, Edit, Trash2} from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
 
-function LodgingList({ lodgings, onEdit, onDelete }) {
+function LodgingList({lodgings, onEdit, onDelete}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [lodgingToDelete, setLodgingToDelete] = useState(null);
@@ -91,14 +91,14 @@ function LodgingList({ lodgings, onEdit, onDelete }) {
                                         className="p-1 text-blue-600 hover:text-blue-800 transition-colors duration-200 rounded-lg hover:bg-blue-50"
                                         title="Editar hospedaje"
                                     >
-                                        <Edit size={18} />
+                                        <Edit size={18}/>
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(lodging)}
                                         className="p-1 text-red-600 hover:text-red-800 transition-colors duration-200 rounded-lg hover:bg-red-50"
                                         title="Eliminar hospedaje"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2 size={18}/>
                                     </button>
                                 </div>
                             </td>
@@ -137,7 +137,7 @@ function LodgingList({ lodgings, onEdit, onDelete }) {
                             }`}
                             aria-label="Página anterior"
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft size={20}/>
                         </button>
 
                         <div className="flex items-center gap-1">
@@ -166,7 +166,7 @@ function LodgingList({ lodgings, onEdit, onDelete }) {
                             }`}
                             aria-label="Página siguiente"
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight size={20}/>
                         </button>
                     </div>
                 </div>

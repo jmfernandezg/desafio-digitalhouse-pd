@@ -8,5 +8,5 @@ interface ReservationService {
     fun delete(id: String)
     fun update(reservation: Reservation): Reservation
     fun findById(id: String): Reservation?
-    fun create(request: ReservationCreationRequest) : Reservation
+    fun create(request: ReservationCreationRequest): Reservation
 }

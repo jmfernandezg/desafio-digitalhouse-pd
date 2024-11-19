@@ -10,18 +10,15 @@ const Button = ({children, variant = 'soft', onClick}) => {
         solid: "bg-blue-600 text-white hover:bg-blue-700 hover:scale-105"
     };
 
-    return (
-        <button
+    return (<button
             onClick={onClick}
             className={`${baseStyles} ${variants[variant]}`}
         >
             {children}
-        </button>
-    );
+        </button>);
 };
 
-const Tagline = () => (
-    <div className="group relative flex items-center gap-2 px-4 py-2 cursor-default">
+const Tagline = () => (<div className="group relative flex items-center gap-2 px-4 py-2 cursor-default">
         <Home className="h-4 w-4 text-blue-600 group-hover:animate-bounce"/>
         <span className="font-serif italic relative">
       Sentite como en tu hogar
@@ -29,12 +26,10 @@ const Tagline = () => (
     </span>
         <div
             className="absolute inset-0 bg-blue-50/50 rounded-lg scale-0 group-hover:scale-100 transition-transform duration-300 -z-10"/>
-    </div>
-);
+    </div>);
 
 const Header = () => {
-    return (
-        <header className="bg-gradient-to-r from-sky-100 to-blue-100 border-b border-blue-100 shadow-sm">
+    return (<header className="bg-gradient-to-r from-sky-100 to-blue-100 border-b border-blue-100 shadow-sm">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <div className="flex items-center gap-8">
                     <Link
@@ -63,8 +58,7 @@ const Header = () => {
                     </Button>
                 </div>
             </div>
-        </header>
-    );
+        </header>);
 };
 
 export default Header;

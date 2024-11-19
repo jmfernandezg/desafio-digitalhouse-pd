@@ -7,18 +7,13 @@ import CustomerForm from './components/CustomerForm';
 import CustomerList from './components/CustomerList';
 import {ChevronUp, Plus} from 'lucide-react';
 
-const TabButton = ({active, children, onClick}) => (
-    <button
+const TabButton = ({active, children, onClick}) => (<button
         onClick={onClick}
         className={`px-4 py-2 font-medium text-sm rounded-t-lg transition-colors duration-200
-      ${active
-            ? 'bg-white text-blue-600 border-t border-x border-gray-200'
-            : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-        }`}
+      ${active ? 'bg-white text-blue-600 border-t border-x border-gray-200' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
     >
         {children}
-    </button>
-);
+    </button>);
 
 const Section = ({title, children, isFormOpen, setIsFormOpen, form}) => (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -29,17 +24,13 @@ const Section = ({title, children, isFormOpen, setIsFormOpen, form}) => (
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-600
           hover:bg-blue-100 transition-colors duration-200"
             >
-                {isFormOpen ? (
-                    <>
+                {isFormOpen ? (<>
                         <ChevronUp size={20}/>
                         Cerrar formulario
-                    </>
-                ) : (
-                    <>
+                    </>) : (<>
                         <Plus size={20}/>
                         Agregar nuevo
-                    </>
-                )}
+                    </>)}
             </button>
         </div>
 
@@ -51,8 +42,7 @@ const Section = ({title, children, isFormOpen, setIsFormOpen, form}) => (
 
         {/* Content */}
         {children}
-    </div>
-);
+    </div>);
 
 function Admin() {
     const [lodgings, setLodgings] = useState([]);
@@ -110,8 +100,7 @@ function Admin() {
         fetchCustomers();
     };
 
-    return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
+    return (<div className="max-w-7xl mx-auto px-4 py-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">
                 Panel De Administración
             </h2>
@@ -134,17 +123,14 @@ function Admin() {
 
             {/* Tab Content */}
             <div className="bg-white rounded-lg">
-                {activeTab === 'lodgings' && (
-                    <Section
+                {activeTab === 'lodgings' && (<Section
                         title="Hospedajes"
                         isFormOpen={isLodgingFormOpen}
                         setIsFormOpen={setIsLodgingFormOpen}
-                        form={
-                            <LodgingForm
-                                onSubmit={handleLodgingSubmit}
-                                lodging={selectedLodging}
-                            />
-                        }
+                        form={<LodgingForm
+                            onSubmit={handleLodgingSubmit}
+                            lodging={selectedLodging}
+                        />}
                     >
                         <LodgingList
                             lodgings={lodgings}
@@ -154,20 +140,16 @@ function Admin() {
                             }}
                             onDelete={handleLodgingDelete}
                         />
-                    </Section>
-                )}
+                    </Section>)}
 
-                {activeTab === 'customers' && (
-                    <Section
+                {activeTab === 'customers' && (<Section
                         title="Clientes"
                         isFormOpen={isCustomerFormOpen}
                         setIsFormOpen={setIsCustomerFormOpen}
-                        form={
-                            <CustomerForm
-                                onSubmit={handleCustomerSubmit}
-                                customer={selectedCustomer}
-                            />
-                        }
+                        form={<CustomerForm
+                            onSubmit={handleCustomerSubmit}
+                            customer={selectedCustomer}
+                        />}
                     >
                         <CustomerList
                             customers={customers}
@@ -177,11 +159,9 @@ function Admin() {
                             }}
                             onDelete={handleCustomerDelete}
                         />
-                    </Section>
-                )}
+                    </Section>)}
             </div>
-        </div>
-    );
+        </div>);
 }
 
 export default Admin;

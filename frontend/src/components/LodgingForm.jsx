@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Building2, MapPin, DollarSign, Star, Home, Image, Calendar, Heart } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {Building2, Calendar, DollarSign, Heart, Home, Image, MapPin, Star} from 'lucide-react';
 
-const InputField = ({ icon: Icon, label, ...props }) => (
+const InputField = ({icon: Icon, label, ...props}) => (
     <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-gray-700">
             {label}
         </label>
         <div className="relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon size={18} />
+                <Icon size={18}/>
             </div>
             <input
                 {...props}
@@ -20,7 +20,7 @@ const InputField = ({ icon: Icon, label, ...props }) => (
     </div>
 );
 
-const TextArea = ({ label, ...props }) => (
+const TextArea = ({label, ...props}) => (
     <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-gray-700">
             {label}
@@ -35,7 +35,7 @@ const TextArea = ({ label, ...props }) => (
     </div>
 );
 
-function LodgingForm({ onSubmit, lodging }) {
+function LodgingForm({onSubmit, lodging}) {
     const [formData, setFormData] = useState({
         name: '',
         address: '',
@@ -62,23 +62,23 @@ function LodgingForm({ onSubmit, lodging }) {
     }, [lodging]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const handleImageChange = (index, value) => {
         const newImages = [...formData.images];
         newImages[index] = value;
-        setFormData({ ...formData, images: newImages });
+        setFormData({...formData, images: newImages});
     };
 
     const addImageField = () => {
-        setFormData({ ...formData, images: [...formData.images, ''] });
+        setFormData({...formData, images: [...formData.images, '']});
     };
 
     const removeImageField = (index) => {
         const newImages = formData.images.filter((_, i) => i !== index);
-        setFormData({ ...formData, images: newImages });
+        setFormData({...formData, images: newImages});
     };
 
     const handleSubmit = (e) => {
@@ -216,7 +216,7 @@ function LodgingForm({ onSubmit, lodging }) {
                     <div key={index} className="flex gap-2">
                         <div className="relative flex-1">
                             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                <Image size={18} />
+                                <Image size={18}/>
                             </div>
                             <input
                                 type="url"
@@ -270,11 +270,11 @@ function LodgingForm({ onSubmit, lodging }) {
                     id="isFavorite"
                     name="isFavorite"
                     checked={formData.isFavorite}
-                    onChange={(e) => setFormData({ ...formData, isFavorite: e.target.checked })}
+                    onChange={(e) => setFormData({...formData, isFavorite: e.target.checked})}
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <label htmlFor="isFavorite" className="flex items-center gap-2 text-sm text-gray-700">
-                    <Heart size={16} className={formData.isFavorite ? 'text-red-500 fill-current' : 'text-gray-400'} />
+                    <Heart size={16} className={formData.isFavorite ? 'text-red-500 fill-current' : 'text-gray-400'}/>
                     Marcar como favorito
                 </label>
             </div>

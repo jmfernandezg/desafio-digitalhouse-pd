@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 const DBDLogo = ({
-                     width = '64',
-                     height = '64',
-                     className = '',
-                     animated = true
+                     width = '64', height = '64', className = '', animated = true
                  }) => {
     const [isHovered, setIsHovered] = useState(false);
 
-    return (
-        <svg
+    return (<svg
             viewBox="0 0 500 500"
             width={width}
             height={height}
@@ -21,40 +17,33 @@ const DBDLogo = ({
             <defs>
                 <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#8B5CF6">
-                        {animated && (
-                            <animate
+                        {animated && (<animate
                                 attributeName="stop-color"
                                 values="#8B5CF6; #9333EA; #8B5CF6"
                                 dur="4s"
                                 repeatCount="indefinite"
-                            />
-                        )}
+                            />)}
                     </stop>
                     <stop offset="50%" stopColor="#EC4899">
-                        {animated && (
-                            <animate
+                        {animated && (<animate
                                 attributeName="stop-color"
                                 values="#EC4899; #DB2777; #EC4899"
                                 dur="4s"
                                 repeatCount="indefinite"
-                            />
-                        )}
+                            />)}
                     </stop>
                     <stop offset="100%" stopColor="#F97316">
-                        {animated && (
-                            <animate
+                        {animated && (<animate
                                 attributeName="stop-color"
                                 values="#F97316; #EA580C; #F97316"
                                 dur="4s"
                                 repeatCount="indefinite"
-                            />
-                        )}
+                            />)}
                     </stop>
                 </linearGradient>
 
                 {/* Animation for umbrella floating */}
-                {animated && (
-                    <animate
+                {animated && (<animate
                         xlinkHref="#umbrella-group"
                         attributeName="transform"
                         attributeType="XML"
@@ -62,8 +51,7 @@ const DBDLogo = ({
                         values="0,0; 0,-5; 0,0"
                         dur="3s"
                         repeatCount="indefinite"
-                    />
-                )}
+                    />)}
             </defs>
 
             {/* Background Group */}
@@ -88,32 +76,28 @@ const DBDLogo = ({
                         fill="none"
                         className={`transition-all duration-300 ${isHovered ? 'stroke-yellow-400' : ''}`}
                     >
-                        {animated && (
-                            <animate
+                        {animated && (<animate
                                 attributeName="d"
                                 values="M150 50 L150 200 M100 100 Q150 70 200 100;
                         M150 50 L150 200 M100 100 Q150 65 200 100;
                         M150 50 L150 200 M100 100 Q150 70 200 100"
                                 dur="3s"
                                 repeatCount="indefinite"
-                            />
-                        )}
+                            />)}
                     </path>
                     <path
                         d="M100 100 Q150 130 200 100"
                         fill="#FFB800"
                         className={`transition-all duration-300 ${isHovered ? 'fill-yellow-400' : ''}`}
                     >
-                        {animated && (
-                            <animate
+                        {animated && (<animate
                                 attributeName="d"
                                 values="M100 100 Q150 130 200 100;
                         M100 100 Q150 125 200 100;
                         M100 100 Q150 130 200 100"
                                 dur="3s"
                                 repeatCount="indefinite"
-                            />
-                        )}
+                            />)}
                     </path>
                 </g>
 
@@ -142,16 +126,14 @@ const DBDLogo = ({
                     opacity="0.7"
                     className="transition-all duration-300"
                 >
-                    {animated && (
-                        <animate
+                    {animated && (<animate
                             attributeName="d"
                             values="M0 300 Q50 280 100 300 Q150 320 200 300 Q250 280 300 300 L300 400 L0 400 Z;
                       M0 300 Q50 285 100 300 Q150 315 200 300 Q250 285 300 300 L300 400 L0 400 Z;
                       M0 300 Q50 280 100 300 Q150 320 200 300 Q250 280 300 300 L300 400 L0 400 Z"
                             dur="5s"
                             repeatCount="indefinite"
-                        />
-                    )}
+                        />)}
                 </path>
             </g>
 
@@ -212,8 +194,7 @@ const DBDLogo = ({
                     className={`transition-all duration-300 ${isHovered ? 'fill-indigo-900' : ''}`}
                 />
             </g>
-        </svg>
-    );
+        </svg>);
 };
 
 export default DBDLogo;

@@ -1,0 +1,48 @@
+### Get all categories
+GET http://localhost:8080/v1/lodging/categories
+
+### Get lodgings by category
+GET http://localhost:8080/v1/lodging/categories/{category}
+
+### Get lodging by ID
+GET http://localhost:8080/v1/lodging/{id}
+
+### Get all lodgings
+GET http://localhost:8080/v1/lodging
+
+### Create a new lodging
+POST http://localhost:8080/v1/lodging
+Content-Type: application/json
+
+{
+  "name": "New Lodging",
+  "address": "123 Main St",
+  "city": "Sample City",
+  "country": "Sample Country",
+  "price": 100.0,
+  "stars": 4,
+  "averageCustomerRating": 8,
+  "description": "A nice place to stay",
+  "category": "HOTEL",
+  "availableFrom": "2023-01-01T00:00:00",
+  "availableTo": "2023-12-31T23:59:59",
+  "isFavorite": false,
+  "photos": []
+}
+
+### Delete a lodging
+DELETE http://localhost:8080/v1/lodging/{id}
+
+### Get all cities
+GET http://localhost:8080/v1/lodging/cities
+
+### Search lodgings
+POST http://localhost:8080/v1/lodging/search
+Content-Type: application/json
+
+{
+  "city": "Sample City",
+  "checkInDate": "2023-01-01",
+  "checkOutDate": "2023-01-10",
+  "guests": 2
+}

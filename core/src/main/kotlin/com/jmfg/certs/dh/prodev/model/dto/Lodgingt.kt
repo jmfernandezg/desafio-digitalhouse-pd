@@ -8,7 +8,7 @@ data class LodgingCreationRequest(
     val name: String,
     val address: String,
     val stars: Int,
-    val averageCustomerRating : Int,
+    val averageCustomerRating: Int,
     val price: Double,
     val description: String,
     val category: Category,
@@ -17,9 +17,7 @@ data class LodgingCreationRequest(
 )
 
 data class LodgingSearchRequest(
-    val destination: String,
-    val checkIn: LocalDate,
-    val checkOut: LocalDate
+    val destination: String, val checkIn: LocalDate, val checkOut: LocalDate
 )
 
 data class LodgingResponse(val lodgings: List<LodgingItem>) {

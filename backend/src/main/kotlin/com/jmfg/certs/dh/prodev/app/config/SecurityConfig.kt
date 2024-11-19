@@ -34,10 +34,8 @@ class SecurityConfig {
         return NimbusJwtEncoder(
             ImmutableJWKSet(
                 JWKSet(
-                    RSAKey.Builder(keyPair.public as RSAPublicKey)
-                        .privateKey(keyPair.private as RSAPrivateKey)
-                        .algorithm(JWSAlgorithm.RS256)
-                        .build()
+                    RSAKey.Builder(keyPair.public as RSAPublicKey).privateKey(keyPair.private as RSAPrivateKey)
+                        .algorithm(JWSAlgorithm.RS256).build()
                 )
             )
         )
@@ -53,14 +51,8 @@ class SecurityConfig {
     @Bean
     @Profile("dev")
     fun testJwtTokenCreation(jwtEncoder: JwtEncoder) = CommandLineRunner {
-        JwtClaimsSet.builder()
-            .issuer("test-issuer")
-            .subject("test-subject")
-            .issuedAt(Instant.now())
-            .expiresAt(Instant.now().plusSeconds(3600))
-            .claim("scope", "test-scope")
-            .build()
-            .run {
+        JwtClaimsSet.builder().issuer("test-issuer").subject("test-subject").issuedAt(Instant.now())
+            .expiresAt(Instant.now().plusSeconds(3600)).claim("scope", "test-scope").build().run {
                 jwtEncoder.encode(JwtEncoderParameters.from(this)).tokenValue.also {
                     logger.info("Generated dev token: $it")
                 }

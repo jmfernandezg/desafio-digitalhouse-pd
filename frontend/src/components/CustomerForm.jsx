@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, Lock, Mail, User} from 'lucide-react';
 
-const InputField = ({icon: Icon, ...props}) => (
-    <div className="relative">
+const InputField = ({icon: Icon, ...props}) => (<div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <Icon size={18}/>
         </div>
@@ -12,17 +11,11 @@ const InputField = ({icon: Icon, ...props}) => (
         focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400
         hover:border-gray-400 transition-colors duration-200"
         />
-    </div>
-);
+    </div>);
 
 function CustomerForm({onSubmit, customer}) {
     const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-        firstName: '',
-        lastName: '',
-        dob: '',
-        email: '',
+        username: '', password: '', firstName: '', lastName: '', dob: '', email: '',
     });
 
     useEffect(() => {
@@ -40,17 +33,11 @@ function CustomerForm({onSubmit, customer}) {
         e.preventDefault();
         onSubmit(formData);
         setFormData({
-            username: '',
-            password: '',
-            firstName: '',
-            lastName: '',
-            dob: '',
-            email: '',
+            username: '', password: '', firstName: '', lastName: '', dob: '', email: '',
         });
     };
 
-    return (
-        <form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg">
+    return (<form onSubmit={handleSubmit} className="space-y-6 bg-gray-50 p-6 rounded-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Username Field */}
                 <InputField
@@ -128,8 +115,7 @@ function CustomerForm({onSubmit, customer}) {
                     {customer ? 'Actualizar' : 'Crear'} Cliente
                 </button>
             </div>
-        </form>
-    );
+        </form>);
 }
 
 export default CustomerForm;

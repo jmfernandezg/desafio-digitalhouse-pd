@@ -1,40 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, MapPin, Star } from 'lucide-react';
+import {Link} from 'react-router-dom';
+import {Heart, MapPin, Star} from 'lucide-react';
 
-const RatingBadge = ({ rating, reviewCount, grade }) => (
+const RatingBadge = ({rating, reviewCount, grade}) => (
     <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-lg shadow-md">
         <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400"/>
             <span className="font-semibold">{rating}</span>
             <span className="text-gray-600 text-sm">{`(${reviewCount})`}</span>
         </div>
         <div className="text-sm text-gray-600 text-center mt-1">
             {grade}
         </div>
-    </div>
-);
+    </div>);
 
-const StarRating = ({ rating }) => (
-    <div className="flex gap-1">
-        {[...Array(5)].map((_, index) => (
-            <Star
+const StarRating = ({rating}) => (<div className="flex gap-1">
+        {[...Array(5)].map((_, index) => (<Star
                 key={index}
-                className={`w-4 h-4 ${
-                    index < rating
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "fill-gray-200 text-gray-200"
-                }`}
-            />
-        ))}
-    </div>
-);
+                className={`w-4 h-4 ${index < rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"}`}
+            />))}
+    </div>);
 
-function LodgingGrid({ lodgings }) {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {lodgings.map(lodging => (
-                <div
+function LodgingGrid({lodgings}) {
+    return (<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {lodgings.map(lodging => (<div
                     key={lodging.id}
                     className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col md:flex-row border border-gray-200"
                 >
@@ -49,7 +38,7 @@ function LodgingGrid({ lodgings }) {
                             className={`absolute top-4 left-4 p-2 rounded-full bg-white shadow-md
                 ${lodging.isFavorite ? 'text-red-500' : 'text-gray-400'}`}
                         >
-                            <Heart className={`w-5 h-5 ${lodging.isFavorite ? 'fill-current' : ''}`} />
+                            <Heart className={`w-5 h-5 ${lodging.isFavorite ? 'fill-current' : ''}`}/>
                         </button>
                         <RatingBadge
                             rating={lodging.averageCustomerRating}
@@ -78,11 +67,11 @@ function LodgingGrid({ lodgings }) {
 
                         <div className="flex items-center gap-2 mb-4">
                             <span className="text-sm text-gray-600">{lodging.category}</span>
-                            <StarRating rating={lodging.stars} />
+                            <StarRating rating={lodging.stars}/>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                            <MapPin className="w-4 h-4" />
+                            <MapPin className="w-4 h-4"/>
                             <span>{lodging.distanceFromDownTown.toFixed(2)} kms del centro</span>
                             <a
                                 href={`https://maps.google.com/?q=${lodging.address}`}
@@ -104,10 +93,8 @@ function LodgingGrid({ lodgings }) {
                             </p>
                         </div>
                     </div>
-                </div>
-            ))}
-        </div>
-    );
+                </div>))}
+        </div>);
 }
 
 export default LodgingGrid;

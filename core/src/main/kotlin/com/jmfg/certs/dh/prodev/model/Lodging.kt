@@ -3,7 +3,6 @@ package com.jmfg.certs.dh.prodev.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.jmfg.certs.dh.prodev.Util
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
-import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
@@ -50,20 +49,6 @@ fun Lodging.toLodgingDto(): LodgingResponse.LodgingItem = LodgingResponse.Lodgin
     grade = Util.getGrade(this.averageCustomerRating),
     distanceFromDownTown = Util.getDistanceFromDownTown(this.address)
 )
-
-
-fun Lodging.matchesSearchCriteria(request: LodgingSearchRequest): Boolean {
-
-    val countryMatch = this.country.contains(request.destination, ignoreCase = true)
-    val cityMatch = this.city.contains(request.destination, ignoreCase = true)
-    val dateMatch =
-        this.availableFrom.toLocalDate() <= request.checkIn && this.availableTo.toLocalDate() >= request.checkOut
-
-    println("Lodging ID: ${this.id} Match: (City ($cityMatch): ${this.city}, Country ($countryMatch): ${this.country}, Request Destination: ${request.destination})")
-    println("Date Match: $dateMatch (Available From: ${this.availableFrom}, Available To: ${this.availableTo}, Check-In: ${request.checkIn}, Check-Out: ${request.checkOut})")
-
-    return countryMatch && cityMatch && dateMatch
-}
 
 enum class Category {
     HOTEL, HOSTEL, DEPARTMENT, BED_AND_BREAKFAST

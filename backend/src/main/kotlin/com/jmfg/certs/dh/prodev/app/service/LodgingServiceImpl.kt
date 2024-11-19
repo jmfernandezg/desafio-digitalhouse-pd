@@ -35,9 +35,7 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
         lodgingRepository.save(this)
     }.toLodgingDto()
 
-    override fun findById(id: String): LodgingItem? =
-        lodgingRepository.findByIdOrNull(id)
-            ?.toLodgingDto()
+    override fun findById(id: String): LodgingItem? = lodgingRepository.findByIdOrNull(id)?.toLodgingDto()
 
     override fun findAll(): LodgingResponse =
         lodgingRepository.findAll().map { it.toLodgingDto() }.let { LodgingResponse(it) }
@@ -57,19 +55,16 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
 
     override fun search(request: LodgingSearchRequest): LodgingResponse =
         lodgingRepository.findLodgingsByLocationAndDates(
-            request.destination,
-            request.checkIn.atStartOfDay(),
-            request.checkOut.atStartOfDay()
+            request.destination, request.checkIn.atStartOfDay(), request.checkOut.atStartOfDay()
         ).map {
             it.toLodgingDto()
         }.run {
             LodgingResponse(this)
         }
 
-    override fun findByCategory(category: Category): LodgingResponse =
-        lodgingRepository.findByCategory(category).map {
-            it.toLodgingDto()
-        }.let { LodgingResponse(it) }
+    override fun findByCategory(category: Category): LodgingResponse = lodgingRepository.findByCategory(category).map {
+        it.toLodgingDto()
+    }.let { LodgingResponse(it) }
 
     override fun delete(id: String) = lodgingRepository.deleteById(id)
 }

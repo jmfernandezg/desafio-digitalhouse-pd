@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { LodgingService } from '../api/LodgingService';
-import { ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {LodgingService} from '../api/LodgingService';
+import {ChevronDown, ChevronLeft, ChevronRight, SlidersHorizontal} from 'lucide-react';
 import LodgingGrid from './LodgingGrid';
 
-const SortDropdown = ({ value, onValueChange }) => {
+const SortDropdown = ({value, onValueChange}) => {
     const [isOpen, setIsOpen] = useState(false);
     const options = [
-        { value: 'price', label: 'Precio' },
-        { value: 'stars', label: 'Estrellas' },
-        { value: 'averageCustomerRating', label: 'Calificación' },
-        { value: 'distanceFromDownTown', label: 'Distancia del Centro' }
+        {value: 'price', label: 'Precio'},
+        {value: 'stars', label: 'Estrellas'},
+        {value: 'averageCustomerRating', label: 'Calificación'},
+        {value: 'distanceFromDownTown', label: 'Distancia del Centro'}
     ];
 
     return (
@@ -19,13 +19,14 @@ const SortDropdown = ({ value, onValueChange }) => {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-gray-200
                    hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
-                <SlidersHorizontal className="w-4 h-4" />
+                <SlidersHorizontal className="w-4 h-4"/>
                 <span>{options.find(opt => opt.value === value)?.label || 'Ordenar por'}</span>
-                <ChevronDown className="w-4 h-4 ml-2" />
+                <ChevronDown className="w-4 h-4 ml-2"/>
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg border border-gray-200 py-1 z-10">
+                <div
+                    className="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg border border-gray-200 py-1 z-10">
                     {options.map((option) => (
                         <button
                             key={option.value}
@@ -46,7 +47,7 @@ const SortDropdown = ({ value, onValueChange }) => {
     );
 };
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => (
+const Pagination = ({currentPage, totalPages, onPageChange}) => (
     <div className="flex justify-center items-center gap-2 mt-8">
         <button
             onClick={() => onPageChange(Math.max(0, currentPage - 1))}
@@ -54,7 +55,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => (
             className="flex items-center gap-1 px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-700
                  hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-            <ChevronLeft className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4"/>
             Anterior
         </button>
 
@@ -81,7 +82,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => (
                  hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
             Siguiente
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4"/>
         </button>
     </div>
 );
@@ -89,18 +90,18 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => (
 const LoadingSkeleton = () => (
     <div className="space-y-6">
         <div className="flex justify-between items-center">
-            <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse" />
-            <div className="h-10 w-40 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse"/>
+            <div className="h-10 w-40 bg-gray-200 rounded-lg animate-pulse"/>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {[...Array(4)].map((_, idx) => (
-                <div key={idx} className="h-64 w-full bg-gray-200 rounded-lg animate-pulse" />
+                <div key={idx} className="h-64 w-full bg-gray-200 rounded-lg animate-pulse"/>
             ))}
         </div>
     </div>
 );
 
-const LodgingCard = ({ category }) => {
+const LodgingCard = ({category}) => {
     const [lodgings, setLodgings] = useState([]);
     const [sortOption, setSortOption] = useState('price');
     const [currentPage, setCurrentPage] = useState(0);
@@ -146,7 +147,7 @@ const LodgingCard = ({ category }) => {
     if (isLoading) {
         return (
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <LoadingSkeleton />
+                <LoadingSkeleton/>
             </div>
         );
     }
@@ -175,7 +176,7 @@ const LodgingCard = ({ category }) => {
                 />
             </div>
 
-            <LodgingGrid lodgings={currentLodgings} />
+            <LodgingGrid lodgings={currentLodgings}/>
 
             <Pagination
                 currentPage={currentPage}

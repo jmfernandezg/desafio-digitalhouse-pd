@@ -1,14 +1,44 @@
 ### Login Request
 POST http://localhost:8080/v1/customer/login
 Content-Type: application/json
-    
-    {
-    "username": "rogelio.becker",
-    "password": "rogelio.becker"
-    }
 
+{
+  "username": "rogelio.becker",
+  "password": "rogelio.becker"
+}
 
+### Create a new customer
+POST http://localhost:8080/v1/customer
+Content-Type: application/json
 
-### Customer list
+{
+  "username": "new.customer",
+  "password": "password123",
+  "email": "new.customer@example.com",
+  "firstName": "New",
+  "lastName": "Customer",
+  "id": "",
+  "dob": "",
+  "reservations": []
+}
 
+### Delete a customer
+DELETE http://localhost:8080/v1/customer?id=customer-id
+
+### Update a customer
+PUT http://localhost:8080/v1/customer
+Content-Type: application/json
+
+{
+  "id": "customer-id",
+  "username": "updated.customer",
+  "password": "newpassword123",
+  "email": "updated.customer@example.com",
+  "firstName": "Updated",
+  "lastName": "Customer",
+  "dob": "",
+  "reservations": []
+}
+
+### Get all customers
 GET http://localhost:8080/v1/customer

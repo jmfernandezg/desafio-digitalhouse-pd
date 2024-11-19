@@ -13,8 +13,7 @@ import org.springframework.boot.runApplication
         version = "1.0",
         description = "Backend API Documentation",
         contact = Contact(
-            name = "Jose Fernandez",
-            email = "jm.fernandez"
+            name = "Jose Fernandez", email = "jm.fernandez"
         )
     )
 )

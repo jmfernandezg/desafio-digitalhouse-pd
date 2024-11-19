@@ -7,7 +7,6 @@ import com.jmfg.certs.dh.prodev.model.dto.CustomerResponse
 import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
 import com.jmfg.certs.dh.prodev.model.toCustomerItem
 import com.jmfg.certs.dh.prodev.service.CustomerService
-import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
 import org.springframework.security.oauth2.jwt.JwtEncoder
@@ -21,17 +20,13 @@ class CustomerServiceImpl(
     private val jwtEncoder: JwtEncoder,
     private val passwordEncoder: PasswordEncoder
 ) : CustomerService {
-
-    private val logger = LoggerFactory.getLogger(CustomerService::class.java.name)
-
-    override fun login(request: LoginRequest): CustomerResponse.CustomerItem? =
-        customerRepository.findByUsername(
-            request.username
-        )?.takeIf {
-            passwordEncoder.matches(request.password, it.password)
-        }?.let {
-            it.toCustomerItem().copy(token = generateToken(it))
-        }
+    override fun login(request: LoginRequest): CustomerResponse.CustomerItem? = customerRepository.findByUsername(
+        request.username
+    )?.takeIf {
+        passwordEncoder.matches(request.password, it.password)
+    }?.let {
+        it.toCustomerItem().copy(token = generateToken(it))
+    }
 
     override fun findAll(): CustomerResponse =
         CustomerResponse(customerRepository.findAll().map { it.toCustomerItem() })
@@ -51,15 +46,10 @@ class CustomerServiceImpl(
     override fun update(customer: Customer): CustomerResponse.CustomerItem =
         customerRepository.save(customer).toCustomerItem()
 
-    private fun generateToken(customer: Customer) =
-        jwtEncoder.encode(
-            JwtEncoderParameters.from(
-                JwtClaimsSet.builder()
-                    .id(customer.id)
-                    .subject(customer.username)
-                    .issuedAt(Instant.now())
-                    .expiresAt(Instant.now().plusSeconds(3600))
-                    .build()
-            )
-        ).tokenValue
+    private fun generateToken(customer: Customer) = jwtEncoder.encode(
+        JwtEncoderParameters.from(
+            JwtClaimsSet.builder().id(customer.id).subject(customer.username).issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(3600)).build()
+        )
+    ).tokenValue
 }

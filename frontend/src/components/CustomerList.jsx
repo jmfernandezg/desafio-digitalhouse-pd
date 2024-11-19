@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Edit, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, {useState} from 'react';
+import {ChevronLeft, ChevronRight, Edit, Trash2} from 'lucide-react';
 import ConfirmDialog from './ConfirmDialog';
 
-function CustomerList({ customers, onEdit, onDelete }) {
+function CustomerList({customers, onEdit, onDelete}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState(null);
@@ -62,14 +62,14 @@ function CustomerList({ customers, onEdit, onDelete }) {
                                         className="p-1 text-blue-600 hover:text-blue-800 transition-colors duration-200"
                                         title="Editar"
                                     >
-                                        <Edit size={18} />
+                                        <Edit size={18}/>
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(customer)}
                                         className="p-1 text-red-600 hover:text-red-800 transition-colors duration-200"
                                         title="Eliminar"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2 size={18}/>
                                     </button>
                                 </div>
                             </td>
@@ -107,7 +107,7 @@ function CustomerList({ customers, onEdit, onDelete }) {
                                 : 'text-gray-700 hover:bg-gray-100'
                             }`}
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft size={20}/>
                         </button>
                         {/* Page Numbers */}
                         <div className="flex items-center gap-1">
@@ -134,7 +134,7 @@ function CustomerList({ customers, onEdit, onDelete }) {
                                 : 'text-gray-700 hover:bg-gray-100'
                             }`}
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight size={20}/>
                         </button>
                     </div>
                 </div>

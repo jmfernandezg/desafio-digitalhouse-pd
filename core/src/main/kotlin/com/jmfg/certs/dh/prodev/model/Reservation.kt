@@ -6,13 +6,9 @@ import java.util.*
 
 @Entity
 data class Reservation(
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String = UUID.randomUUID().toString(),
+    @Id @GeneratedValue(strategy = GenerationType.UUID) val id: String = UUID.randomUUID().toString(),
     val startDate: LocalDateTime = LocalDateTime.now(),
     val endDate: LocalDateTime = LocalDateTime.now(),
-    @ManyToOne
-    val customer: Customer = Customer(),
-    @ManyToOne
-    val lodging: Lodging = Lodging()
+    @ManyToOne val customer: Customer = Customer(),
+    @ManyToOne val lodging: Lodging = Lodging()
 ) : BaseEntity()

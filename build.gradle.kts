@@ -3,7 +3,6 @@ plugins {
     id("org.springframework.boot") version "3.3.5" apply false
     id("io.spring.dependency-management") version "1.1.6" apply false
     kotlin("plugin.spring") version "2.1.0-RC" apply false
-    id("com.github.node-gradle.node") version "7.1.0"
 }
 
 allprojects {
@@ -53,8 +52,4 @@ project(":core") {
     dependencies {
         implementation(kotlin("stdlib"))
     }
-}
-
-project(":frontend") {
-    apply(plugin = "com.github.node-gradle.node")
 }

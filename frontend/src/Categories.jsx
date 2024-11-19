@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { LodgingService } from './api/LodgingService';
+import React, {useEffect, useState} from 'react';
+import {LodgingService} from './api/LodgingService';
 import LodgingCard from './components/LodgingCard';
 
-const CategoryCard = ({ category, onClick }) => (
+const CategoryCard = ({category, onClick}) => (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
         <div className="relative h-0 pb-[50%]"> {/* This creates a 2:1 aspect ratio */}
             <img
@@ -23,8 +23,7 @@ const CategoryCard = ({ category, onClick }) => (
                 {category.numberOfLodgings} disponibles
             </p>
         </div>
-    </div>
-);
+    </div>);
 
 function Categories() {
     const [categories, setCategories] = useState([]);
@@ -54,27 +53,22 @@ function Categories() {
     };
 
     if (error) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-6">
+        return (<div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="bg-red-100 text-red-700 p-4 rounded-lg" role="alert">
                     {error}
                 </div>
-            </div>
-        );
+            </div>);
     }
 
     if (isLoading) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-6">
+        return (<div className="max-w-7xl mx-auto px-4 py-6">
                 <div className="bg-blue-100 text-blue-700 p-4 rounded-lg flex items-center justify-center">
                     Cargando categorías...
                 </div>
-            </div>
-        );
+            </div>);
     }
 
-    return (
-        <div className="max-w-7xl mx-auto px-4 py-6">
+    return (<div className="max-w-7xl mx-auto px-4 py-6">
             {/* Title */}
             <h2 className="text-xl md:text-2xl font-semibold text-blue-900 mb-6">
                 Buscar por tipo de alojamiento
@@ -82,19 +76,16 @@ function Categories() {
 
             {/* Categories Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {categories.map((category, index) => (
-                    <CategoryCard
+                {categories.map((category, index) => (<CategoryCard
                         key={index}
                         category={category}
                         onClick={handleCategoryClick}
-                    />
-                ))}
+                    />))}
             </div>
 
             {/* Lodging Card Component */}
-            {<LodgingCard category={selectedCategory} />}
-        </div>
-    );
+            {<LodgingCard category={selectedCategory}/>}
+        </div>);
 }
 
 export default Categories;

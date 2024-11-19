@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, Loader, MapPin, Search } from 'lucide-react';
-import { DateRange } from 'react-date-range';
-import { es } from 'date-fns/locale';
+import React, {useEffect, useState} from 'react';
+import {Calendar, Loader, MapPin, Search} from 'lucide-react';
+import {DateRange} from 'react-date-range';
+import {es} from 'date-fns/locale';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { LodgingService } from './api/LodgingService';
+import {LodgingService} from './api/LodgingService';
 
-const TextField = ({ startIcon, ...props }) => (
-    <div className="relative flex-1 min-w-[240px]">
+const TextField = ({startIcon, ...props}) => (<div className="relative flex-1 min-w-[240px]">
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
             {startIcon}
         </div>
@@ -16,38 +15,31 @@ const TextField = ({ startIcon, ...props }) => (
         ${props.error ? 'border-red-500' : 'border-gray-300'}`}
             {...props}
         />
-    </div>
-);
+    </div>);
 
-const Suggestions = ({ suggestions, onSelect, onClickAway }) => (
-    <div className="absolute z-50 w-full max-w-[400px] mt-1">
+const Suggestions = ({suggestions, onSelect, onClickAway}) => (<div className="absolute z-50 w-full max-w-[400px] mt-1">
         <div
             className="bg-white rounded-md shadow-lg max-h-[240px] overflow-auto"
             onClick={onClickAway}
         >
-            {suggestions.map((suggestion, index) => (
-                <div
+            {suggestions.map((suggestion, index) => (<div
                     key={index}
                     className="flex items-center gap-2 px-3 py-2 hover:bg-blue-50 cursor-pointer"
                     onClick={() => onSelect(suggestion)}
                     role="option"
                 >
-                    <MapPin className="text-blue-500" size={16} />
+                    <MapPin className="text-blue-500" size={16}/>
                     <span>{suggestion}</span>
-                </div>
-            ))}
+                </div>))}
         </div>
-    </div>
-);
+    </div>);
 
 function SearchBar() {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [cities, setCities] = useState([]);
     const [dateState, setDateState] = useState([{
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection'
+        startDate: new Date(), endDate: new Date(), key: 'selection'
     }]);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -77,9 +69,7 @@ function SearchBar() {
         setQuery(value);
 
         if (value.length > 0) {
-            const filteredSuggestions = cities.filter(city =>
-                city.toLowerCase().includes(value.toLowerCase())
-            );
+            const filteredSuggestions = cities.filter(city => city.toLowerCase().includes(value.toLowerCase()));
             setSuggestions(filteredSuggestions);
         } else {
             setSuggestions([]);
@@ -126,9 +116,8 @@ function SearchBar() {
         setDateState([ranges.selection]);
     };
 
-    return (
-        <div className="w-full max-w-7xl mx-auto mt-[70px] px-2">
-            <div className="m-0 mb-4 mr-4 p-4 bg-gradient-to-br from-blue-900 to-gray-400 rounded-lg">
+    return (<div className="w-full mx-auto">
+            <div className="m-0 mb-4 p-4 bg-gradient-to-br from-blue-900 to-gray-400 rounded-lg">
                 <h2 className="text-2xl md:text-3xl font-bold text-center text-white mb-8">
                     Buscar ofertas en hoteles, casas y mucho más
                 </h2>
@@ -141,18 +130,16 @@ function SearchBar() {
                                 placeholder="¿A dónde vamos?"
                                 value={query}
                                 onChange={handleInputChange}
-                                startIcon={<MapPin size={20} />}
+                                startIcon={<MapPin size={20}/>}
                                 error={Boolean(error && !query)}
                                 aria-label="Destino"
                             />
 
-                            {suggestions.length > 0 && (
-                                <Suggestions
+                            {suggestions.length > 0 && (<Suggestions
                                     suggestions={suggestions}
                                     onSelect={handleSuggestionClick}
                                     onClickAway={() => setSuggestions([])}
-                                />
-                            )}
+                                />)}
                         </div>
 
                         {/* Date Range Input */}
@@ -160,13 +147,12 @@ function SearchBar() {
                             <TextField
                                 value={formatDateRange()}
                                 onClick={() => setShowDatePicker(!showDatePicker)}
-                                startIcon={<Calendar size={20} />}
+                                startIcon={<Calendar size={20}/>}
                                 placeholder="Seleccionar fechas"
                                 readOnly
                             />
 
-                            {showDatePicker && (
-                                <div className="absolute z-50 mt-2">
+                            {showDatePicker && (<div className="absolute z-50 mt-2">
                                     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                                         <DateRange
                                             onChange={handleDateChange}
@@ -181,8 +167,7 @@ function SearchBar() {
                                             showDateDisplay={true}
                                         />
                                     </div>
-                                </div>
-                            )}
+                                </div>)}
                         </div>
                     </div>
 
@@ -193,37 +178,29 @@ function SearchBar() {
                         className="h-14 px-8 whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white rounded-md
               disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        {loading ? (
-                            <>
-                                <Loader className="animate-spin" size={20} />
+                        {loading ? (<>
+                                <Loader className="animate-spin" size={20}/>
                                 Buscando...
-                            </>
-                        ) : (
-                            <>
-                                <Search size={20} />
+                            </>) : (<>
+                                <Search size={20}/>
                                 Buscar
-                            </>
-                        )}
+                            </>)}
                     </button>
                 </div>
 
                 {/* Error Message */}
-                {error && (
-                    <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg" role="alert">
+                {error && (<div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg" role="alert">
                         {error}
-                    </div>
-                )}
+                    </div>)}
 
                 {/* Loading Cities Indicator */}
                 {isLoadingCities && (
                     <div className="mt-4 p-3 bg-blue-100 text-blue-700 rounded-lg flex items-center gap-2">
-                        <Loader className="animate-spin" size={16} />
+                        <Loader className="animate-spin" size={16}/>
                         <span>Cargando ciudades...</span>
-                    </div>
-                )}
+                    </div>)}
             </div>
-        </div>
-    );
+        </div>);
 }
 
 export default SearchBar;
