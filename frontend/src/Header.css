@@ -1,17 +1,6 @@
 /* Header.css */
 header {
-    width: 100%;
     background-color: lightblue;
-    color: #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
 }
 
 .logo {
@@ -22,46 +11,3 @@ header {
     height: 50px;
 }
 
-.tagline {
-    font-size: 1.5em;
-    font-style: italic;
-    margin-left: 20px;
-    color: inherit;
-    text-decoration: none;
-}
-
-
-
-.tagline:hover {
-    text-decoration: none;
-}
-
-
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-    margin-left: auto;
-}
-
-.auth-buttons button {
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 8px 15px;
-    cursor: pointer;
-}
-
-.auth-buttons button:hover {
-    background-color: #e66a00; /* Same hover color as the search bar button */
-}
-
-@media (max-width: 768px) {
-    .tagline {
-        display: none;
-    }
-
-    .auth-buttons button {
-        padding: 6px 10px;
-    }
-}

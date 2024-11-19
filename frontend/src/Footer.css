@@ -1,6 +1,6 @@
 footer {
     width: 100%;
-    background-color: var(--primary-dark); /* Primary color */
+    background: linear-gradient(to bottom right, var(--primary), var(--primary-dark)); /* Dark blue gradient */
     color: #FFFFFF; /* Bright white text */
     display: flex;
     justify-content: space-between;

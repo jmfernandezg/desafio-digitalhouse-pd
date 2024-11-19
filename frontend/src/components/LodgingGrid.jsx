@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardMedia, Typography } from '@mui/material';
-import { Heart, MapPin } from 'lucide-react';
+import {Link} from 'react-router-dom';
+import {Card, CardContent, CardMedia, Typography} from '@mui/material';
+import {Heart, MapPin} from 'lucide-react';
+import './LodgingGrid.css';
 
-function LodgingGrid({ lodgings }) {
+function LodgingGrid({lodgings}) {
     const renderStars = (rating) => {
         const stars = [];
         for (let i = 0; i < 5; i++) {
@@ -17,7 +18,7 @@ function LodgingGrid({ lodgings }) {
     return (
         <div className="grid-container">
             {lodgings.map(lodging => (
-                <Card key={lodging.id} sx={{ maxWidth: 345 }} className="recommendation-card">
+                <Card key={lodging.id} sx={{maxWidth: 345}} className="recommendation-card">
                     <div className="photo-container">
                         <CardMedia
                             component="img"
@@ -32,7 +33,7 @@ function LodgingGrid({ lodgings }) {
                     </div>
                     <CardContent>
                         <Typography variant="h6" component="div">
-                            <Link to={`/lodging/${lodging.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to={`/lodging/${lodging.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                                 {lodging.name}
                             </Link>
                         </Typography>
@@ -46,8 +47,9 @@ function LodgingGrid({ lodgings }) {
                             <div className="stars">{renderStars(lodging.stars)}</div>
                         </div>
                         <Typography variant="body2" color="text.secondary">
-                            <MapPin size={16} /> {lodging.distanceFromDownTown.toFixed(2)} kms del centro
-                            <a href={`https://maps.google.com/?q=${lodging.address}`} target="_blank" rel="noopener noreferrer">
+                            <MapPin size={16}/> {lodging.distanceFromDownTown.toFixed(2)} kms del centro
+                            <a href={`https://maps.google.com/?q=${lodging.address}`} target="_blank"
+                               rel="noopener noreferrer">
                                 MOSTRAR MAPA
                             </a>
                         </Typography>
