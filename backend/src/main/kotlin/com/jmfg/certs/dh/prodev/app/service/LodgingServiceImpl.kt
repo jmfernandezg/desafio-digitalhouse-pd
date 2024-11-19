@@ -7,6 +7,7 @@ import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
+import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
 import com.jmfg.certs.dh.prodev.model.toCapitalizedString
 import com.jmfg.certs.dh.prodev.model.toLodgingDto
 import com.jmfg.certs.dh.prodev.service.LodgingService
@@ -53,6 +54,17 @@ class LodgingServiceImpl(private val lodgingRepository: LodgingRepository) : Lod
     override fun findAllCities(): Set<String> {
         return lodgingRepository.findAllCities()
     }
+
+    override fun search(request: LodgingSearchRequest): LodgingResponse =
+        lodgingRepository.findLodgingsByLocationAndDates(
+            request.destination,
+            request.checkIn.atStartOfDay(),
+            request.checkOut.atStartOfDay()
+        ).map {
+            it.toLodgingDto()
+        }.run {
+            LodgingResponse(this)
+        }
 
     override fun findByCategory(category: Category): LodgingResponse =
         lodgingRepository.findByCategory(category).map {

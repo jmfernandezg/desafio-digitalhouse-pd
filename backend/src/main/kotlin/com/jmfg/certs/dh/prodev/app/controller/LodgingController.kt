@@ -5,6 +5,7 @@ import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
+import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
 import com.jmfg.certs.dh.prodev.service.LodgingService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -37,4 +38,8 @@ class LodgingController(private val lodgingService: LodgingService) {
 
     @GetMapping("/cities")
     fun getAllCities(): Set<String> = lodgingService.findAllCities()
+
+    @PostMapping("/search")
+    fun searchLodgings(@RequestBody request: LodgingSearchRequest): LodgingResponse =
+        lodgingService.search(request)
 }

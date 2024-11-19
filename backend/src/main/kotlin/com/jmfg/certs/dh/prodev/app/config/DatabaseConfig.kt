@@ -53,8 +53,9 @@ class DatabaseConfig(
                     description = faker.company().bs(),
                     category = category,
                     isFavorite = faker.bool().bool(),
+
                     availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
-                    availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(1, 30).toLong())
+                    availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(30, 60).toLong())
                 ).run {
                     lodgingRepository.save(this)
                 }.also { lodging ->

@@ -24,6 +24,11 @@ export const LodgingService = {
 
     deleteLodging: (id) =>
         apiClient.delete(API_CONFIG.ENDPOINTS.LODGING.BY_ID.replace('{id}', id))
-            .then(response => response.data)
+            .then(response => response.data),
+
+    search: (searchRequest) =>
+        apiClient.post(API_CONFIG.ENDPOINTS.LODGING.SEARCH, searchRequest)
+            .then(response => response.data),
+
 
 };

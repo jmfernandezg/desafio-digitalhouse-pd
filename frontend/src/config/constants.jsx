@@ -4,11 +4,12 @@ export const API_CONFIG = {
         : '/api/v1',
     ENDPOINTS: {
         LODGING: {
+            ALL: '/lodging',
             CATEGORIES: '/lodging/categories',
             CITIES: '/lodging/cities',
             BY_CATEGORY: '/lodging/categories/{category}',
             BY_ID: '/lodging/{id}',
-            ALL: '/lodging',
+            SEARCH: '/lodging/search'
         }
     }
 };

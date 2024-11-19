@@ -6,6 +6,7 @@ import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
+import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
 
 interface LodgingService {
     fun findById(id: String): LodgingItem?
@@ -16,4 +17,5 @@ interface LodgingService {
     fun findAllCategories(): CategoryResponse
     fun findByCategory(category: Category): LodgingResponse
     fun findAllCities(): Set<String>
+    fun search(request: LodgingSearchRequest): LodgingResponse
 }

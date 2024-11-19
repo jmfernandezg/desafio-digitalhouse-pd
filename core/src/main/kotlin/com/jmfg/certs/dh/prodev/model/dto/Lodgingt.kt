@@ -1,6 +1,7 @@
 package com.jmfg.certs.dh.prodev.model.dto
 
 import com.jmfg.certs.dh.prodev.model.Category
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class LodgingCreationRequest(
@@ -13,6 +14,12 @@ data class LodgingCreationRequest(
     val category: Category,
     val availableFrom: LocalDateTime,
     val availableTo: LocalDateTime
+)
+
+data class LodgingSearchRequest(
+    val destination: String,
+    val checkIn: LocalDate,
+    val checkOut: LocalDate
 )
 
 data class LodgingResponse(val lodgings: List<LodgingItem>) {
