@@ -92,7 +92,7 @@ function Categories() {
             </div>
 
             {/* Lodging Card Component */}
-            { <LodgingCard category={selectedCategory} />}
+            {<LodgingCard category={selectedCategory} />}
         </div>
     );
 }
