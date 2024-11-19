@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { LodgingService } from './api/LodgingService';
+import React, {useEffect, useState} from 'react';
+import {LodgingService} from './api/LodgingService';
 import CustomerService from './api/CustomerService';
 import LodgingForm from './components/LodgingForm';
 import LodgingList from './components/LodgingList';
 import CustomerForm from './components/CustomerForm';
 import CustomerList from './components/CustomerList';
-import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
+import {ChevronUp, Plus} from 'lucide-react';
 
-const TabButton = ({ active, children, onClick }) => (
+const TabButton = ({active, children, onClick}) => (
     <button
         onClick={onClick}
         className={`px-4 py-2 font-medium text-sm rounded-t-lg transition-colors duration-200
@@ -20,7 +20,7 @@ const TabButton = ({ active, children, onClick }) => (
     </button>
 );
 
-const Section = ({ title, children, isFormOpen, setIsFormOpen, form }) => (
+const Section = ({title, children, isFormOpen, setIsFormOpen, form}) => (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
@@ -31,12 +31,12 @@ const Section = ({ title, children, isFormOpen, setIsFormOpen, form }) => (
             >
                 {isFormOpen ? (
                     <>
-                        <ChevronUp size={20} />
+                        <ChevronUp size={20}/>
                         Cerrar formulario
                     </>
                 ) : (
                     <>
-                        <Plus size={20} />
+                        <Plus size={20}/>
                         Agregar nuevo
                     </>
                 )}
