@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-
 import Header from './Header';
 import SearchBar from './SearchBar';
 import Categories from './Categories';
-import Lodgings from './Lodgings';
+import LodgingCard from './components/LodgingCard';
 import LodgingDetail from './components/LodgingDetail';
 import Footer from './Footer';
 import './App.css';
@@ -30,7 +30,7 @@ function MainContent() {
             <div className="main">
                 <Routes>
                     <Route path="/" element={<Categories />} />
-                    <Route path="/lodgings" element={<Lodgings />} />
+                    <Route path="/lodgings" element={<LodgingCard />} />
                     <Route path="/lodging/:id" element={<LodgingDetail />} />
                     <Route path="/admin" element={<Admin />} />
                 </Routes>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { LodgingService } from './api/LodgingService';
+import { LodgingService } from '../api/LodgingService';
 import ReactPaginate from 'react-paginate';
-import LodgingGrid from './components/LodgingGrid';
-import SortDropdown from './components/SortDropdown';
-import './Lodgings.css';
+import LodgingGrid from './LodgingGrid';
+import SortDropdown from './SortDropdown';
+import './LodgingCard.css';
 
-function Lodgings({ category }) {
+function LodgingCard({ category }) {
+    console.log('category:', category);
     const [lodgings, setLodgings] = useState([]);
     const [sortOption, setSortOption] = useState('price');
     const [currentPage, setCurrentPage] = useState(0);
@@ -14,9 +15,16 @@ function Lodgings({ category }) {
     useEffect(() => {
         const fetchLodgings = async () => {
             try {
-                const data = category
-                    ? await LodgingService.getLodgingsByCategory(category)
-                    : await LodgingService.getAllLodgings();
+                let data;
+                if (category) {
+                    data = await LodgingService.getLodgingsByCategory(category);
+                } else {
+                    data = await LodgingService.getAllLodgings();
+                    data.lodgings = data.lodgings
+                        .sort((a, b) => b.averageCustomerRating - a.averageCustomerRating || b.stars - a.stars)
+                        .slice(0, 20)
+                        .sort(() => Math.random() - 0.5);
+                }
                 const sortedLodgings = sortLodgings(data.lodgings, sortOption);
                 setLodgings(sortedLodgings);
             } catch (error) {
@@ -62,4 +70,4 @@ function Lodgings({ category }) {
     );
 }
 
-export default Lodgings;
+export default LodgingCard;

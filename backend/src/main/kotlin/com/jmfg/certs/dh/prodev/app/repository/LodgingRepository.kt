@@ -23,7 +23,7 @@ interface LodgingRepository : JpaRepository<Lodging, String> {
     @Query("SELECT DISTINCT CONCAT(l.city, ', ', l.country) FROM Lodging l")
     fun findAllCities(): Set<String>
 
-    @Query("SELECT l FROM Lodging l WHERE :location LIKE CONCAT('%', l.city, '%') AND :location LIKE CONCAT('%', l.country, '%') AND l.availableFrom <= :checkIn AND l.availableTo >= :checkOut")
+    @Query("SELECT l FROM Lodging l WHERE (:location LIKE CONCAT('%', l.city, '%') OR :location LIKE CONCAT('%', l.country, '%')) AND l.availableFrom <= :checkIn AND l.availableTo >= :checkOut")
     fun findLodgingsByLocationAndDates(
         @Param("location") location: String,
         @Param("checkIn") checkIn: LocalDateTime,

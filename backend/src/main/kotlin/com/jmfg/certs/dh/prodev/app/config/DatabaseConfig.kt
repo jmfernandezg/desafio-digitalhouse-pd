@@ -41,30 +41,33 @@ class DatabaseConfig(
     private fun populateLodgings(faker: Faker) {
         Category.entries.forEach { category ->
             logger.info("Populating lodgings for category ${category.name}")
-            repeat(Random.nextInt(50, 100)) {
-                Lodging(
-                    name = faker.company().name(),
-                    address = faker.address().fullAddress(),
-                    city = faker.address().city(),
-                    country = faker.address().country(),
-                    averageCustomerRating = faker.number().numberBetween(1, 10),
-                    stars = faker.number().numberBetween(1, 5),
-                    price = faker.number().randomDouble(2, 50, 500),
-                    description = faker.company().bs(),
-                    category = category,
-                    isFavorite = faker.bool().bool(),
-
-                    availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
-                    availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(30, 60).toLong())
-                ).run {
-                    lodgingRepository.save(this)
-                }.also { lodging ->
-                    repeat(Random.nextInt(4, 8)) {
-                        Photo(
-                            url = faker.internet().image(),
-                            lodging = lodging
-                        ).run {
-                            photoRepository.save(this)
+            repeat(Random.nextInt(5, 10)) {
+                val city = faker.address().city()
+                val country = faker.address().country()
+                repeat(Random.nextInt(10, 15)) {
+                    Lodging(
+                        name = faker.company().name(),
+                        address = faker.address().fullAddress(),
+                        city = city,
+                        country = country,
+                        averageCustomerRating = faker.number().numberBetween(1, 10),
+                        stars = faker.number().numberBetween(1, 5),
+                        price = faker.number().randomDouble(2, 50, 500),
+                        description = faker.company().bs(),
+                        category = category,
+                        isFavorite = faker.bool().bool(),
+                        availableFrom = LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30).toLong()),
+                        availableTo = LocalDateTime.now().plusDays(faker.number().numberBetween(30, 60).toLong())
+                    ).run {
+                        lodgingRepository.save(this)
+                    }.also { lodging ->
+                        repeat(Random.nextInt(4, 8)) {
+                            Photo(
+                                url = faker.internet().image(),
+                                lodging = lodging
+                            ).run {
+                                photoRepository.save(this)
+                            }
                         }
                     }
                 }
@@ -73,7 +76,7 @@ class DatabaseConfig(
     }
 
     private fun populateCustomers(faker: Faker, passwordEncoder: PasswordEncoder) {
-        repeat(Random.nextInt(200, 300)) {
+        repeat(Random.nextInt(10, 30)) {
             val username = faker.internet().username()
             Customer(
                 username = username,
