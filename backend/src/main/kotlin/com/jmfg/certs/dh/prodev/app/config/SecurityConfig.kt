@@ -22,41 +22,80 @@ import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.time.Instant
 
+/**
+ * Configuración de seguridad para la aplicación
+ *
+ * Esta clase maneja la configuración de seguridad, incluyendo:
+ * - Codificación de contraseñas
+ * - Generación y codificación de tokens JWT
+ * - Configuración de pares de claves RSA
+ *
+ * @property logger Registrador para eventos de seguridad
+ */
 @Configuration
 class SecurityConfig {
-    val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+    companion object {
+        private const val KEY_SIZE = 2048
+        private const val TOKEN_VALIDITY_SECONDS = 3600L
+        private const val RSA_ALGORITHM = "RSA"
+    }
 
+    private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+
+    /**
+     * Proporciona el codificador de contraseñas para la aplicación
+     *
+     * @return Instancia de BCryptPasswordEncoder para el hash seguro de contraseñas
+     */
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
+    /**
+     * Configura el codificador JWT utilizando claves RSA
+     *
+     * @param keyPair Par de claves RSA para firmar y verificar tokens
+     * @return Codificador JWT configurado
+     */
     @Bean
     fun jwtEncoder(keyPair: KeyPair): JwtEncoder {
-        return NimbusJwtEncoder(
-            ImmutableJWKSet(
-                JWKSet(
-                    RSAKey.Builder(keyPair.public as RSAPublicKey).privateKey(keyPair.private as RSAPrivateKey)
-                        .algorithm(JWSAlgorithm.RS256).build()
-                )
-            )
-        )
+        val rsaKey = RSAKey.Builder(keyPair.public as RSAPublicKey)
+            .privateKey(keyPair.private as RSAPrivateKey)
+            .algorithm(JWSAlgorithm.RS256)
+            .build()
+
+        val jwkSet = JWKSet(rsaKey)
+        return NimbusJwtEncoder(ImmutableJWKSet(jwkSet))
     }
 
+    /**
+     * Genera un par de claves RSA para el ambiente de desarrollo
+     *
+     * @return Par de claves RSA de 2048 bits
+     */
     @Bean
     @Profile("dev")
-    fun keyPair(): KeyPair = KeyPairGenerator.getInstance("RSA").apply {
-        initialize(2048)
+    fun keyPair(): KeyPair = KeyPairGenerator.getInstance(RSA_ALGORITHM).apply {
+        initialize(KEY_SIZE)
     }.generateKeyPair()
 
-
+    /**
+     * Genera un token JWT de prueba durante el inicio de la aplicación en ambiente de desarrollo
+     *
+     * @param jwtEncoder Codificador JWT configurado
+     * @return CommandLineRunner que genera y registra un token de prueba
+     */
     @Bean
     @Profile("dev")
     fun testJwtTokenCreation(jwtEncoder: JwtEncoder) = CommandLineRunner {
-        JwtClaimsSet.builder().issuer("test-issuer").subject("test-subject").issuedAt(Instant.now())
-            .expiresAt(Instant.now().plusSeconds(3600)).claim("scope", "test-scope").build().run {
-                jwtEncoder.encode(JwtEncoderParameters.from(this)).tokenValue.also {
-                    logger.info("Generated dev token: $it")
-                }
-            }
+        val claims = JwtClaimsSet.builder()
+            .issuer("test-issuer")
+            .subject("test-subject")
+            .issuedAt(Instant.now())
+            .expiresAt(Instant.now().plusSeconds(TOKEN_VALIDITY_SECONDS))
+            .claim("scope", "test-scope")
+            .build()
+
+        val token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
+        logger.info("Token de desarrollo generado: $token")
     }
 }
-

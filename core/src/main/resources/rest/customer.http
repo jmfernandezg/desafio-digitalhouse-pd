@@ -1,44 +1,117 @@
-### Login Request
-POST http://localhost:8080/v1/customer/login
+### Variables globales
+@host = http://localhost:8080/v1/customer
+@login = variable value
+@authToken = {{login.response.body.authToken}}
+
+### Login de cliente
+# @name login
+POST {{host}}/login
 Content-Type: application/json
 
 {
-  "username": "rogelio.becker",
-  "password": "rogelio.becker"
-}
-
-### Create a new customer
-POST http://localhost:8080/v1/customer
-Content-Type: application/json
-
-{
-  "username": "new.customer",
+  "email": "john.doe@example.com",
   "password": "password123",
-  "email": "new.customer@example.com",
-  "firstName": "New",
-  "lastName": "Customer",
-  "id": "",
-  "dob": "",
-  "reservations": []
+  "username": ""
 }
 
-### Delete a customer
-DELETE http://localhost:8080/v1/customer?id=customer-id
-
-### Update a customer
-PUT http://localhost:8080/v1/customer
+### Crear nuevo cliente
+POST {{host}}
 Content-Type: application/json
 
 {
-  "id": "customer-id",
-  "username": "updated.customer",
-  "password": "newpassword123",
-  "email": "updated.customer@example.com",
-  "firstName": "Updated",
-  "lastName": "Customer",
-  "dob": "",
-  "reservations": []
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com",
+  "password": "securePass123",
+  "phone": "+1234567890",
+  "address": "123 Main St, City"
 }
 
-### Get all customers
-GET http://localhost:8080/v1/customer
+### Obtener todos los clientes
+GET {{host}}
+Authorization: Bearer {{authToken}}
+
+### Actualizar cliente
+PUT {{host}}/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "firstName": "Jane",
+  "lastName": "Smith-Updated",
+  "email": "jane.updated@example.com",
+  "phone": "+1987654321",
+  "address": "456 New Ave, City"
+}
+
+### Eliminar cliente
+DELETE {{host}}/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{authToken}}
+
+### Test con datos inválidos - Login
+POST {{host}}/login
+Content-Type: application/json
+
+{
+  "email": "invalid@email",
+  "password": ""
+}
+
+### Test con datos inválidos - Crear cliente
+POST {{host}}
+Content-Type: application/json
+
+{
+  "firstName": "",
+  "lastName": "",
+  "email": "invalid-email",
+  "password": "short",
+  "phone": "invalid-phone",
+  "address": ""
+}
+
+### Test con datos inválidos - Actualizar cliente
+PUT {{host}}/wrong-id
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "id": "different-id",
+  "firstName": "",
+  "lastName": "",
+  "email": "invalid-email",
+  "phone": "invalid-phone",
+  "address": ""
+}
+
+### Test - Cliente no encontrado
+GET {{host}}/non-existent-id
+Authorization: Bearer {{authToken}}
+
+### Test - Actualizar con ID no coincidente
+PUT {{host}}/123
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "id": "456",
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane@example.com",
+  "phone": "+1234567890",
+  "address": "123 Main St"
+}
+
+### Test - Crear cliente duplicado
+POST {{host}}
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "phone": "+1234567890",
+  "address": "123 Main St, City"
+}
