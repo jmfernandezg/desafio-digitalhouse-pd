@@ -42,7 +42,7 @@ class CustomerServiceImpl(
      * @return Información del cliente con token JWT si las credenciales son válidas
      */
     @Transactional(readOnly = true)
-    override fun login(request: LoginRequest): CustomerResponse.CustomerItem? {
+    override suspend fun login(request: LoginRequest): CustomerResponse.CustomerItem? {
         logger.debug("Intento de inicio de sesión para usuario: ${request.username}")
 
         return customerRepository.findByUsername(request.username)?.let { customer ->
@@ -64,7 +64,7 @@ class CustomerServiceImpl(
      * @return Lista de todos los clientes en el sistema
      */
     @Transactional(readOnly = true)
-    override fun findAll(): CustomerResponse {
+    override suspend fun findAll(): CustomerResponse {
         logger.debug("Consultando todos los clientes")
         return CustomerResponse(customerRepository.findAll().map { it.toCustomerItem() })
     }
@@ -77,7 +77,7 @@ class CustomerServiceImpl(
      * @throws IllegalArgumentException si el nombre de usuario o email ya existen
      */
     @Transactional
-    override fun create(request: CustomerCreationRequest): CustomerResponse.CustomerItem {
+    override suspend fun create(request: CustomerCreationRequest): CustomerResponse.CustomerItem {
         logger.debug("Creando nuevo cliente: ${request.username}")
 
         validarDatosCliente(request)
@@ -102,7 +102,7 @@ class CustomerServiceImpl(
      * @throws NoSuchElementException si el cliente no existe
      */
     @Transactional
-    override fun delete(id: String) {
+    override suspend fun delete(id: String) {
         logger.debug("Eliminando cliente con ID: $id")
 
         if (!customerRepository.existsById(id)) {
@@ -122,7 +122,7 @@ class CustomerServiceImpl(
      * @throws NoSuchElementException si el cliente no existe
      */
     @Transactional
-    override fun update(customer: Customer): CustomerResponse.CustomerItem {
+    override suspend fun update(customer: Customer): CustomerResponse.CustomerItem {
         logger.debug("Actualizando cliente con ID: ${customer.id}")
 
         if (!customerRepository.existsById(customer.id)) {

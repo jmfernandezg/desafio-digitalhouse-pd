@@ -5,7 +5,7 @@ import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,7 +40,7 @@ class SecurityConfig {
         private const val RSA_ALGORITHM = "RSA"
     }
 
-    private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+    private val logger: Logger = getLogger(SecurityConfig::class.java)
 
     /**
      * Proporciona el codificador de contraseñas para la aplicación

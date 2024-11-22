@@ -2,6 +2,7 @@ package com.jmfg.certs.dh.prodev.app.controller
 
 import com.jmfg.certs.dh.prodev.model.Reservation
 import com.jmfg.certs.dh.prodev.model.dto.ReservationCreationRequest
+import com.jmfg.certs.dh.prodev.model.dto.ReservationResponse
 import com.jmfg.certs.dh.prodev.service.ReservationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -9,11 +10,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import jakarta.validation.Valid
 
 /**
  * Controlador para la gestión de reservas
@@ -46,20 +47,22 @@ class ReservationController(
         summary = "Crear reserva",
         description = "Registra una nueva reserva de alojamiento con los datos proporcionados"
     )
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "201",
-            description = "Reserva creada exitosamente",
-            content = [Content(schema = Schema(implementation = Reservation::class))]
-        ),
-        ApiResponse(responseCode = "400", description = "Datos de reserva inválidos"),
-        ApiResponse(responseCode = "409", description = "Conflicto de disponibilidad")
-    ])
-    fun create(
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201",
+                description = "Reserva creada exitosamente",
+                content = [Content(schema = Schema(implementation = Reservation::class))]
+            ),
+            ApiResponse(responseCode = "400", description = "Datos de reserva inválidos"),
+            ApiResponse(responseCode = "409", description = "Conflicto de disponibilidad")
+        ]
+    )
+    suspend fun create(
         @Valid @RequestBody createRequest: ReservationCreationRequest
     ): ResponseEntity<Reservation> =
         try {
-            reservationService.create(createRequest)?.let {
+            reservationService.create(createRequest).let {
                 ResponseEntity.status(HttpStatus.CREATED).body(it)
             } ?: throw ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -82,14 +85,16 @@ class ReservationController(
         summary = "Listar reservas",
         description = "Recupera la lista completa de reservas registradas en el sistema"
     )
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "200",
-            description = "Lista de reservas recuperada exitosamente",
-            content = [Content(schema = Schema(implementation = Reservation::class))]
-        )
-    ])
-    fun findAll(): ResponseEntity<List<Reservation>> =
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de reservas recuperada exitosamente",
+                content = [Content(schema = Schema(implementation = Reservation::class))]
+            )
+        ]
+    )
+    suspend fun findAll(): ResponseEntity<ReservationResponse> =
         ResponseEntity.ok(reservationService.findAll())
 
     /**
@@ -104,17 +109,19 @@ class ReservationController(
         summary = "Buscar reserva",
         description = "Obtiene los detalles de una reserva específica usando su identificador"
     )
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "200",
-            description = "Reserva encontrada exitosamente"
-        ),
-        ApiResponse(
-            responseCode = "404",
-            description = "Reserva no encontrada"
-        )
-    ])
-    fun findById(@PathVariable id: String): ResponseEntity<Reservation> =
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Reserva encontrada exitosamente"
+            ),
+            ApiResponse(
+                responseCode = "404",
+                description = "Reserva no encontrada"
+            )
+        ]
+    )
+    suspend fun findById(@PathVariable id: String): ResponseEntity<Reservation> =
         reservationService.findById(id)?.let {
             ResponseEntity.ok(it)
         } ?: throw ResponseStatusException(
@@ -135,18 +142,20 @@ class ReservationController(
         summary = "Actualizar reserva",
         description = "Modifica los datos de una reserva existente"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Reserva actualizada exitosamente"),
-        ApiResponse(responseCode = "400", description = "Datos de actualización inválidos"),
-        ApiResponse(responseCode = "404", description = "Reserva no encontrada"),
-        ApiResponse(responseCode = "409", description = "Conflicto en la actualización")
-    ])
-    fun update(
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Reserva actualizada exitosamente"),
+            ApiResponse(responseCode = "400", description = "Datos de actualización inválidos"),
+            ApiResponse(responseCode = "404", description = "Reserva no encontrada"),
+            ApiResponse(responseCode = "409", description = "Conflicto en la actualización")
+        ]
+    )
+    suspend fun update(
         @PathVariable id: String,
         @Valid @RequestBody reservation: Reservation
     ): ResponseEntity<Reservation> =
         if (id == reservation.id) {
-            reservationService.update(reservation)?.let {
+            reservationService.update(reservation).let {
                 ResponseEntity.ok(it)
             } ?: throw ResponseStatusException(
                 HttpStatus.NOT_FOUND,
@@ -170,11 +179,13 @@ class ReservationController(
         summary = "Cancelar reserva",
         description = "Cancela y elimina una reserva existente del sistema"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "204", description = "Reserva cancelada exitosamente"),
-        ApiResponse(responseCode = "404", description = "Reserva no encontrada")
-    ])
-    fun delete(@PathVariable id: String): ResponseEntity<Void> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "Reserva cancelada exitosamente"),
+            ApiResponse(responseCode = "404", description = "Reserva no encontrada")
+        ]
+    )
+    suspend fun delete(@PathVariable id: String): ResponseEntity<Void> =
         try {
             reservationService.delete(id)
             ResponseEntity.noContent().build()

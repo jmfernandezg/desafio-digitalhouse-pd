@@ -13,11 +13,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import jakarta.validation.Valid
 
 /**
  * Controlador para la gestión de alojamientos
@@ -44,14 +44,16 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Obtener categorías",
         description = "Recupera la lista de todas las categorías de alojamientos disponibles"
     )
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "200",
-            description = "Categorías recuperadas exitosamente",
-            content = [Content(schema = Schema(implementation = CategoryResponse::class))]
-        )
-    ])
-    fun getAllCategories(): ResponseEntity<CategoryResponse> =
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Categorías recuperadas exitosamente",
+                content = [Content(schema = Schema(implementation = CategoryResponse::class))]
+            )
+        ]
+    )
+    suspend fun getAllCategories(): ResponseEntity<CategoryResponse> =
         ResponseEntity.ok(lodgingService.findAllCategories())
 
     /**
@@ -65,11 +67,13 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Buscar por categoría",
         description = "Recupera todos los alojamientos de una categoría específica"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Alojamientos encontrados"),
-        ApiResponse(responseCode = "400", description = "Categoría inválida")
-    ])
-    fun getLodgingsByCategory(@PathVariable category: String): ResponseEntity<LodgingResponse> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Alojamientos encontrados"),
+            ApiResponse(responseCode = "400", description = "Categoría inválida")
+        ]
+    )
+    suspend fun getLodgingsByCategory(@PathVariable category: String): ResponseEntity<LodgingResponse> =
         try {
             ResponseEntity.ok(lodgingService.findByCategory(Util.toCategory(category)))
         } catch (e: IllegalArgumentException) {
@@ -87,11 +91,13 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Buscar por ID",
         description = "Recupera un alojamiento específico por su identificador único"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Alojamiento encontrado"),
-        ApiResponse(responseCode = "404", description = "Alojamiento no encontrado")
-    ])
-    fun getLodgingById(@PathVariable id: String): ResponseEntity<LodgingItem> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Alojamiento encontrado"),
+            ApiResponse(responseCode = "404", description = "Alojamiento no encontrado")
+        ]
+    )
+    suspend fun getLodgingById(@PathVariable id: String): ResponseEntity<LodgingItem> =
         lodgingService.findById(id)?.let {
             ResponseEntity.ok(it)
         } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Alojamiento no encontrado")
@@ -106,13 +112,15 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Listar alojamientos",
         description = "Recupera la lista completa de alojamientos disponibles"
     )
-    @ApiResponses(value = [
-        ApiResponse(
-            responseCode = "200",
-            description = "Lista de alojamientos recuperada exitosamente"
-        )
-    ])
-    fun getAllLodgings(): ResponseEntity<LodgingResponse> =
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Lista de alojamientos recuperada exitosamente"
+            )
+        ]
+    )
+    suspend fun getAllLodgings(): ResponseEntity<LodgingResponse> =
         ResponseEntity.ok(lodgingService.findAll())
 
     /**
@@ -126,11 +134,13 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Crear alojamiento",
         description = "Registra un nuevo alojamiento con los datos proporcionados"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "201", description = "Alojamiento creado exitosamente"),
-        ApiResponse(responseCode = "400", description = "Datos inválidos")
-    ])
-    fun createLodging(@Valid @RequestBody request: LodgingCreationRequest): ResponseEntity<LodgingItem> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "Alojamiento creado exitosamente"),
+            ApiResponse(responseCode = "400", description = "Datos inválidos")
+        ]
+    )
+    suspend fun createLodging(@Valid @RequestBody request: LodgingCreationRequest): ResponseEntity<LodgingItem> =
         ResponseEntity.status(HttpStatus.CREATED)
             .body(lodgingService.create(request))
 
@@ -144,11 +154,13 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Eliminar alojamiento",
         description = "Elimina un alojamiento existente usando su identificador"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "204", description = "Alojamiento eliminado exitosamente"),
-        ApiResponse(responseCode = "404", description = "Alojamiento no encontrado")
-    ])
-    fun deleteLodging(@PathVariable id: String): ResponseEntity<Void> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "204", description = "Alojamiento eliminado exitosamente"),
+            ApiResponse(responseCode = "404", description = "Alojamiento no encontrado")
+        ]
+    )
+    suspend fun deleteLodging(@PathVariable id: String): ResponseEntity<Void> =
         lodgingService.delete(id).let {
             ResponseEntity.noContent().build()
         }
@@ -163,10 +175,12 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Listar ciudades",
         description = "Recupera la lista de todas las ciudades que tienen alojamientos disponibles"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Lista de ciudades recuperada exitosamente")
-    ])
-    fun getAllCities(): ResponseEntity<Set<String>> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Lista de ciudades recuperada exitosamente")
+        ]
+    )
+    suspend fun getAllCities(): ResponseEntity<Set<String>> =
         ResponseEntity.ok(lodgingService.findAllCities())
 
     /**
@@ -180,10 +194,12 @@ class LodgingController(private val lodgingService: LodgingService) {
         summary = "Buscar alojamientos",
         description = "Busca alojamientos que cumplan con los criterios especificados"
     )
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),
-        ApiResponse(responseCode = "400", description = "Criterios de búsqueda inválidos")
-    ])
-    fun searchLodgings(@Valid @RequestBody request: LodgingSearchRequest): ResponseEntity<LodgingResponse> =
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Búsqueda realizada exitosamente"),
+            ApiResponse(responseCode = "400", description = "Criterios de búsqueda inválidos")
+        ]
+    )
+    suspend fun searchLodgings(@Valid @RequestBody request: LodgingSearchRequest): ResponseEntity<LodgingResponse> =
         ResponseEntity.ok(lodgingService.search(request))
 }

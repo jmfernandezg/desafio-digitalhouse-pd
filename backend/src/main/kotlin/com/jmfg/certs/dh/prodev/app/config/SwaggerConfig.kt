@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 class SwaggerConfig(
-    @Value("\${appap.version:1.0.0}") private val appVersion: String,
+    @Value("\${app.version:1.0.0}") private val appVersion: String,
     @Value("\${app.name:API de Alojamientos}") private val appName: String
 ) {
 
