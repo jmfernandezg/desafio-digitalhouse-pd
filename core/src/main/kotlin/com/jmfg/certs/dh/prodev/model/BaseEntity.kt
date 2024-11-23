@@ -110,11 +110,6 @@ abstract class BaseEntity {
 
     companion object {
         /**
-         * Cantidad predeterminada de días para considerar una entidad como reciente
-         */
-        const val DEFAULT_RECENT_DAYS = 7L
-
-        /**
          * Formatea una fecha para mostrar
          *
          * @param dateTime Fecha a formatear

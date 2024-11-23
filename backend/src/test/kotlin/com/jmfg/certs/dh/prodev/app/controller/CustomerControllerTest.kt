@@ -1,42 +1,25 @@
 package com.jmfg.certs.dh.prodev.app.controller
 
-import com.jmfg.certs.dh.prodev.model.Customer
-import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
-import com.jmfg.certs.dh.prodev.model.dto.CustomerResponse
-import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
+import com.jmfg.certs.dh.prodev.model.dto.*
 import com.jmfg.certs.dh.prodev.service.CustomerService
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.time.LocalDate
 
-/**
- * Pruebas unitarias para CustomerController
- *
- * Esta clase contiene pruebas exhaustivas para validar el comportamiento
- * del controlador REST de clientes, incluyendo:
- *
- * - Autenticación y generación de tokens
- * - Gestión de errores HTTP
- * - Operaciones CRUD de clientes
- * - Validación de respuestas HTTP
- */
+@DisplayName("CustomerController Tests")
 class CustomerControllerTest {
-    private lateinit var customerController: CustomerController
-    private lateinit var customerService: CustomerService
 
-    private val testCustomer = CustomerResponse.CustomerItem(
-        id = "1",
-        username = "testuser",
-        email = "test@example.com",
-        firstName = "Test",
-        lastName = "User",
-        token = "test-jwt-token"
-    )
+    private lateinit var customerService: CustomerService
+    private lateinit var customerController: CustomerController
 
     @BeforeEach
     fun setup() {
@@ -44,219 +27,206 @@ class CustomerControllerTest {
         customerController = CustomerController(customerService)
     }
 
-    /**
-     * Pruebas de login
-     *
-     * Verifica:
-     * - Login exitoso con token
-     * - Login fallido por credenciales inválidas
-     * - Login fallido por usuario no encontrado
-     */
-    @Test
-    fun `login debería retornar token cuando las credenciales son válidas`() {
-        // Arrange
-        val loginRequest = LoginRequest("testuser", "password123")
-        every { customerService.login(loginRequest) } returns testCustomer
-
-        // Act
-        val response = customerController.login(loginRequest)
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals("test-jwt-token", response.body?.authToken)
-        assertNull(response.body?.error)
-        verify { customerService.login(loginRequest) }
-    }
-
-    @Test
-    fun `login debería retornar 401 cuando las credenciales son inválidas`() {
-        // Arrange
-        val loginRequest = LoginRequest("testuser", "wrongpass")
-        every { customerService.login(loginRequest) } returns testCustomer.copy(token = null)
-
-        // Act
-        val response = customerController.login(loginRequest)
-
-        // Assert
-        assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
-        assertNotNull(response.body?.error)
-        verify { customerService.login(loginRequest) }
-    }
-
-    @Test
-    fun `login debería retornar 404 cuando el usuario no existe`() {
-        // Arrange
-        val loginRequest = LoginRequest("nonexistent", "password123")
-        every { customerService.login(loginRequest) } returns null
-
-        // Act
-        val response = customerController.login(loginRequest)
-
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        assertNotNull(response.body?.error)
-        verify { customerService.login(loginRequest) }
-    }
-
-    /**
-     * Pruebas de creación de cliente
-     *
-     * Verifica:
-     * - Creación exitosa
-     * - Manejo de cliente duplicado
-     */
-    @Test
-    fun `create debería retornar 201 cuando el cliente es creado exitosamente`() {
-        // Arrange
-        val request = CustomerCreationRequest(
-            username = "newuser",
-            password = "password123",
-            email = "new@example.com",
-            firstName = "New",
-            lastName = "User"
+    @Nested
+    @DisplayName("Login Tests")
+    inner class LoginTests {
+        private val validLoginRequest = LoginRequest(
+            email = "test@example.com",
+            password = "password123"
         )
-        every { customerService.create(request) } returns testCustomer
 
-        // Act
-        val response = customerController.create(request)
-
-        // Assert
-        assertEquals(HttpStatus.CREATED, response.statusCode)
-        assertNotNull(response.body)
-        verify { customerService.create(request) }
-    }
-
-    @Test
-    fun `create debería lanzar excepción cuando el cliente ya existe`() {
-        // Arrange
-        val request = CustomerCreationRequest(
-            username = "existinguser",
-            password = "password123",
-            email = "existing@example.com",
-            firstName = "Existing",
-            lastName = "User"
-        )
-        every { customerService.create(request) } returns null
-
-        // Act & Assert
-        assertThrows(ResponseStatusException::class.java) {
-            customerController.create(request)
-        }
-        verify { customerService.create(request) }
-    }
-
-    /**
-     * Pruebas de eliminación de cliente
-     *
-     * Verifica:
-     * - Eliminación exitosa
-     * - Manejo de cliente no encontrado
-     */
-    @Test
-    fun `delete debería retornar 204 cuando el cliente es eliminado exitosamente`() {
-        // Arrange
-        val customerId = "1"
-        every { customerService.delete(customerId) } returns Unit
-
-        // Act
-        val response = customerController.delete(customerId)
-
-        // Assert
-        assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
-        verify { customerService.delete(customerId) }
-    }
-
-    /**
-     * Pruebas de actualización de cliente
-     *
-     * Verifica:
-     * - Actualización exitosa
-     * - Validación de ID coincidente
-     * - Manejo de cliente no encontrado
-     */
-    @Test
-    fun `update debería retornar 200 cuando el cliente es actualizado exitosamente`() {
-        // Arrange
-        val customer = Customer(
+        private val validCustomerResponse = CustomerResponse.CustomerItem(
             id = "1",
-            username = "testuser",
+            email = "test@example.com",
+            firstName = "Test",
+            lastName = "User",
+            token = "valid.jwt.token"
+        )
+
+        @Test
+        @DisplayName("Successful login returns 200 OK with token")
+        fun `login with valid credentials returns success response`() = runBlocking {
+            // Arrange
+            coEvery { customerService.login(validLoginRequest) } returns validCustomerResponse
+
+            // Act
+            val response = customerController.login(validLoginRequest)
+
+            // Assert
+            assertEquals(HttpStatus.OK, response.statusCode)
+            assertNotNull(response.body)
+            assertEquals("valid.jwt.token", response.body?.authToken)
+            assertTrue(response.body?.isSuccessful == true)
+
+            // Verify
+            coVerify(exactly = 1) { customerService.login(validLoginRequest) }
+        }
+
+        @Test
+        @DisplayName("Login with invalid credentials returns 401 Unauthorized")
+        fun `login with invalid credentials returns unauthorized`() = runBlocking {
+            // Arrange
+            coEvery { customerService.login(validLoginRequest) } returns null
+
+            // Act
+            val response = customerController.login(validLoginRequest)
+
+            // Assert
+            assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+            assertNotNull(response.body)
+            assertNull(response.body?.authToken)
+            assertEquals("Credenciales inválidas", response.body?.error)
+
+            // Verify
+            coVerify(exactly = 1) { customerService.login(validLoginRequest) }
+        }
+
+        @Test
+        @DisplayName("Login throwing exception returns 401 Unauthorized with error message")
+        fun `login throwing exception returns error response`() = runBlocking {
+            // Arrange
+            coEvery { customerService.login(validLoginRequest) } throws IllegalArgumentException("Error de prueba")
+
+            // Act
+            val response = customerController.login(validLoginRequest)
+
+            // Assert
+            assertEquals(HttpStatus.UNAUTHORIZED, response.statusCode)
+            assertNotNull(response.body)
+            assertNull(response.body?.authToken)
+            assertEquals("Error de prueba", response.body?.error)
+        }
+    }
+
+    @Nested
+    @DisplayName("Customer Registration Tests")
+    inner class RegistrationTests {
+        private val validCustomerRequest = CustomerCreationRequest(
+            email = "test@example.com",
             password = "password123",
+            firstName = "Test",
+            lastName = "User",
+            dob = LocalDate.now().minusYears(25),
+            phoneNumber = "+1234567890"
+        )
+
+        private val validCustomerResponse = CustomerResponse.CustomerItem(
+            id = "1",
+            email = "test@example.com",
+            firstName = "Test",
+            lastName = "User"
+        )
+
+        @Test
+        @DisplayName("Successful registration returns 201 Created")
+        fun `register with valid data returns created response`() = runBlocking {
+            // Arrange
+            coEvery { customerService.create(validCustomerRequest) } returns validCustomerResponse
+
+            // Act
+            val response = customerController.createCustomer(validCustomerRequest)
+
+            // Assert
+            assertEquals(HttpStatus.CREATED, response.statusCode)
+            assertNotNull(response.body)
+            assertEquals(validCustomerResponse.email, response.body?.email)
+
+            // Verify
+            coVerify(exactly = 1) { customerService.create(validCustomerRequest) }
+        }
+
+        @Test
+        @DisplayName("Registration with invalid data throws BadRequest")
+        fun `register with invalid data throws exception`() = runBlocking {
+            // Arrange
+            coEvery { customerService.create(validCustomerRequest) } throws
+                    IllegalArgumentException("Email ya registrado")
+
+            try {
+                // Act
+                customerController.createCustomer(validCustomerRequest)
+                fail("Expected ResponseStatusException")
+            } catch (e: ResponseStatusException) {
+                // Assert
+                assertEquals(HttpStatus.BAD_REQUEST, e.statusCode)
+                assertEquals("Email ya registrado", e.reason)
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Customer Update Tests")
+    inner class UpdateTests {
+        private val customerId = 1L
+        private val validUpdateRequest = CustomerUpdateRequest(
+            firstName = "Updated",
+            lastName = "User",
+            phoneNumber = "+1234567890"
+        )
+
+        private val updatedCustomerResponse = CustomerResponse.CustomerItem(
+            id = "1",
             email = "test@example.com",
             firstName = "Updated",
             lastName = "User"
         )
-        every { customerService.update(customer) } returns testCustomer.copy(firstName = "Updated")
 
-        // Act
-        val response = customerController.update("1", customer)
+        @Test
+        @DisplayName("Successful update returns 200 OK")
+        fun `update with valid data returns success response`() = runBlocking {
+            // Arrange
+            coEvery {
+                customerService.update(customerId, validUpdateRequest)
+            } returns updatedCustomerResponse
 
-        // Assert
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals("Updated", response.body?.firstName)
-        verify { customerService.update(customer) }
-    }
+            // Act
+            val response = customerController.updateCustomer(customerId, validUpdateRequest)
 
-    @Test
-    fun `update debería retornar 400 cuando el ID no coincide`() {
-        // Arrange
-        val customer = Customer(
-            id = "1",
-            username = "testuser",
-            password = "password123",
-            email = "test@example.com",
-            firstName = "Test",
-            lastName = "User"
-        )
+            // Assert
+            assertEquals(HttpStatus.OK, response.statusCode)
+            assertNotNull(response.body)
+            assertEquals("Updated", response.body?.firstName)
 
-        // Act
-        val response = customerController.update("2", customer)
+            // Verify
+            coVerify(exactly = 1) { customerService.update(customerId, validUpdateRequest) }
+        }
 
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
-        verify(exactly = 0) { customerService.update(any()) }
-    }
+        @Test
+        @DisplayName("Update non-existent customer throws NotFound")
+        fun `update non-existent customer throws exception`() = runBlocking {
+            // Arrange
+            coEvery {
+                customerService.update(customerId, validUpdateRequest)
+            } throws NoSuchElementException("Cliente no encontrado")
 
-    @Test
-    fun `update debería retornar 404 cuando el cliente no existe`() {
-        // Arrange
-        val customer = Customer(
-            id = "999",
-            username = "testuser",
-            password = "password123",
-            email = "test@example.com",
-            firstName = "Test",
-            lastName = "User"
-        )
-        every { customerService.update(customer) } returns null
+            try {
+                // Act
+                customerController.updateCustomer(customerId, validUpdateRequest)
+                fail("Expected ResponseStatusException")
+            } catch (e: ResponseStatusException) {
+                // Assert
+                assertEquals(HttpStatus.NOT_FOUND, e.statusCode)
+                assertEquals("Cliente no encontrado", e.reason)
+            }
+        }
 
-        // Act
-        val response = customerController.update("999", customer)
+        @Test
+        @DisplayName("Update with invalid data throws BadRequest")
+        fun `update with invalid data throws exception`() = runBlocking {
+            // Arrange
+            coEvery {
+                customerService.update(customerId, validUpdateRequest)
+            } throws IllegalArgumentException("Datos inválidos")
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        verify { customerService.update(customer) }
-    }
-
-    /**
-     * Prueba de listado de clientes
-     *
-     * Verifica:
-     * - Obtención exitosa de lista de clientes
-     * - Formato correcto de respuesta
-     */
-    @Test
-    fun `findAll debería retornar lista de clientes`() {
-        // Arrange
-        val customerResponse = CustomerResponse(listOf(testCustomer))
-        every { customerService.findAll() } returns customerResponse
-
-        // Act
-        val response = customerController.findAll()
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNotNull(response.body)
-        assertEquals(1, response.body?.customers?.size)
-        verify { customerService.findAll() }
+            try {
+                // Act
+                customerController.updateCustomer(customerId, validUpdateRequest)
+                fail("Expected ResponseStatusException")
+            } catch (e: ResponseStatusException) {
+                // Assert
+                assertEquals(HttpStatus.BAD_REQUEST, e.statusCode)
+                assertEquals("Datos inválidos", e.reason)
+            }
+        }
     }
 }

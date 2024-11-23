@@ -1,59 +1,63 @@
 package com.jmfg.certs.dh.prodev.service
 
-import com.jmfg.certs.dh.prodev.model.Customer
-import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
-import com.jmfg.certs.dh.prodev.model.dto.CustomerResponse
-import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
+import com.jmfg.certs.dh.prodev.model.dto.*
+import java.time.LocalDate
 
 /**
- * Servicio que gestiona las operaciones relacionadas con los clientes.
- * Proporciona funcionalidades para la autenticación, gestión y manipulación
- * de datos de clientes en el sistema.
+ * Interfaz que define los servicios disponibles para la gestión de clientes
+ *
+ * Define las operaciones principales para la gestión de clientes, incluyendo:
+ * - Autenticación y login
+ * - Operaciones CRUD
+ * - Consultas personalizadas
  */
 interface CustomerService {
     /**
-     * Autentica un cliente en el sistema.
+     * Realiza el inicio de sesión de un cliente
      *
-     * @param request Datos de inicio de sesión del cliente
-     * @return CustomerItem si la autenticación es exitosa, null en caso contrario
-     * @throws IllegalArgumentException si los datos de inicio de sesión son inválidos
+     * @param request Datos de inicio de sesión
+     * @return CustomerItem con token de autenticación si las credenciales son válidas
+     * @throws IllegalArgumentException si las credenciales son inválidas
      */
     suspend fun login(request: LoginRequest): CustomerResponse.CustomerItem?
 
     /**
-     * Obtiene todos los clientes registrados en el sistema.
+     * Obtiene todos los clientes registrados
      *
-     * @return Lista completa de clientes encapsulada en CustomerResponse
-     * @throws ServiceException si hay un error al recuperar los datos
+     * @return CustomerResponse conteniendo la lista de todos los clientes
      */
     suspend fun findAll(): CustomerResponse
 
     /**
-     * Crea un nuevo cliente en el sistema.
+     * Crea un nuevo cliente
      *
-     * @param request Datos necesarios para la creación del cliente
-     * @return CustomerItem con los datos del cliente creado, null si la creación falla
-     * @throws IllegalArgumentException si los datos de creación son inválidos
-     * @throws DuplicateCustomerException si el cliente ya existe
+     * @param request Datos del cliente a crear
+     * @return CustomerItem con los datos del cliente creado
+     * @throws IllegalArgumentException si los datos son inválidos o el email ya existe
      */
-    suspend fun create(request: CustomerCreationRequest): CustomerResponse.CustomerItem?
+    suspend fun create(request: CustomerCreationRequest): CustomerResponse.CustomerItem
 
     /**
-     * Elimina un cliente del sistema por su identificador.
+     * Elimina un cliente por su ID
      *
-     * @param id Identificador único del cliente
-     * @throws ResourceNotFoundException si el cliente no existe
-     * @throws IllegalStateException si el cliente no puede ser eliminado
+     * @param id Identificador del cliente a eliminar
+     * @throws NoSuchElementException si el cliente no existe
      */
-    suspend fun delete(id: String)
+    suspend fun delete(id: Long)
 
     /**
-     * Actualiza los datos de un cliente existente.
+     * Actualiza los datos de un cliente
      *
-     * @param customer Datos actualizados del cliente
+     * @param id Identificador del cliente a actualizar
+     * @param request Datos actualizados del cliente
      * @return CustomerItem con los datos actualizados
-     * @throws ResourceNotFoundException si el cliente no existe
-     * @throws IllegalArgumentException si los datos de actualización son inválidos
+     * @throws NoSuchElementException si el cliente no existe
      */
-    suspend fun update(customer: Customer): CustomerResponse.CustomerItem
+    suspend fun update(id: Long, request: CustomerUpdateRequest): CustomerResponse.CustomerItem
+    @Transactional(readOnly = true)
+    suspend fun findByCountry(country: String): CustomerResponse
+    @Transactional(readOnly = true)
+    suspend fun findByPassportExpiryBefore(date: LocalDate): CustomerResponse
+    @Transactional(readOnly = true)
+    suspend fun getStatistics(): CustomerStatistics
 }

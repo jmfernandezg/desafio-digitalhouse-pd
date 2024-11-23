@@ -61,7 +61,7 @@ interface LodgingRepository : JpaRepository<Lodging, String> {
     /**
      * Obtiene todas las ciudades con alojamientos
      *
-     * @return Conjunto de ubicaciones en formato "ciudad, país"
+     * @return Conjunto de locaciones en formato "ciudad, país"
      */
     @Query("SELECT DISTINCT CONCAT(l.city, ', ', l.country) FROM Lodging l")
     fun findAllCities(): Set<String>
@@ -69,26 +69,27 @@ interface LodgingRepository : JpaRepository<Lodging, String> {
     /**
      * Busca alojamientos por ubicación y fechas de disponibilidad
      *
-     * @param ubicacion Texto de búsqueda para ciudad o país
-     * @param fechaEntrada Fecha de inicio de la estadía
-     * @param fechaSalida Fecha de fin de la estadía
+     * @param location Texto de búsqueda para ciudad o país
+     * @param checkIn Fecha de inicio de la estadía
+     * @param checkOut Fecha de fin de la estadía
      * @return Lista de alojamientos disponibles
      */
-    @Query("""
+    @Query(
+        """
         SELECT l FROM Lodging l 
-        WHERE (:ubicacion IS NULL OR 
-              LOWER(l.city) LIKE LOWER(CONCAT('%', :ubicacion, '%')) OR 
-              LOWER(l.country) LIKE LOWER(CONCAT('%', :ubicacion, '%')))
-        AND l.availableFrom <= :fechaEntrada 
-        AND l.availableTo >= :fechaSalida
-    """)
+        WHERE (:location IS NULL OR 
+              LOWER(l.city) LIKE LOWER(CONCAT('%', :location, '%')) OR 
+              LOWER(l.country) LIKE LOWER(CONCAT('%', :location, '%')))
+        AND l.availableFrom <= :checkIn 
+        AND l.availableTo >= :checkOut
+    """
+    )
     @EntityGraph(attributePaths = ["photos"])
     fun search(
-        @Param("ubicacion") ubicacion: String?,
-        @Param("fechaEntrada") fechaEntrada: LocalDateTime,
-        @Param("fechaSalida") fechaSalida: LocalDateTime
+        @Param("location") location: String?,
+        @Param("checkIn") checkIn: LocalDateTime,
+        @Param("checkOut") checkOut: LocalDateTime
     ): List<Lodging>
-
 
 
 }

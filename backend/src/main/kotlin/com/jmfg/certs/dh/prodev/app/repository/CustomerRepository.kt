@@ -12,20 +12,17 @@ import org.springframework.stereotype.Repository
  * Este repositorio proporciona operaciones de acceso a datos para la entidad Cliente.
  * Extiende JpaRepository para heredar las operaciones básicas de CRUD y añade
  * métodos personalizados para consultas específicas del negocio.
- *
- * @property T Customer - Tipo de entidad que maneja el repositorio
- * @property ID String - Tipo de dato del identificador único del cliente
  */
 @Repository
-interface CustomerRepository : JpaRepository<Customer, String> {
+interface CustomerRepository : JpaRepository<Customer, Long> {
 
     /**
-     * Busca un cliente por su nombre de usuario
+     * Busca un cliente por su correo electrónico
      *
-     * @param username Nombre de usuario del cliente a buscar
+     * @param email Correo electrónico del cliente a buscar
      * @return Cliente encontrado o null si no existe
      */
-    fun findByUsername(username: String): Customer?
+    fun findByEmail(email: String): Customer?
 
     /**
      * Busca clientes por su nombre o apellido
@@ -34,8 +31,11 @@ interface CustomerRepository : JpaRepository<Customer, String> {
      * @return Lista de clientes que coinciden con el criterio de búsqueda
      */
     @Query(
-        "SELECT c FROM Customer c WHERE LOWER(c.firstName) LIKE LOWER(CONCAT('%', :name, '%')) " +
-                "OR LOWER(c.lastName) LIKE LOWER(CONCAT('%', :name, '%'))"
+        """
+        SELECT c FROM Customer c 
+        WHERE LOWER(c.firstName) LIKE LOWER(CONCAT('%', :name, '%')) 
+        OR LOWER(c.lastName) LIKE LOWER(CONCAT('%', :name, '%'))
+        """
     )
     fun findCustomerByName(@Param("name") name: String): List<Customer>
 
@@ -47,4 +47,19 @@ interface CustomerRepository : JpaRepository<Customer, String> {
      */
     fun existsByEmail(email: String): Boolean
 
+    /**
+     * Busca clientes por país de residencia
+     *
+     * @param country País de residencia a buscar
+     * @return Lista de clientes del país especificado
+     */
+    fun findByCountryOfResidence(country: String): List<Customer>
+
+    /**
+     * Busca clientes cuyo pasaporte expire antes de la fecha especificada
+     *
+     * @param date Fecha límite de vencimiento
+     * @return Lista de clientes con pasaportes próximos a vencer
+     */
+    fun findByPassportExpiryBefore(date: java.time.LocalDate): List<Customer>
 }

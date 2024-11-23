@@ -8,21 +8,20 @@ import java.time.Period
 import java.util.*
 
 /**
- * Entidad que representa un cliente en el sistema
+ * Entidad que representa un cliente en el sistema de agencia de viajes
  *
- * Esta clase gestiona la información personal y de autenticación de los clientes,
+ * Esta clase gestiona la información personal del cliente y sus preferencias de viaje,
  * así como sus reservaciones asociadas. Hereda funcionalidad de auditoría de BaseEntity.
  */
 @Entity
 @Table(
     name = "customers",
     uniqueConstraints = [
-        UniqueConstraint(name = "uk_customer_username", columnNames = ["username"]),
         UniqueConstraint(name = "uk_customer_email", columnNames = ["email"])
     ],
     indexes = [
-        Index(name = "idx_customer_username", columnList = "username"),
-        Index(name = "idx_customer_email", columnList = "email")
+        Index(name = "idx_customer_email", columnList = "email"),
+        Index(name = "idx_customer_passport", columnList = "passport_number")
     ]
 )
 data class Customer(
@@ -30,14 +29,14 @@ data class Customer(
      * Identificador único del cliente
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String = UUID.randomUUID().toString(),
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0,
 
     /**
-     * Nombre de usuario único para autenticación
+     * Correo electrónico único (usado para identificación y comunicación)
      */
-    @Column(nullable = false, length = 50)
-    val username: String = "",
+    @Column(nullable = false)
+    val email: String = "",
 
     /**
      * Contraseña encriptada del cliente
@@ -65,10 +64,34 @@ data class Customer(
     val dob: LocalDate = LocalDate.now(),
 
     /**
-     * Correo electrónico único
+     * Número de pasaporte
      */
-    @Column(nullable = false)
-    val email: String = "",
+    @Column(name = "passport_number", length = 50)
+    val passportNumber: String? = null,
+
+    /**
+     * Fecha de vencimiento del pasaporte
+     */
+    @Column(name = "passport_expiry")
+    val passportExpiry: LocalDate? = null,
+
+    /**
+     * Número de teléfono móvil
+     */
+    @Column(name = "phone_number", length = 20)
+    val phoneNumber: String? = null,
+
+    /**
+     * País de residencia
+     */
+    @Column(name = "country_of_residence", length = 100)
+    val countryOfResidence: String? = null,
+
+    /**
+     * Programa de viajero frecuente preferido
+     */
+    @Column(name = "preferred_frequent_flyer_program", length = 50)
+    val preferredFrequentFlyerProgram: String? = null,
 
     /**
      * Reservaciones asociadas al cliente
@@ -106,14 +129,22 @@ data class Customer(
     val activeReservationsCount: Int
         get() = reservations.count { it.isActive() }
 
+    /**
+     * Verifica si el pasaporte está vigente
+     */
+    @get:Transient
+    val isPassportValid: Boolean
+        get() = passportExpiry?.isAfter(LocalDate.now()) ?: false
+
     init {
-        require(username.isNotBlank()) { "El nombre de usuario no puede estar vacío" }
-        require(username.length >= 3) { "El nombre de usuario debe tener al menos 3 caracteres" }
+        require(email.matches(EMAIL_REGEX)) { "El formato del correo electrónico es inválido" }
         require(password.isNotBlank()) { "La contraseña no puede estar vacía" }
         require(firstName.isNotBlank()) { "El nombre no puede estar vacío" }
         require(lastName.isNotBlank()) { "El apellido no puede estar vacío" }
-        require(email.matches(EMAIL_REGEX)) { "El formato del correo electrónico es inválido" }
         require(!dob.isAfter(LocalDate.now())) { "La fecha de nacimiento no puede ser futura" }
+        passportExpiry?.let {
+            require(!it.isBefore(LocalDate.now())) { "La fecha de vencimiento del pasaporte no puede ser pasada" }
+        }
     }
 
     companion object {
@@ -123,12 +154,16 @@ data class Customer(
          * Crea una instancia de prueba para desarrollo
          */
         fun createTestInstance() = Customer(
-            username = "testuser",
+            email = "test@example.com",
             password = "hashedPassword",
             firstName = "Test",
             lastName = "User",
             dob = LocalDate.now().minusYears(25),
-            email = "test@example.com"
+            passportNumber = "AB123456",
+            passportExpiry = LocalDate.now().plusYears(5),
+            phoneNumber = "+1234567890",
+            countryOfResidence = "España",
+            preferredFrequentFlyerProgram = "Iberia Plus"
         )
     }
 }
@@ -137,8 +172,7 @@ data class Customer(
  * Extensión para convertir un Customer a CustomerResponse.CustomerItem
  */
 fun Customer.toCustomerItem() = CustomerResponse.CustomerItem(
-    id = this.id,
-    username = this.username,
+    id = this.id.toString(),
     email = this.email,
     firstName = this.firstName,
     lastName = this.lastName

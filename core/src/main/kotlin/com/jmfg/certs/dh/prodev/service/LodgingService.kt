@@ -27,7 +27,6 @@ interface LodgingService {
      * Obtiene todos los alojamientos registrados en el sistema.
      *
      * @return Lista completa de alojamientos encapsulada en LodgingResponse
-     * @throws ServiceException si hay un error al recuperar los datos
      */
     suspend fun findAll(): LodgingResponse
 
@@ -37,7 +36,6 @@ interface LodgingService {
      * @param request Datos necesarios para la creación del alojamiento
      * @return LodgingItem con los datos del alojamiento creado
      * @throws IllegalArgumentException si los datos de creación son inválidos
-     * @throws DuplicateLodgingException si ya existe un alojamiento con los mismos datos únicos
      */
     suspend fun create(request: LodgingCreationRequest): LodgingItem
 
@@ -45,7 +43,6 @@ interface LodgingService {
      * Elimina un alojamiento del sistema por su identificador.
      *
      * @param id Identificador único del alojamiento a eliminar
-     * @throws ResourceNotFoundException si el alojamiento no existe
      * @throws IllegalStateException si el alojamiento no puede ser eliminado
      */
     suspend fun delete(id: String)
@@ -55,7 +52,6 @@ interface LodgingService {
      *
      * @param lodging Datos actualizados del alojamiento
      * @return LodgingItem con los datos actualizados
-     * @throws ResourceNotFoundException si el alojamiento no existe
      * @throws IllegalArgumentException si los datos de actualización son inválidos
      */
     suspend fun update(lodging: Lodging): LodgingItem
@@ -64,7 +60,6 @@ interface LodgingService {
      * Obtiene todas las categorías de alojamientos disponibles.
      *
      * @return Lista de categorías encapsulada en CategoryResponse
-     * @throws ServiceException si hay un error al recuperar las categorías
      */
     suspend fun findAllCategories(): CategoryResponse
 
@@ -81,7 +76,6 @@ interface LodgingService {
      * Obtiene la lista de todas las ciudades donde hay alojamientos disponibles.
      *
      * @return Conjunto de nombres de ciudades sin duplicados
-     * @throws ServiceException si hay un error al recuperar las ciudades
      */
     suspend fun findAllCities(): Set<String>
 

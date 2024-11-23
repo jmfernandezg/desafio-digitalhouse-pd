@@ -32,12 +32,8 @@ class SwaggerConfig(
      * @return Configuración principal de OpenAPI con toda la información del servicio
      */
     @Bean
-    fun api(): OpenAPI = OpenAPI()
-        .info(
-            Info()
-                .title("$appName - Documentación API")
-                .version(appVersion)
-                .description(
+    fun api(): OpenAPI = OpenAPI().info(
+            Info().title("$appName - Documentación API").version(appVersion).description(
                     """
                     API REST para la gestión de alojamientos turísticos y reservas.
                     
@@ -50,39 +46,23 @@ class SwaggerConfig(
                     
                     Para más información, consulte nuestra documentación detallada.
                 """.trimIndent()
+                ).contact(
+                    Contact().name("Jose Fernandez").email("jmfernandezg.awe gmail.com").url("https://empresa.com")
+                ).license(
+                    License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0")
                 )
-                .contact(
-                    Contact()
-                        .name("Jose Fernandez")
-                        .email("jmfernandezg.awe gmail.com")
-                        .url("https://empresa.com")
-                )
-                .license(
-                    License()
-                        .name("Apache 2.0")
-                        .url("https://www.apache.org/licenses/LICENSE-2.0")
-                )
-        )
-        .servers(
+        ).servers(
             listOf(
-                Server()
-                    .url("http://localhost:8080")
-                    .description("Servidor de desarrollo")
+                Server().url("http://localhost:8080").description("Servidor de desarrollo")
 
             )
-        )
-        .components(
-            Components()
-                .addSecuritySchemes(
+        ).components(
+            Components().addSecuritySchemes(
                     "bearerAuth",
-                    SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
+                    SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
                         .description("JWT token de autenticación")
                 )
-        )
-        .addSecurityItem(
+        ).addSecurityItem(
             SecurityRequirement().addList("bearerAuth")
         )
 
@@ -94,13 +74,10 @@ class SwaggerConfig(
      * @return Configuración del grupo de API pública
      */
     @Bean
-    fun publicApi(): GroupedOpenApi = GroupedOpenApi.builder()
-        .group("api-publica")
-        .pathsToMatch("/v1/public/**")
-        .addOpenApiCustomizer { openApi ->
-            openApi.info.description = "APIs públicas que no requieren autenticación"
-        }
-        .build()
+    fun publicApi(): GroupedOpenApi =
+        GroupedOpenApi.builder().group("api-publica").pathsToMatch("/api/public/**").addOpenApiCustomizer {
+                it.info.description = "APIs públicas que no requieren autenticación"
+            }.build()
 
     /**
      * Define el grupo de API privada
@@ -110,13 +87,10 @@ class SwaggerConfig(
      * @return Configuración del grupo de API privada
      */
     @Bean
-    fun privateApi(): GroupedOpenApi = GroupedOpenApi.builder()
-        .group("api-privada")
-        .pathsToMatch("/v1/lodging/**", "/v1/reservation/**", "/v1/customer/**")
-        .addOpenApiCustomizer { openApi ->
-            openApi.info.description = "APIs privadas que requieren autenticación JWT"
-        }
-        .build()
+    fun privateApi(): GroupedOpenApi = GroupedOpenApi.builder().group("api-privada")
+        .pathsToMatch("/api/lodging/**", "/api/reservation/**", "/api/customer/**").addOpenApiCustomizer {
+            it.info.description = "APIs privadas que requieren autenticación JWT"
+        }.build()
 
     /**
      * Define el grupo de API administrativa
@@ -126,11 +100,8 @@ class SwaggerConfig(
      * @return Configuración del grupo de API administrativa
      */
     @Bean
-    fun adminApi(): GroupedOpenApi = GroupedOpenApi.builder()
-        .group("api-admin")
-        .pathsToMatch("/v1/admin/**")
-        .addOpenApiCustomizer { openApi ->
-            openApi.info.description = "APIs administrativas con acceso restringido"
-        }
-        .build()
+    fun adminApi(): GroupedOpenApi =
+        GroupedOpenApi.builder().group("api-admin").pathsToMatch("/api/admin/**").addOpenApiCustomizer {
+                it.info.description = "APIs administrativas con acceso restringido"
+            }.build()
 }

@@ -58,13 +58,12 @@ class SecurityConfig {
      */
     @Bean
     fun jwtEncoder(keyPair: KeyPair): JwtEncoder {
-        val rsaKey = RSAKey.Builder(keyPair.public as RSAPublicKey)
-            .privateKey(keyPair.private as RSAPrivateKey)
-            .algorithm(JWSAlgorithm.RS256)
-            .build()
+        val rsaKey = RSAKey.Builder(keyPair.public as RSAPublicKey).privateKey(keyPair.private as RSAPrivateKey)
+            .algorithm(JWSAlgorithm.RS256).build()
 
-        val jwkSet = JWKSet(rsaKey)
-        return NimbusJwtEncoder(ImmutableJWKSet(jwkSet))
+        return JWKSet(rsaKey).run {
+            NimbusJwtEncoder(ImmutableJWKSet(this))
+        }
     }
 
     /**
@@ -87,15 +86,12 @@ class SecurityConfig {
     @Bean
     @Profile("dev")
     fun testJwtTokenCreation(jwtEncoder: JwtEncoder) = CommandLineRunner {
-        val claims = JwtClaimsSet.builder()
-            .issuer("test-issuer")
-            .subject("test-subject")
-            .issuedAt(Instant.now())
-            .expiresAt(Instant.now().plusSeconds(TOKEN_VALIDITY_SECONDS))
-            .claim("scope", "test-scope")
-            .build()
+        val claims =
+            JwtClaimsSet.builder().issuer("test-dev-issuer").subject("test-dev-subject").issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(TOKEN_VALIDITY_SECONDS)).claim("scope", "test-dev-scope").build()
 
-        val token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue
-        logger.info("Token de desarrollo generado: $token")
+        jwtEncoder.encode(JwtEncoderParameters.from(claims)).tokenValue.also {
+            logger.info("Token de desarrollo generado: $it")
+        }
     }
 }

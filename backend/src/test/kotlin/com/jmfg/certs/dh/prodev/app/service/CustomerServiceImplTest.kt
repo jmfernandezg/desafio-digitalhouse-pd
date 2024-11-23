@@ -3,330 +3,255 @@ package com.jmfg.certs.dh.prodev.app.service
 import com.jmfg.certs.dh.prodev.app.repository.CustomerRepository
 import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.dto.CustomerCreationRequest
+import com.jmfg.certs.dh.prodev.model.dto.CustomerUpdateRequest
 import com.jmfg.certs.dh.prodev.model.dto.LoginRequest
 import io.mockk.*
-import org.junit.jupiter.api.Assertions.*
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
-import org.springframework.security.oauth2.jwt.Jwt
+import java.time.LocalDate
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * Pruebas unitarias para CustomerServiceImpl
  *
- * Esta clase contiene pruebas exhaustivas para validar el comportamiento
- * del servicio de gestation de clientes, incluyendo:
- *
- * - Authentication y login de usuarios
- * - Creation de nuevos clientes con validaciones
- * - Actualization de datos de clientes
- * - Elimination de clientes
- * - Listado de clientes
+ * Revisa la lógica de negocio para:
+ * - Autenticación de usuarios
+ * - Gestión de clientes
+ * - Operaciones CRUD
+ * - Estadísticas y reportes
  */
+@DisplayName("Customer Service Implementation Tests")
 class CustomerServiceImplTest {
- private lateinit var customerService: CustomerServiceImpl
- private lateinit var customerRepository: CustomerRepository
- private lateinit var jwtEncoder: JwtEncoder
- private lateinit var passwordEncoder: PasswordEncoder
 
- private val testCustomer = Customer(
-  id = "1",
-  username = "testuser",
-  password = "hashedPassword",
-  email = "test@example.com",
-  firstName = "Test",
-  lastName = "User"
- )
+    private lateinit var customerRepository: CustomerRepository
+    private lateinit var jwtEncoder: JwtEncoder
+    private lateinit var passwordEncoder: PasswordEncoder
+    private lateinit var customerService: CustomerServiceImpl
 
- @BeforeEach
- fun setup() {
-  customerRepository = mockk<CustomerRepository>()
-  jwtEncoder = mockk<JwtEncoder>()
-  passwordEncoder = mockk<PasswordEncoder>()
-  customerService = CustomerServiceImpl(customerRepository, jwtEncoder, passwordEncoder)
- }
+    @BeforeEach
+    fun setup() {
+        customerRepository = mockk()
+        jwtEncoder = mockk()
+        passwordEncoder = mockk()
+        customerService = CustomerServiceImpl(customerRepository, jwtEncoder, passwordEncoder)
+    }
 
- /**
-  * Prueba de login exitoso
-  *
-  * Verifica que:
-  * - Se devuelve el cliente con token cuando las credenciales son válidas
-  * - Se verifica la contrasena correctamente
-  * - Se genera el token JWT
-  */
- @Test
- fun `login deberia retornar cliente con token cuando las credenciales son validas`() {
-  // Arrange
-  val loginRequest = LoginRequest("testuser", "password123")
-  val mockJwt = mockk<Jwt>()
+    @Nested
+    @DisplayName("Authentication Tests")
+    inner class AuthenticationTests {
+        private val validEmail = "test@example.com"
+        private val validPassword = "password123"
+        private val hashedPassword = "hashedPassword123"
+        private val mockToken = "jwt.mock.token"
 
-  every { customerRepository.findByUsername("testuser") } returns testCustomer
-  every { passwordEncoder.matches("password123", "hashedPassword") } returns true
-  every { jwtEncoder.encode(any()) } returns mockJwt
-  every { mockJwt.tokenValue } returns "jwt-token"
+        private val mockCustomer = Customer(
+            id = 1L,
+            email = validEmail,
+            password = hashedPassword,
+            firstName = "Test",
+            lastName = "User",
+            dob = LocalDate.now().minusYears(25)
+        )
 
-  // Act
-  val result = customerService.login(loginRequest)
+        @Test
+        @DisplayName("Inicio de sesión exitoso con credenciales correctas")
+        fun `successful login with valid credentials`() = runBlocking {
+            // Arrange
+            coEvery { customerRepository.findByEmail(validEmail) } returns mockCustomer
+            every { passwordEncoder.matches(validPassword, hashedPassword) } returns true
+            every { jwtEncoder.encode(any()) } returns mockk {
+                every { tokenValue } returns mockToken
+            }
 
-  // Assert
-  assertNotNull(result)
-  assertEquals("testuser", result?.username)
-  verify {
-   customerRepository.findByUsername("testuser")
-   passwordEncoder.matches("password123", "hashedPassword")
-   jwtEncoder.encode(any())
-  }
- }
+            // Act
+            val loginRequest = LoginRequest(validEmail, validPassword)
+            val result = customerService.login(loginRequest)
 
- /**
-  * Prueba de login fallido
-  *
-  * Verifica que:
-  * - Se retorna null cuando la contrasena es inválida
-  * - No se genera token JWT para credenciales inválidas
-  */
- @Test
- fun `login deberia retornar null cuando la contrasena es invalida`() {
-  // Arrange
-  val loginRequest = LoginRequest("testuser", "wrongpassword")
+            // Assert
+            assertNotNull(result)
+            assertEquals(validEmail, result.email)
+            assertEquals(mockToken, result.token)
 
-  every { customerRepository.findByUsername("testuser") } returns testCustomer
-  every { passwordEncoder.matches("wrongpassword", "hashedPassword") } returns false
+            // Verify
+            coVerify(exactly = 1) { customerRepository.findByEmail(validEmail) }
+            verify(exactly = 1) { passwordEncoder.matches(validPassword, hashedPassword) }
+        }
 
-  // Act
-  val result = customerService.login(loginRequest)
+        @Test
+        @DisplayName("Falla el inicio de sesión con contraseña incorrecta")
+        fun `login fails with invalid password`(): Unit = runBlocking {
+            // Arrange
+            coEvery { customerRepository.findByEmail(validEmail) } returns mockCustomer
+            every { passwordEncoder.matches(validPassword, hashedPassword) } returns false
 
-  // Assert
-  assertNull(result)
-  verify {
-   customerRepository.findByUsername("testuser")
-   passwordEncoder.matches("wrongpassword", "hashedPassword")
-  }
-  verify(exactly = 0) { jwtEncoder.encode(any()) }
- }
+            // Act & Assert
+            val loginRequest = LoginRequest(validEmail, validPassword)
+            assertFailsWith<IllegalArgumentException> {
+                customerService.login(loginRequest)
+            }
+        }
+    }
 
- /**
-  * Prueba de creation exitosa de cliente
-  *
-  * Verifica que:
-  * - Se guarda el cliente cuando los datos son válidos
-  * - Se encripta la contrasena correctamente
-  * - Se retorna el cliente creado
-  */
- @Test
- fun `create deberia guardar nuevo cliente cuando los datos son validos`() {
-  // Arrange
-  val request = CustomerCreationRequest(
-   username = "newuser",
-   password = "password123",
-   email = "new@example.com",
-   firstName = "New",
-   lastName = "User"
-  )
+    @Nested
+    @DisplayName("Customer Creation Tests")
+    inner class CustomerCreationTests {
+        private val newCustomerRequest = CustomerCreationRequest(
+            email = "new@example.com",
+            password = "password123",
+            firstName = "New",
+            lastName = "Customer",
+            dob = LocalDate.now().minusYears(30),
+            phoneNumber = "+1234567890"
+        )
 
-  every { customerRepository.findByUsername("newuser") } returns null
-  every { passwordEncoder.encode("password123") } returns "hashedPassword"
-  every { customerRepository.save(any()) } returns testCustomer
+        @Test
+        @DisplayName("Crea cliente exitosamente con datos válidos")
+        fun `creates customer successfully with valid data`() = runBlocking {
+            // Arrange
+            coEvery { customerRepository.existsByEmail(any()) } returns false
+            every { passwordEncoder.encode(any()) } returns "encodedPassword"
+            coEvery { customerRepository.save(any()) } returnsArgument 0
 
-  // Act
-  val result = customerService.create(request)
+            // Act
+            val result = customerService.create(newCustomerRequest)
 
-  // Assert
-  assertNotNull(result)
-  verify {
-   customerRepository.findByUsername("newuser")
-   passwordEncoder.encode("password123")
-   customerRepository.save(any())
-  }
- }
+            // Assert
+            assertNotNull(result)
+            assertEquals(newCustomerRequest.email, result.email)
+            assertEquals(newCustomerRequest.firstName, result.firstName)
 
- /**
-  * Prueba de validation de usuario duplicado
-  *
-  * Verifica que:
-  * - Se lanza excepcion cuando el username ya existe
-  * - No se intenta guardar el cliente duplicado
-  */
- @Test
- fun `create deberia lanzar excepcion cuando el username ya existe`() {
-  // Arrange
-  val request = CustomerCreationRequest(
-   username = "testuser",
-   password = "password123",
-   email = "test@example.com",
-   firstName = "Test",
-   lastName = "User"
-  )
+            // Verify
+            coVerify { customerRepository.save(any()) }
+        }
 
-  every { customerRepository.findByUsername("testuser") } returns testCustomer
+        @Test
+        @DisplayName("Falla al crear cliente con email duplicado")
+        fun `fails to create customer with duplicate email`(): Unit = runBlocking {
+            // Arrange
+            coEvery { customerRepository.existsByEmail(any()) } returns true
 
-  // Act & Assert
-  assertThrows<IllegalArgumentException> { customerService.create(request) }
-  verify { customerRepository.findByUsername("testuser") }
-  verify(exactly = 0) { customerRepository.save(any()) }
- }
+            // Act & Assert
+            assertFailsWith<IllegalArgumentException> {
+                customerService.create(newCustomerRequest)
+            }
+        }
+    }
 
- /**
-  * Prueba de validation de contrasena débil
-  *
-  * Verifica que:
-  * - Se lanza excepcion cuando la contrasena es muy corta
-  * - No se intenta guardar el cliente con contrasena inválida
-  */
- @Test
- fun `create deberia lanzar excepcion cuando la contrasena es muy corta`() {
-  // Arrange
-  val request = CustomerCreationRequest(
-   username = "newuser",
-   password = "short",
-   email = "test@example.com",
-   firstName = "Test",
-   lastName = "User"
-  )
+    @Nested
+    @DisplayName("Customer Update Tests")
+    inner class CustomerUpdateTests {
+        private val existingCustomer = Customer(
+            id = 1L,
+            email = "existing@example.com",
+            password = "hashedPassword",
+            firstName = "Existing",
+            lastName = "Customer",
+            dob = LocalDate.now().minusYears(25)
+        )
 
-  every { customerRepository.findByUsername("newuser") } returns null
+        private val updateRequest = CustomerUpdateRequest(
+            firstName = "Updated",
+            phoneNumber = "+9876543210"
+        )
 
-  // Act & Assert
-  assertThrows<IllegalArgumentException> { customerService.create(request) }
-  verify { customerRepository.findByUsername("newuser") }
-  verify(exactly = 0) { customerRepository.save(any()) }
- }
+        @Test
+        @DisplayName("Actualiza cliente exitosamente")
+        fun `updates customer successfully`() = runBlocking {
+            // Arrange
+            coEvery { customerRepository.findById(1L) } returns java.util.Optional.of(existingCustomer)
+            coEvery { customerRepository.save(any()) } returnsArgument 0
 
- /**
-  * Prueba de validation de formato de email
-  *
-  * Verifica que:
-  * - Se lanza excepcion cuando el formato del email es inválido
-  * - No se intenta guardar el cliente con email inválido
-  */
- @Test
- fun `create deberia lanzar excepcion cuando el formato del email es invalido`() {
-  // Arrange
-  val request = CustomerCreationRequest(
-   username = "newuser",
-   password = "password123",
-   email = "invalid-email",
-   firstName = "Test",
-   lastName = "User"
-  )
+            // Act
+            val result = customerService.update(1L, updateRequest)
 
-  every { customerRepository.findByUsername("newuser") } returns null
+            // Assert
+            assertNotNull(result)
+            assertEquals(updateRequest.firstName, result.firstName)
 
-  // Act & Assert
-  assertThrows<IllegalArgumentException> { customerService.create(request) }
-  verify { customerRepository.findByUsername("newuser") }
-  verify(exactly = 0) { customerRepository.save(any()) }
- }
+            // Verify
+            coVerify { customerRepository.save(any()) }
+        }
+    }
 
- /**
-  * Prueba de elimination exitosa
-  *
-  * Verifica que:
-  * - Se elimina el cliente cuando existe
-  * - Se verifica la existencia antes de eliminar
-  */
- @Test
- fun `delete deberia eliminar cliente existente`() {
-  // Arrange
-  val customerId = "1"
-  every { customerRepository.existsById(customerId) } returns true
-  every { customerRepository.deleteById(customerId) } just runs
+    @Nested
+    @DisplayName("Statistics Tests")
+    inner class StatisticsTests {
+        private val mockCustomers = listOf(
+            Customer(
+                id = 1L,
+                email = "customer1@example.com",
+                password = "hashed1",
+                firstName = "Customer",
+                lastName = "One",
+                dob = LocalDate.now().minusYears(25),
+                countryOfResidence = "Spain"
+            ),
+            Customer(
+                id = 2L,
+                email = "customer2@example.com",
+                password = "hashed2",
+                firstName = "Customer",
+                lastName = "Two",
+                dob = LocalDate.now().minusYears(35),
+                countryOfResidence = "France"
+            )
+        )
 
-  // Act
-  customerService.delete(customerId)
+        @Test
+        @DisplayName("Genera estadísticas correctamente")
+        fun `generates statistics correctly`() = runBlocking {
+            // Arrange
+            coEvery { customerRepository.findAll() } returns mockCustomers
 
-  // Assert
-  verify {
-   customerRepository.existsById(customerId)
-   customerRepository.deleteById(customerId)
-  }
- }
+            // Act
+            val stats = customerService.getStatistics()
 
- /**
-  * Prueba de elimination de cliente inexistente
-  *
-  * Verifica que:
-  * - Se lanza excepcion cuando el cliente no existe
-  * - No se intenta eliminar un cliente inexistente
-  */
- @Test
- fun `delete deberia lanzar excepcion cuando el cliente no existe`() {
-  // Arrange
-  val customerId = "999"
-  every { customerRepository.existsById(customerId) } returns false
+            // Assert
+            assertEquals(2, stats.totalCustomers)
+            assertEquals(30.0, stats.averageAge)
+            assertEquals(2, stats.customersByCountry.size)
+            assertTrue(stats.customersByCountry.containsKey("Spain"))
+            assertTrue(stats.customersByCountry.containsKey("France"))
+        }
+    }
 
-  // Act & Assert
-  assertThrows<NoSuchElementException> { customerService.delete(customerId) }
-  verify { customerRepository.existsById(customerId) }
-  verify(exactly = 0) { customerRepository.deleteById(any()) }
- }
+    @Nested
+    @DisplayName("Passport Expiry Tests")
+    inner class PassportExpiryTests {
+        private val expiryDate = LocalDate.now().plusMonths(3)
 
- /**
-  * Prueba de actualization exitosa
-  *
-  * Verifica que:
-  * - Se actualiza el cliente cuando existe
-  * - Se retorna el cliente actualizado
-  */
- @Test
- fun `update deberia modificar cliente existente`() {
-  // Arrange
-  val updatedCustomer = testCustomer.copy(firstName = "Updated")
-  every { customerRepository.existsById(updatedCustomer.id) } returns true
-  every { customerRepository.save(updatedCustomer) } returns updatedCustomer
+        @Test
+        @DisplayName("Encuentra correctamente los pasaportes por vencer")
+        fun `finds expiring passports correctly`() = runBlocking {
+            // Arrange
+            coEvery {
+                customerRepository.findByPassportExpiryBefore(expiryDate)
+            } returns listOf(
+                Customer(
+                    id = 1L,
+                    email = "expiring@example.com",
+                    password = "hashed",
+                    firstName = "Expiring",
+                    lastName = "Passport",
+                    dob = LocalDate.now().minusYears(30),
+                    passportExpiry = LocalDate.now().plusMonths(2)
+                )
+            )
 
-  // Act
-  val result = customerService.update(updatedCustomer)
+            // Act
+            val result = customerService.findByPassportExpiryBefore(expiryDate)
 
-  // Assert
-  assertNotNull(result)
-  assertEquals("Updated", result.firstName)
-  verify {
-   customerRepository.existsById(updatedCustomer.id)
-   customerRepository.save(updatedCustomer)
-  }
- }
-
- /**
-  * Prueba de actualization de cliente inexistente
-  *
-  * Verifica que:
-  * - Se lanza excepcion cuando el cliente no existe
-  * - No se intenta actualizar un cliente inexistente
-  */
- @Test
- fun `update deberia lanzar excepcion cuando el cliente no existe`() {
-  // Arrange
-  val nonExistentCustomer = testCustomer.copy(id = "999")
-  every { customerRepository.existsById(nonExistentCustomer.id) } returns false
-
-  // Act & Assert
-  assertThrows<NoSuchElementException> { customerService.update(nonExistentCustomer) }
-  verify { customerRepository.existsById(nonExistentCustomer.id) }
-  verify(exactly = 0) { customerRepository.save(any()) }
- }
-
- /**
-  * Prueba de listado de clientes
-  *
-  * Verifica que:
-  * - Se retorna la lista completa de clientes
-  * - Los datos de los clientes son correctos
-  */
- @Test
- fun `findAll deberia retornar lista de todos los clientes`() {
-  // Arrange
-  every { customerRepository.findAll() } returns listOf(testCustomer)
-
-  // Act
-  val result = customerService.findAll()
-
-  // Assert
-  assertNotNull(result)
-  assertEquals(1, result.customers.size)
-  assertEquals("testuser", result.customers[0].username)
-  verify { customerRepository.findAll() }
- }
+            // Assert
+            assertTrue(result.customers.isNotEmpty())
+            assertEquals(1, result.customers.size)
+        }
+    }
 }

@@ -8,7 +8,6 @@ import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
 import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
-import com.jmfg.certs.dh.prodev.model.toCapitalizedString
 import com.jmfg.certs.dh.prodev.model.toLodgingDto
 import com.jmfg.certs.dh.prodev.service.LodgingService
 import org.slf4j.LoggerFactory
@@ -74,7 +73,7 @@ class LodgingServiceImpl(
      * @throws NoSuchElementException si el alojamiento no existe
      */
     @Transactional
-    override fun update(lodging: Lodging): LodgingItem {
+    override suspend fun update(lodging: Lodging): LodgingItem {
         logger.debug("Actualizando alojamiento con ID: ${lodging.id}")
 
         if (!lodgingRepository.existsById(lodging.id)) {
@@ -96,7 +95,7 @@ class LodgingServiceImpl(
      * @return Alojamiento encontrado o null si no existe
      */
     @Transactional(readOnly = true)
-    override fun findById(id: String): LodgingItem? {
+    override suspend fun findById(id: String): LodgingItem? {
         logger.debug("Buscando alojamiento con ID: $id")
         return lodgingRepository.findByIdOrNull(id)?.toLodgingDto()
     }
@@ -107,7 +106,7 @@ class LodgingServiceImpl(
      * @return Lista de todos los alojamientos
      */
     @Transactional(readOnly = true)
-    override fun findAll(): LodgingResponse {
+    override suspend fun findAll(): LodgingResponse {
         logger.debug("Consultando todos los alojamientos")
         return lodgingRepository.findAll()
             .map { it.toLodgingDto() }
@@ -120,7 +119,7 @@ class LodgingServiceImpl(
      * @return Respuesta con información de categorías
      */
     @Transactional(readOnly = true)
-    override fun findAllCategories(): CategoryResponse {
+    override suspend fun findAllCategories(): CategoryResponse {
         logger.debug("Consultando todas las categorías")
         return lodgingRepository.findAllCategories().map { category ->
             val lodgings = lodgingRepository.findByCategory(category)
@@ -140,19 +139,14 @@ class LodgingServiceImpl(
      * @return Conjunto de ciudades con alojamientos
      */
     @Transactional(readOnly = true)
-    override fun findAllCities(): Set<String> {
+    override suspend fun findAllCities(): Set<String> {
         logger.debug("Consultando todas las ciudades")
         return lodgingRepository.findAllCities()
     }
 
-    /**
-     * Busca alojamientos según criterios específicos
-     *
-     * @param request Criterios de búsqueda
-     * @return Lista de alojamientos que cumplen los criterios
-     */
+
     @Transactional(readOnly = true)
-    override fun search(request: LodgingSearchRequest): LodgingResponse {
+    override suspend fun search(request: LodgingSearchRequest): LodgingResponse {
         logger.debug("Buscando alojamientos con criterios: {}", request)
 
         validarCriteriosBusqueda(request)
@@ -173,7 +167,7 @@ class LodgingServiceImpl(
      * @return Lista de alojamientos de la categoría
      */
     @Transactional(readOnly = true)
-    override fun findByCategory(category: Category): LodgingResponse {
+    override suspend fun findByCategory(category: Category): LodgingResponse {
         logger.debug("Buscando alojamientos por categoría: {}", category)
         return lodgingRepository.findByCategory(category)
             .map { it.toLodgingDto() }
@@ -187,7 +181,7 @@ class LodgingServiceImpl(
      * @throws NoSuchElementException si el alojamiento no existe
      */
     @Transactional
-    override fun delete(id: String) {
+    override suspend fun delete(id: String) {
         logger.debug("Eliminando alojamiento con ID: $id")
 
         if (!lodgingRepository.existsById(id)) {

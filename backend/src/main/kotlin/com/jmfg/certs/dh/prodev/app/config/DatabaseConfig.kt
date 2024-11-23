@@ -40,46 +40,39 @@ class DatabaseConfig(
     private val lodgingRepository: LodgingRepository,
     private val customerRepository: CustomerRepository,
     private val photoRepository: PhotoRepository,
+
     /**
      * Número mínimo de ciudades por categoría de alojamiento
      */
-    @Value("\${app.test-data.lodging.min-cities-per-category:5}")
-    private val minCitiesPerCategory: Int,
+    @Value("\${app.test-data.lodging.min-cities-per-category:5}") private val minCitiesPerCategory: Int,
     /**
      * Número máximo de ciudades por categoría de alojamiento
      */
-    @Value("\${app.test-data.lodging.max-cities-per-category:10}")
-    private val maxCitiesPerCategory: Int,
+    @Value("\${app.test-data.lodging.max-cities-per-category:10}") private val maxCitiesPerCategory: Int,
     /**
      * Número mínimo de alojamientos por ciudad
      */
-    @Value("\${app.test-data.lodging.min-lodgings-per-city:10}")
-    private val minLodgingsPerCity: Int,
+    @Value("\${app.test-data.lodging.min-lodgings-per-city:10}") private val minLodgingsPerCity: Int,
     /**
      * Número máximo de alojamientos por ciudad
      */
-    @Value("\${app.test-data.lodging.max-lodgings-per-city:15}")
-    private val maxLodgingsPerCity: Int,
+    @Value("\${app.test-data.lodging.max-lodgings-per-city:15}") private val maxLodgingsPerCity: Int,
     /**
      * Número mínimo de fotos por alojamiento
      */
-    @Value("\${app.test-data.lodging.min-photos-per-lodging:4}")
-    private val minPhotosPerLodging: Int,
+    @Value("\${app.test-data.lodging.min-photos-per-lodging:4}") private val minPhotosPerLodging: Int,
     /**
      * Número máximo de fotos por alojamiento
      */
-    @Value("\${app.test-data.lodging.max-photos-per-lodging:8}")
-    private val maxPhotosPerLodging: Int,
+    @Value("\${app.test-data.lodging.max-photos-per-lodging:8}") private val maxPhotosPerLodging: Int,
     /**
      * Número mínimo de clientes a generar
      */
-    @Value("\${app.test-data.customer.min-customers:10}")
-    private val minCustomers: Int,
+    @Value("\${app.test-data.customer.min-customers:10}") private val minCustomers: Int,
     /**
      * Número máximo de clientes a generar
      */
-    @Value("\${app.test-data.customer.max-customers:30}")
-    private val maxCustomers: Int
+    @Value("\${app.test-data.customer.max-customers:30}") private val maxCustomers: Int
 ) {
     private val logger = getLogger(DatabaseConfig::class.java)
     private val faker = Faker()
@@ -128,8 +121,7 @@ class DatabaseConfig(
      * Genera una ubicación aleatoria
      */
     private fun generateLocation(): Location = Location(
-        city = faker.address().city(),
-        country = faker.address().country()
+        city = faker.address().city(), country = faker.address().country()
     )
 
     /**
@@ -137,9 +129,7 @@ class DatabaseConfig(
      */
     private fun createLodgingsForLocation(category: Category, location: Location) {
         repeat(Random.nextInt(minLodgingsPerCity, maxLodgingsPerCity)) {
-            createLodging(category, location)
-                .let { lodgingRepository.save(it) }
-                .also { createPhotosForLodging(it) }
+            createLodging(category, location).let { lodgingRepository.save(it) }.also { createPhotosForLodging(it) }
         }
     }
 
@@ -194,8 +184,7 @@ class DatabaseConfig(
     private fun createPhotosForLodging(lodging: Lodging) {
         repeat(Random.nextInt(minPhotosPerLodging, maxPhotosPerLodging)) {
             Photo(
-                url = generatePhotoUrl(),
-                lodging = lodging
+                url = generatePhotoUrl(), lodging = lodging
             ).run {
                 photoRepository.save(this)
             }
@@ -212,8 +201,7 @@ class DatabaseConfig(
      */
     private fun populateCustomers(passwordEncoder: PasswordEncoder) {
         repeat(Random.nextInt(minCustomers, maxCustomers)) {
-            createCustomer(passwordEncoder)
-                .let { customerRepository.save(it) }
+            createCustomer(passwordEncoder).let { customerRepository.save(it) }
         }
     }
 
@@ -223,14 +211,24 @@ class DatabaseConfig(
     private fun createCustomer(passwordEncoder: PasswordEncoder): Customer {
         val username = faker.internet().username()
         return Customer(
-            username = username,
             password = passwordEncoder.encode(username),
             firstName = faker.name().firstName(),
             lastName = faker.name().lastName(),
             dob = generateDateOfBirth(),
-            email = faker.internet().emailAddress()
+            email = faker.internet().emailAddress(),
+            passportNumber = faker.idNumber().valid(),
+            passportExpiry = generatePassportExpiry(),
+            phoneNumber = faker.phoneNumber().cellPhone(),
+            countryOfResidence = faker.address().country(),
+            preferredFrequentFlyerProgram = faker.company().name()
         )
     }
+
+    /**
+     * Genera una fecha de vencimiento de pasaporte aleatoria
+     */
+    private fun generatePassportExpiry(): LocalDate =
+        LocalDate.now().plusYears(faker.number().numberBetween(1, 10).toLong())
 
     /**
      * Genera una fecha de nacimiento aleatoria para clientes mayores de edad

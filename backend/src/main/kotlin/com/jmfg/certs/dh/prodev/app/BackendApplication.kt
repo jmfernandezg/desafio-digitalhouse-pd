@@ -93,17 +93,6 @@ class BackendApplication {
         Locale.setDefault(Locale("es", "ES"))
     }
 
-    companion object {
-        /**
-         * Versión actual de la aplicación
-         */
-        const val VERSION = "1.0.0"
-
-        /**
-         * Prefijo base para todos los endpoints de la API
-         */
-        const val API_BASE_PATH = "/api/v1"
-    }
 }
 
 /**
