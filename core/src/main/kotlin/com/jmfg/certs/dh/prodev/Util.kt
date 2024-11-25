@@ -1,6 +1,7 @@
 package com.jmfg.certs.dh.prodev
 
 import com.jmfg.certs.dh.prodev.model.Category
+import com.jmfg.certs.dh.prodev.model.dto.Rating
 import java.text.Normalizer
 import kotlin.math.pow
 import kotlin.math.round
@@ -112,28 +113,3 @@ object Util {
 
 }
 
-/**
- * Enumeración que representa los posibles grados de calificación
- * en el sistema.
- */
-enum class Rating(val description: String, val range: IntRange) {
-    PESIMO("Pésimo", 0..3),
-    MALO("Malo", 4..5),
-    REGULAR("Regular", 6..7),
-    BUENO("Bueno", 7..8),
-    MUY_BUENO("Muy bueno", 8..9),
-    EXCELENTE("Excelente", 9..10);
-
-    companion object {
-        /**
-         * Obtiene el Rating correspondiente a una calificación numérica.
-         *
-         * @param score Calificación numérica
-         * @return Rating correspondiente
-         */
-        fun fromScore(score: Int): Rating {
-            require(score in 0..10) { "La calificación debe estar entre 0 y 10" }
-            return values().first { score in it.range }
-        }
-    }
-}

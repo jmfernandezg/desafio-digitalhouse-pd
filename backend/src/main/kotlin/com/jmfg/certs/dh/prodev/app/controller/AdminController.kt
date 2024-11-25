@@ -21,7 +21,7 @@ import java.time.LocalDate
  * - Reportes y consultas especializadas
  */
 @RestController
-@RequestMapping("/api/admin/customers")
+@RequestMapping("/api/admin")
 @PreAuthorize("hasRole('ADMIN')")  // Asegura que solo los administradores pueden acceder
 class AdminController(private val customerService: CustomerService) {
 
@@ -30,7 +30,7 @@ class AdminController(private val customerService: CustomerService) {
     /**
      * Obtiene todos los clientes registrados
      */
-    @GetMapping
+    @GetMapping("/customers")
     suspend fun getAllCustomers(): ResponseEntity<CustomerResponse> {
         return ResponseEntity.ok(customerService.findAll())
     }
@@ -38,7 +38,7 @@ class AdminController(private val customerService: CustomerService) {
     /**
      * Elimina un cliente por su ID
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/customers/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     suspend fun deleteCustomer(@PathVariable id: Long) {
         try {
@@ -52,7 +52,7 @@ class AdminController(private val customerService: CustomerService) {
     /**
      * Busca clientes por país de residencia
      */
-    @GetMapping("/by-country/{country}")
+    @GetMapping("/customers/by-country/{country}")
     suspend fun getCustomersByCountry(@PathVariable country: String): ResponseEntity<CustomerResponse> {
         val customers = customerService.findByCountry(country)
         return if (customers.hasCustomers()) {
@@ -65,7 +65,7 @@ class AdminController(private val customerService: CustomerService) {
     /**
      * Obtiene clientes con pasaportes próximos a vencer
      */
-    @GetMapping("/expiring-passports")
+    @GetMapping("/customers/expiring-passports")
     suspend fun getCustomersWithExpiringPassports(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) beforeDate: LocalDate
     ): ResponseEntity<CustomerResponse> {
@@ -80,7 +80,7 @@ class AdminController(private val customerService: CustomerService) {
     /**
      * Obtiene estadísticas generales de clientes
      */
-    @GetMapping("/statistics")
+    @GetMapping("/customers/statistics")
     suspend fun getCustomerStatistics(): ResponseEntity<CustomerStatistics> {
         return ResponseEntity.ok(customerService.getStatistics())
     }

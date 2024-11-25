@@ -1,6 +1,7 @@
 package com.jmfg.certs.dh.prodev.model.dto
 
 import com.jmfg.certs.dh.prodev.model.Category
+import com.jmfg.certs.dh.prodev.model.Photo
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -9,20 +10,29 @@ import java.time.temporal.ChronoUnit
  * Solicitud de creación de un nuevo alojamiento
  *
  * Esta clase representa los datos necesarios para registrar un nuevo
- * alojamiento en el sistema.
+ * alojamiento en el sistema, incluyendo información detallada sobre
+ * servicios, características y un conjunto completo de fotografías.
  *
  * @property name Nombre del alojamiento
  * @property address Dirección física
  * @property city Ciudad donde se ubica
  * @property country País donde se ubica
  * @property stars Calificación en estrellas (1-5)
- * @property averageCustomerRating Calificación promedio de clientes (1-5)
+ * @property averageCustomerRating Calificación promedio de clientes (1-10)
  * @property price Precio por noche
  * @property description Descripción detallada
  * @property category Categoría del alojamiento
  * @property availableFrom Fecha de inicio de disponibilidad
  * @property availableTo Fecha final de disponibilidad
- * @property photos Lista de URLs de fotos
+ * @property maxOccupancy Capacidad máxima de personas
+ * @property checkInTime Hora de entrada (formato HH:mm)
+ * @property checkOutTime Hora de salida (formato HH:mm)
+ * @property cancellationPolicy Política de cancelación
+ * @property amenities Lista de comodidades disponibles
+ * @property roomSizeSquareMeters Tamaño de la habitación en metros cuadrados
+ * @property isPetFriendly Indica si se permiten mascotas
+ * @property hasParking Indica si tiene estacionamiento disponible
+ * @property photos Lista detallada de fotos del alojamiento
  * @property isFavorite Indica si es un alojamiento destacado
  */
 data class LodgingCreationRequest(
@@ -37,45 +47,98 @@ data class LodgingCreationRequest(
     val category: Category,
     val availableFrom: LocalDateTime,
     val availableTo: LocalDateTime,
-    val photos: List<String>,
+    val maxOccupancy: Int,
+    val checkInTime: String,
+    val checkOutTime: String,
+    val cancellationPolicy: String,
+    val amenities: List<String>,
+    val roomSizeSquareMeters: Double?,
+    val isPetFriendly: Boolean,
+    val hasParking: Boolean,
+    val photos: List<PhotoRequest>,
     val isFavorite: Boolean = false
 ) {
+    /**
+     * Solicitud de creación de una foto para el alojamiento
+     *
+     * @property url URL de la imagen
+     * @property photoType Tipo de foto (habitación, baño, etc.)
+     * @property isMain Indica si es la foto principal
+     * @property altText Texto alternativo para accesibilidad
+     * @property description Descripción detallada de la foto
+     * @property widthPx Ancho en píxeles
+     * @property heightPx Alto en píxeles
+     */
+    data class PhotoRequest(
+        val url: String,
+        val photoType: Photo.PhotoType,
+        val isMain: Boolean = false,
+        val altText: String,
+        val description: String = "",
+        val widthPx: Int?,
+        val heightPx: Int?,
+    ) {
+        init {
+            require(url.isNotBlank()) { "La URL de la foto no puede estar vacía" }
+            require(url.startsWith("http")) { "La URL debe comenzar con http" }
+            require(altText.isNotBlank()) { "El texto alternativo no puede estar vacío" }
+            widthPx?.let {
+                require(it > 0) { "El ancho debe ser mayor a 0" }
+            }
+            heightPx?.let {
+                require(it > 0) { "El alto debe ser mayor a 0" }
+            }
+        }
+    }
+
     init {
         require(name.isNotBlank()) { "El nombre no puede estar vacío" }
         require(address.isNotBlank()) { "La dirección no puede estar vacía" }
         require(city.isNotBlank()) { "La ciudad no puede estar vacía" }
         require(country.isNotBlank()) { "El país no puede estar vacío" }
         require(stars in 1..5) { "Las estrellas deben estar entre 1 y 5" }
-        require(averageCustomerRating in 1..5) { "La calificación debe estar entre 1 y 5" }
+        require(averageCustomerRating in 1..10) { "La calificación debe estar entre 1 y 10" }
         require(price > 0) { "El precio debe ser mayor que 0" }
         require(description.isNotBlank()) { "La descripción no puede estar vacía" }
         require(availableFrom.isBefore(availableTo)) { "La fecha inicial debe ser anterior a la fecha final" }
         require(photos.isNotEmpty()) { "Debe incluir al menos una foto" }
-        require(photos.all { it.startsWith("http") }) { "Todas las URLs de fotos deben ser válidas" }
+        require(photos.count { it.isMain } == 1) { "Debe haber exactamente una foto principal" }
+        require(maxOccupancy > 0) { "La ocupación máxima debe ser mayor a 0" }
+        require(checkInTime.matches(Regex("^([01]?[0-9]|2[0-3]):[0-5][0-9]$"))) {
+            "El formato de hora de check-in debe ser HH:mm"
+        }
+        require(checkOutTime.matches(Regex("^([01]?[0-9]|2[0-3]):[0-5][0-9]$"))) {
+            "El formato de hora de check-out debe ser HH:mm"
+        }
+        require(cancellationPolicy.isNotBlank()) { "La política de cancelación no puede estar vacía" }
+        require(amenities.isNotEmpty()) { "Debe incluir al menos una amenidad" }
+        require(amenities.all { it.isNotBlank() }) { "Las amenidades no pueden estar vacías" }
+        roomSizeSquareMeters?.let {
+            require(it > 0) { "El tamaño de la habitación debe ser mayor a 0" }
+        }
+
+        require(photos.any { it.photoType == Photo.PhotoType.ROOM }) {
+            "Debe incluir al menos una foto de la habitación"
+        }
+        require(photos.map { it.url }.distinct().size == photos.size) {
+            "No pueden existir URLs duplicadas"
+        }
     }
 
-    companion object {
-        /**
-         * Crea una instancia de prueba
-         *
-         * @param category Categoría del alojamiento
-         * @return LodgingCreationRequest con datos de prueba
-         */
-        fun createTestInstance(category: Category = Category.HOTEL) = LodgingCreationRequest(
-            name = "Test Lodging",
-            address = "Test Address 123",
-            city = "Test City",
-            country = "Test Country",
-            stars = 4,
-            averageCustomerRating = 4,
-            price = 100.0,
-            description = "Test Description",
-            category = category,
-            availableFrom = LocalDateTime.now(),
-            availableTo = LocalDateTime.now().plusMonths(1),
-            photos = listOf("https://example.com/photo1.jpg")
-        )
-    }
+
+    /**
+     * Obtiene las fotos de un tipo específico
+     */
+    fun getPhotosByType(type: Photo.PhotoType): List<PhotoRequest> =
+        photos.filter { it.photoType == type }
+
+    /**
+     * Obtiene la foto principal
+     */
+    fun getMainPhoto(): PhotoRequest? =
+        photos.find { it.isMain }
+
+
 }
 
 /**
@@ -88,7 +151,9 @@ data class LodgingCreationRequest(
 data class LodgingSearchRequest(
     val destination: String,
     val checkIn: LocalDate,
-    val checkOut: LocalDate
+    val checkOut: LocalDate,
+    val guests: Int = 1,
+    val priceRange: ClosedRange<Double>? = null
 ) {
     init {
         require(destination.isNotBlank()) { "El destino no puede estar vacío" }
@@ -125,6 +190,7 @@ data class LodgingSearchRequest(
     }
 }
 
+
 /**
  * Respuesta que contiene información de alojamientos
  *
@@ -146,14 +212,23 @@ data class LodgingResponse(
         val distanceFromDownTown: Double,
         val stars: Int,
         val averageCustomerRating: Int,
-        val grade: String,
+        val grade: Rating,
         val description: String,
         val category: String,
         val availableFrom: LocalDateTime,
         val availableTo: LocalDateTime,
         val isFavorite: Boolean,
         val photos: List<String>,
-        val displayPhoto: String
+        val displayPhoto: String,
+        val amenities: List<String>,
+        val cancellationPolicy: String,
+        val roomSizeSquareMeters: Double,
+        val isPetFriendly: Boolean,
+        val hasParking: Boolean,
+        val mainPhoto: Photo,
+        val maxOccupancy: Int,
+        val checkInTime: String = "15:00",
+        val checkOutTime: String = "11:00",
     ) {
         /**
          * Calcula si el alojamiento está actualmente disponible
@@ -176,17 +251,6 @@ data class LodgingResponse(
             get() = "$address, $city, $country"
     }
 
-    companion object {
-        /**
-         * Crea una respuesta vacía
-         */
-        fun empty() = LodgingResponse(emptyList())
-
-        /**
-         * Crea una respuesta con un solo alojamiento
-         */
-        fun single(lodging: LodgingItem) = LodgingResponse(listOf(lodging))
-    }
 
     /**
      * Verifica si hay alojamientos disponibles
@@ -221,4 +285,24 @@ data class LodgingResponse(
         groupByCity().mapValues { (_, lodgings) ->
             lodgings.map { it.price }.average()
         }
+}
+
+/**
+ * Enumeración que representa los posibles grados de calificación
+ * en el sistema.
+ */
+enum class Rating(val description: String, val range: IntRange) {
+    PESIMO("Pésimo", 0..3),
+    MALO("Malo", 4..5),
+    REGULAR("Regular", 6..7),
+    BUENO("Bueno", 7..8),
+    MUY_BUENO("Muy bueno", 8..9),
+    EXCELENTE("Excelente", 9..10);
+
+    companion object {
+        fun fromScore(score: Int): Rating {
+            require(score in 0..10) { "La calificación debe estar entre 0 y 10" }
+            return entries.first { score in it.range }
+        }
+    }
 }

@@ -16,11 +16,12 @@ data class CategoryResponse(
      *
      * @property name Nombre identificador de la categoría (ej: "HOTEL", "HOSTEL")
      * @property imageUrl URL de la imagen representativa de la categoría
-     * @property numberOfLodgings Cantidad total de alojamientos en esta categoría
+     * @property count Cantidad total de alojamientos en esta categoría
      */
     data class CategoryItem(
         val name: String,
         val imageUrl: String,
-        val numberOfLodgings: Int
+        val displayName: String,
+        val count: Int
     )
 }

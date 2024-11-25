@@ -5,7 +5,6 @@ import com.jmfg.certs.dh.prodev.model.Lodging
 import com.jmfg.certs.dh.prodev.model.dto.CategoryResponse
 import com.jmfg.certs.dh.prodev.model.dto.LodgingCreationRequest
 import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
-import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
 import com.jmfg.certs.dh.prodev.model.dto.LodgingSearchRequest
 
 /**
@@ -21,7 +20,7 @@ interface LodgingService {
      * @return LodgingItem si se encuentra el alojamiento, null si no existe
      * @throws IllegalArgumentException si el ID proporcionado no es válido
      */
-    suspend fun findById(id: String): LodgingItem?
+    suspend fun findById(id: String): LodgingResponse.LodgingItem?
 
     /**
      * Obtiene todos los alojamientos registrados en el sistema.
@@ -37,7 +36,7 @@ interface LodgingService {
      * @return LodgingItem con los datos del alojamiento creado
      * @throws IllegalArgumentException si los datos de creación son inválidos
      */
-    suspend fun create(request: LodgingCreationRequest): LodgingItem
+    suspend fun create(request: LodgingCreationRequest): LodgingResponse.LodgingItem
 
     /**
      * Elimina un alojamiento del sistema por su identificador.
@@ -54,7 +53,7 @@ interface LodgingService {
      * @return LodgingItem con los datos actualizados
      * @throws IllegalArgumentException si los datos de actualización son inválidos
      */
-    suspend fun update(lodging: Lodging): LodgingItem
+    suspend fun update(lodging: Lodging): LodgingResponse.LodgingItem
 
     /**
      * Obtiene todas las categorías de alojamientos disponibles.

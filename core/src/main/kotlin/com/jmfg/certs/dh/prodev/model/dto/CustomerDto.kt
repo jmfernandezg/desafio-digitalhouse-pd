@@ -32,11 +32,7 @@ data class CustomerCreationRequest(
     val countryOfResidence: String? = null,
     val preferredFrequentFlyerProgram: String? = null
 ) {
-    /**
-     * Valida que los datos de creación sean correctos
-     *
-     * @throws IllegalArgumentException si algún campo no cumple con las validaciones
-     */
+
     init {
         require(email.matches(EMAIL_REGEX)) { "El formato del correo electrónico es inválido" }
         require(password.length >= 8) { "La contraseña debe tener al menos 8 caracteres" }

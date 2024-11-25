@@ -54,10 +54,10 @@ interface CustomerService {
      * @throws NoSuchElementException si el cliente no existe
      */
     suspend fun update(id: Long, request: CustomerUpdateRequest): CustomerResponse.CustomerItem
-    @Transactional(readOnly = true)
+
     suspend fun findByCountry(country: String): CustomerResponse
-    @Transactional(readOnly = true)
+
     suspend fun findByPassportExpiryBefore(date: LocalDate): CustomerResponse
-    @Transactional(readOnly = true)
+
     suspend fun getStatistics(): CustomerStatistics
 }

@@ -19,10 +19,10 @@ import java.time.LocalDateTime
  * para optimizar la carga de relaciones (como fotos).
  *
  * @property T Lodging - Tipo de entidad que maneja el repositorio
- * @property ID String - Tipo de dato del identificador único del alojamiento
+ * @property ID Long - Tipo de dato del identificador único del alojamiento
  */
 @Repository
-interface LodgingRepository : JpaRepository<Lodging, String> {
+interface LodgingRepository : JpaRepository<Lodging, Long> {
 
     /**
      * Busca alojamientos por categoría, incluyendo sus fotos

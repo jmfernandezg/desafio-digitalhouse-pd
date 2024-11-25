@@ -73,6 +73,22 @@ También puedes usar Docker para ejecutar la aplicación. Aquí están los pasos
 
 Este comando construirá e iniciará todos los servicios definidos en el archivo docker-compose.yml.
 
+
+### Consola Web de H2
+
+La consola web de H2 está habilitada para facilitar la visualización y manipulación de la base de datos en memoria. Puedes acceder a la consola web de H2 en la siguiente URL:  
+http://localhost:8080/h2
+
+Usa las siguientes credenciales para iniciar sesión:  
+- JDBC URL: jdbc:h2:mem:alojamientos_db
+- User / Pwd: sa
+
+### Swagger UI
+
+La documentación de la API está disponible a través de Swagger UI. Puedes acceder a la interfaz de Swagger UI en la siguiente URL:  
+http://localhost:8080/swagger-ui.html
+
+
 ### Acceso a la aplicación:
 - El backend estará disponible en http://localhost:8080
 - El frontend estará disponible en http://localhost

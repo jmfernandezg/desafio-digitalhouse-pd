@@ -29,7 +29,7 @@ import org.springframework.web.server.ResponseStatusException
  * - Consulta de ciudades disponibles
  */
 @RestController
-@RequestMapping("/v1/lodging")
+@RequestMapping("/api/lodging")
 @CrossOrigin(origins = ["http://localhost:3000"])
 @Tag(name = "Alojamientos", description = "APIs para la gestión de alojamientos turísticos")
 class LodgingController(private val lodgingService: LodgingService) {
@@ -172,7 +172,7 @@ class LodgingController(private val lodgingService: LodgingService) {
      * @param request Criterios de búsqueda
      * @return Lista de alojamientos que cumplen los criterios
      */
-    @PostMapping("/buscar")
+    @PostMapping("/search")
     @Operation(
         summary = "Buscar alojamientos", description = "Busca alojamientos que cumplan con los criterios especificados"
     )
