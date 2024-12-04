@@ -203,13 +203,13 @@ data class LodgingResponse(
      * Representa los datos de un alojamiento individual
      */
     data class LodgingItem(
-        val id: String,
+        val id: Long,
         val name: String,
         val address: String,
         val city: String,
         val country: String,
         val price: Double,
-        val distanceFromDownTown: Double,
+        val distanceFromDowntown: Double,
         val stars: Int,
         val averageCustomerRating: Int,
         val grade: Rating,

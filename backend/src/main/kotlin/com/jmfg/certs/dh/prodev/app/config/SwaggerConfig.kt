@@ -44,10 +44,9 @@ class SwaggerConfig(
                     * Categorización y búsqueda
                     * Gestión de disponibilidad
                     
-                    Para más información, consulte nuestra documentación detallada.
                 """.trimIndent()
                 ).contact(
-                    Contact().name("Jose Fernandez").email("jmfernandezg.awe gmail.com").url("https://empresa.com")
+                    Contact().name("Jose Fernandez").email("jmfernandezg.awe gmail.com").url("https://playground.digitalhouse.com")
                 ).license(
                     License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0")
                 )

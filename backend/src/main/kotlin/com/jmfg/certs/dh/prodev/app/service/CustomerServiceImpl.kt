@@ -5,6 +5,8 @@ import com.jmfg.certs.dh.prodev.model.Customer
 import com.jmfg.certs.dh.prodev.model.dto.*
 import com.jmfg.certs.dh.prodev.model.toCustomerItem
 import com.jmfg.certs.dh.prodev.service.CustomerService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -126,7 +128,9 @@ class CustomerServiceImpl(
     @Transactional(readOnly = true)
     override suspend fun findByCountry(country: String): CustomerResponse {
         logger.debug("Buscando clientes en el país: $country")
-        return customerRepository.findByCountryOfResidence(country)
+        return withContext(Dispatchers.IO) {
+            customerRepository.findByCountryOfResidence(country)
+        }
             .map { it.toCustomerItem() }
             .let { CustomerResponse(it) }
             .also { logger.debug("Encontrados ${it.customers.size} clientes en $country") }
@@ -134,8 +138,10 @@ class CustomerServiceImpl(
 
     @Transactional(readOnly = true)
     override suspend fun findByPassportExpiryBefore(date: LocalDate): CustomerResponse {
-        logger.debug("Buscando clientes con pasaportes que expiran antes de: $date")
-        return customerRepository.findByPassportExpiryBefore(date)
+        logger.debug("Buscando clientes con pasaportes que expiran antes de: {}", date)
+        return withContext(Dispatchers.IO) {
+            customerRepository.findByPassportExpiryBefore(date)
+        }
             .map { it.toCustomerItem() }
             .let { CustomerResponse(it) }
             .also { logger.debug("Encontrados ${it.customers.size} clientes con pasaportes por vencer") }

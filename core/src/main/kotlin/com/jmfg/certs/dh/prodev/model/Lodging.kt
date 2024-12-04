@@ -1,7 +1,7 @@
 package com.jmfg.certs.dh.prodev.model
 
 import com.jmfg.certs.dh.prodev.Util
-import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse
+import com.jmfg.certs.dh.prodev.model.dto.LodgingResponse.LodgingItem
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -25,14 +25,7 @@ enum class Category {
  * Entidad principal que representa un alojamiento en el sistema
  *
  * Gestiona toda la información relacionada con las propiedades disponibles
- * para reserva, incluyendo sus características, disponibilidad y fotos.
- *
- * Mejoras implementadas:
- * - Identificador numérico para mejor rendimiento
- * - Campos adicionales para información relevante de agencias de viajes
- * - Validaciones mejoradas
- * - Índices optimizados
- * - Métodos de utilidad adicionales
+ * para reserva, incluyendo sus características, disponibilidad y fotos
  */
 @Entity
 @Table(
@@ -171,38 +164,35 @@ data class Lodging(
     fun getAmenitiesList(): List<String> =
         amenities.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
-    fun toLodgingDto(): LodgingResponse.LodgingItem? {
-        return if (id > 0) {
-            LodgingResponse.LodgingItem(
-                id = id,
-                name = name,
-                address = address,
-                city = city,
-                country = country,
-                price = price,
-                stars = stars,
-                averageCustomerRating = averageCustomerRating,
-                description = description,
-                category = category.toDisplayString(),
-                availableFrom = availableFrom,
-                availableTo = availableTo,
-                isFavorite = isFavorite,
-                maxOccupancy = maxOccupancy,
-                checkInTime = checkInTime,
-                checkOutTime = checkOutTime,
-                cancellationPolicy = cancellationPolicy,
-                amenities = getAmenitiesList(),
-                roomSizeSquareMeters = roomSizeSquareMeters,
-                isPetFriendly = isPetFriendly,
-                hasParking = hasParking,
-                mainPhoto = getMainPhoto(),
-                photos = photos.map { it.toPhotoDto() },
-
-
-
-            )
-        } else null
-
-    }
+    fun toLodgingDto() =
+        LodgingItem(
+            id = id,
+            name = name,
+            address = address,
+            city = city,
+            country = country,
+            price = price,
+            stars = stars,
+            averageCustomerRating = averageCustomerRating,
+            description = description,
+            category = category.toDisplayString(),
+            availableFrom = availableFrom,
+            availableTo = availableTo,
+            isFavorite = isFavorite,
+            maxOccupancy = maxOccupancy,
+            checkInTime = checkInTime,
+            checkOutTime = checkOutTime,
+            cancellationPolicy = cancellationPolicy,
+            amenities = getAmenitiesList(),
+            roomSizeSquareMeters = roomSizeSquareMeters ?: 0.0,
+            isPetFriendly = isPetFriendly,
+            hasParking = hasParking,
+            mainPhoto = photos.first(),
+            photos = photos.map { it.url },
+            distanceFromDowntown = Util.getDistanceFromDowntown(city),
+            grade = Util.getGrade(averageCustomerRating),
+            displayPhoto  = photos.first().url
+        )
 
 }
+
